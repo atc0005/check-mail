@@ -18,7 +18,10 @@
 # https://www.gnu.org/software/make/manual/html_node/Special-Variables.html#Special-Variables
 
 
-OUTPUTBASEFILENAME		= bridge
+# TODO: Later versions of this repo will have multiple binaries, but for the
+# few early releases we'll likely just have the one. See GH-2 for additional
+# notes.
+OUTPUTBASEFILENAME		= check_imap_mailbox
 
 # https://gist.github.com/TheHippo/7e4d9ec4b7ed4c0d7a39839e6800cc16
 VERSION 				= $(shell git describe --always --long --dirty)
