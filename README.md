@@ -1,11 +1,29 @@
 # Check Mail
 
-Nagios plugins used to monitor mail services
+Various tools used to monitor mail services
 
 [![Latest Release](https://img.shields.io/github/release/atc0005/check-mail.svg?style=flat-square)](https://github.com/atc0005/check-mail/releases/latest)
 [![GoDoc](https://godoc.org/github.com/atc0005/check-mail?status.svg)](https://godoc.org/github.com/atc0005/check-mail)
 ![Validate Codebase](https://github.com/atc0005/check-mail/workflows/Validate%20Codebase/badge.svg)
 ![Validate Docs](https://github.com/atc0005/check-mail/workflows/Validate%20Docs/badge.svg)
+
+- [Check Mail](#check-mail)
+  - [Project home](#project-home)
+  - [Overview](#overview)
+  - [Features](#features)
+    - [`check_imap_mailbox`](#checkimapmailbox)
+    - [`list-emails`](#list-emails)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+  - [Configuration Options](#configuration-options)
+    - [Command-line Arguments](#command-line-arguments)
+  - [Examples](#examples)
+    - [As a Nagios plugin](#as-a-nagios-plugin)
+    - [Output](#output)
+      - [Login failure](#login-failure)
+      - [Help Output](#help-output)
+  - [License](#license)
+  - [References](#references)
 
 ## Project home
 
@@ -15,20 +33,32 @@ inclusion into the project.
 
 ## Overview
 
-This repo contains various Nagios plugins used to monitor mail services.
+This repo contains various tools used to monitor mail services.
 
-PLACEHOLDER - Add table of plugins here
-
-- `check_imap_folder`
+| Tool Name            | Status   | Description                                                             |
+| -------------------- | -------- | ----------------------------------------------------------------------- |
+| `check_imap_mailbox` | Alpha    | Nagios plugin used to monitor mailboxes for items                       |
+| `list-emails`        | Planning | PLACEHOLDER: Small CLI app used to generate listing of mailbox contents |
 
 ## Features
 
-- PLACEHOLDER
+### `check_imap_mailbox`
+
+- Monitor one or many mailboxes
+- Leveled logging
+  - JSON-format output
+  - choice of `disabled`, `panic`, `fatal`, `error`, `warn`, `info` (the
+    default), `debug` or `trace`.
+- TLS/SSL IMAP4 connectivity (defaults to 993/tcp)
 - Go modules (vs classic `GOPATH` setup)
+
+### `list-emails`
+
+Placeholder. See GH-2 for details.
 
 ## Requirements
 
-- Go 1.12+ (for building)
+- Go
 - GCC
   - if building with custom options (as the provided `Makefile` does)
 - `make`
@@ -42,7 +72,7 @@ Tested using:
   - WSL
 - Ubuntu Linux 16.04+
 
-## How to install it
+## Installation
 
 1. [Download](https://golang.org/dl/) Go
 1. [Install](https://golang.org/doc/install) Go
@@ -64,29 +94,83 @@ Tested using:
       - `make windows`
    - for Linux
      - `make linux`
-1. Copy the applicable binary to whatever systems that need to run it
-   1. Linux: `/tmp/check-mail/check-mail`
-   1. Windows: `/tmp/check-mail/check-mail.exe`
+1. Copy the applicable binary to whatever systems needs to run it
+   1. Linux
+     - if using `Makefile`: `/tmp/check-mail/check_imap_mailbox`
+     - if using `go build`: `/tmp/check-mail/check-mail`
+   1. Windows
+     - if using `Makefile`: `/tmp/check-mail/check_imap_mailbox.exe`
+     - if using `go build`: `/tmp/check-mail/check-mail.exe`
 
 ## Configuration Options
 
 ### Command-line Arguments
 
-| Option          | Required | Default        | Repeat | Possible                            | Description                                                                                                                                  |
-| --------------- | -------- | -------------- | ------ | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `h`, `help`     | No       | `false`        | No     | `0+`                                | Keep specified number of matching files.                                                                                                     |
-| `console`       | No       | `false`        | No     | `true`, `false`                     | Dump CSV file equivalent to console.                                                                                                         |
-| `csvfile`       | Yes      | *empty string* | No     | *valid file name characters*        | The fully-qualified path to a CSV file that this application should generate.                                                                |
-| `excelfile`     | No       | *empty string* | No     | *valid file name characters*        | The fully-qualified path to a Microsoft Excel file that this application should generate.                                                    |
-| `size`          | No       | `1` (byte)     | No     | `0+`                                | File size limit for evaluation. Files smaller than this will be skipped.                                                                     |
-| `duplicates`    | No       | `2`            | No     | `2+`                                | Number of files of the same file size needed before duplicate validation logic is applied.                                                   |
-| `ignore-errors` | No       | `false`        | No     | `true`, `false`                     | Ignore minor errors whenever possible. This option does not affect handling of fatal errors such as failure to generate output report files. |
-| `path`          | Yes      | *empty string* | Yes    | *one or more valid directory paths* | Path to process. This flag may be repeated for each additional path to evaluate.                                                             |
-| `recurse`       | No       | `false`        | No     | `true`, `false`                     | Perform recursive search into subdirectories per provided path.                                                                              |
+| Option          | Required | Default        | Repeat | Possible                                                                | Description                                                                                                                |
+| --------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `h`, `help`     | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them.                         |
+| `folders`       | Yes      | *empty string* | No     | *comma-separated list of folders*                                       | Folders or IMAP "mailboxes" to check for mail. This value is provided as a comma-separated list.                           |
+| `username`      | Yes      | *empty string* | No     | *valid username, often in email address format*                         | The account used to login to the remote mail server. This is often in the form of an email address.                        |
+| `password`      | Yes      | *empty string* | No     | *valid password*                                                        | The remote mail server account password.                                                                                   |
+| `server`        | Yes      | *empty string* | No     | *valid FQDN or IP Address*                                              | The fully-qualified domain name of the remote mail server.                                                                 |
+| `port`          | No       | `993`          | No     | *valid IMAP TCP port*                                                   | TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections. |
+| `logging-level` | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                            |
 
 ## Examples
 
-PLACEHOLDER
+### As a Nagios plugin
+
+When called by Nagios, you don't really benefit from having the application
+generate log output; Nagios throws away output `stderr` and returns anything
+sent to `stdout`, so output of any kind has to be carefully tailored to just
+what you want to show up in the actual alert. Because of that, we disable
+logging output explicitly and rely on the plugin to return information as
+required via `stdout`.
+
+```ShellSession
+$ /usr/lib/nagios/plugins/check_imap_mailbox -folders "Inbox, Junk Email" -server imap.example.com -username "tacotuesdays@example.com" -port 993 -password "coconuts" -log-level disabled
+OK: tacotuesdays@example.com: No messages found in folders: ["Inbox" "Junk Email"]
+```
+
+### Output
+
+#### Login failure
+
+Assuming that an error occurred, we will want to explicitly choose a different
+log level than the one normally used when the plugin is operating normally.
+Here we choose `-log-level info` to get at basic operational details. You may
+wish to use `-log-level debug` to get even more feedback.
+
+```ShellSession
+$ /usr/lib/nagios/plugins/check_imap_mailbox -folders "Inbox, Junk Email" -server imap.example.com -username "tacotuesdays@example.com" -port 993 -password "coconuts" -log-level info
+{"level":"error","username":"tacotuesdays@example.com","server":"imap.example.com","port":993,"folders_to_check":"Inbox,Junk Email","error":"LOGIN failed.","caller":"T:/github/check-mail/main.go:152","message":"Login error occurred"}
+Login error occurred
+
+Additional details: LOGIN failed.
+
+Alert generated by check_imap_mailbox x.y.z
+```
+
+#### Help Output
+
+```ShellSession
+check_imap_mailbox x.y.z
+https://github.com/atc0005/check-mail
+
+Usage of ./check_imap_mailbox:
+  -folders value
+        Folders or IMAP "mailboxes" to check for mail. This value is provided as a comma-separated list.
+  -log-level string
+        Sets log level to one of disabled, panic, fatal, error, warn, info, debug or trace. (default "info")
+  -password string
+        The remote mail server account password.
+  -port int
+        TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections. (default 993)
+  -server string
+        The fully-qualified domain name of the remote mail server.
+  -username string
+        The account used to login to the remote mail server. This is often in the form of an email address.
+```
 
 ## License
 
@@ -117,3 +201,7 @@ SOFTWARE.
 ```
 
 ## References
+
+- <https://github.com/emersion/go-imap>
+- <https://github.com/rs/zerolog>
+- <https://github.com/atc0005/go-nagios>
