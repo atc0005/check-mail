@@ -26,6 +26,18 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.1.2] - 2020-02-06
+
+### Fixed
+
+- Update status output to reflect the same format used in the original Python
+  2 plugin.
+  - For reasons I've yet to spend sufficient time to figure out, the
+    double-quoting used for elements of the "folders" list is lost when sent
+    by Teams or email notifications. It is easier to go ahead and just revert
+    the format for now so it is consistent in each format (console, Teams or
+    email).
+
 ## [v0.1.1] - 2020-02-06
 
 ### Fixed
@@ -57,6 +69,7 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.1.2...HEAD
+[v0.1.2]: https://github.com/atc0005/check-mail/releases/tag/v0.1.2
 [v0.1.1]: https://github.com/atc0005/check-mail/releases/tag/v0.1.1
 [v0.1.0]: https://github.com/atc0005/check-mail/releases/tag/v0.1.0
