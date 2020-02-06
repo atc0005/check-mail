@@ -49,10 +49,8 @@ monitor mail-related resources.
 
 ### Added
 
-**TODO**: Source merged PR for specific packages/details
-
 - Monitor one or many mailboxes
--Optional, leveled logging using `rs/zerolog` package
+- Optional, leveled logging using `rs/zerolog` package
   - JSON-format output
   - choice of `disabled`, `panic`, `fatal`, `error`, `warn`, `info` (the
     default), `debug` or `trace`.
