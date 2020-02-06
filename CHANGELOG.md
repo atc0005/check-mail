@@ -26,6 +26,15 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.1.1] - 2020-02-06
+
+### Fixed
+
+- Branding output (app name, version) was only shown for application error
+  conditions. This has been adjusted so that it is intentionally not shown by
+  default for any condition, but can be toggled on via a new `-branding` flag.
+- README example
+
 ## [v0.1.0] - 2020-02-04
 
 Initial release!
@@ -50,5 +59,6 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.1.1...HEAD
+[v0.1.1]: https://github.com/atc0005/check-mail/releases/tag/v0.1.1
 [v0.1.0]: https://github.com/atc0005/check-mail/releases/tag/v0.1.0

@@ -106,15 +106,16 @@ Tested using:
 
 ### Command-line Arguments
 
-| Option          | Required | Default        | Repeat | Possible                                                                | Description                                                                                                                |
-| --------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `h`, `help`     | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them.                         |
-| `folders`       | Yes      | *empty string* | No     | *comma-separated list of folders*                                       | Folders or IMAP "mailboxes" to check for mail. This value is provided as a comma-separated list.                           |
-| `username`      | Yes      | *empty string* | No     | *valid username, often in email address format*                         | The account used to login to the remote mail server. This is often in the form of an email address.                        |
-| `password`      | Yes      | *empty string* | No     | *valid password*                                                        | The remote mail server account password.                                                                                   |
-| `server`        | Yes      | *empty string* | No     | *valid FQDN or IP Address*                                              | The fully-qualified domain name of the remote mail server.                                                                 |
-| `port`          | No       | `993`          | No     | *valid IMAP TCP port*                                                   | TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections. |
-| `logging-level` | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                            |
+| Option          | Required | Default        | Repeat | Possible                                                                | Description                                                                                                                                                                                 |
+| --------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `h`, `help`     | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them.                                                                                          |
+| `folders`       | Yes      | *empty string* | No     | *comma-separated list of folders*                                       | Folders or IMAP "mailboxes" to check for mail. This value is provided as a comma-separated list.                                                                                            |
+| `username`      | Yes      | *empty string* | No     | *valid username, often in email address format*                         | The account used to login to the remote mail server. This is often in the form of an email address.                                                                                         |
+| `password`      | Yes      | *empty string* | No     | *valid password*                                                        | The remote mail server account password.                                                                                                                                                    |
+| `server`        | Yes      | *empty string* | No     | *valid FQDN or IP Address*                                              | The fully-qualified domain name of the remote mail server.                                                                                                                                  |
+| `port`          | No       | `993`          | No     | *valid IMAP TCP port*                                                   | TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections.                                                                  |
+| `logging-level` | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                             |
+| `branding`      | No       | `false`        | No     | `true`, `false`                                                         | Toggles emission of branding details with plugin status details. Because this output may not mix well with branding information emitted by other tools, this output is disabled by default. |
 
 ## Examples
 
@@ -142,13 +143,13 @@ Here we choose `-log-level info` to get at basic operational details. You may
 wish to use `-log-level debug` to get even more feedback.
 
 ```ShellSession
-$ /usr/lib/nagios/plugins/check_imap_mailbox -folders "Inbox, Junk Email" -server imap.example.com -username "tacotuesdays@example.com" -port 993 -password "coconuts" -log-level info
+$ /usr/lib/nagios/plugins/check_imap_mailbox -folders "Inbox, Junk Email" -server imap.example.com -username "tacotuesdays@example.com" -port 993 -password "coconuts" -log-level info -branding
 {"level":"error","username":"tacotuesdays@example.com","server":"imap.example.com","port":993,"folders_to_check":"Inbox,Junk Email","error":"LOGIN failed.","caller":"T:/github/check-mail/main.go:152","message":"Login error occurred"}
 Login error occurred
 
 Additional details: LOGIN failed.
 
-Alert generated by check_imap_mailbox x.y.z
+Notification generated by check_imap_mailbox x.y.z
 ```
 
 #### Help Output
@@ -158,6 +159,8 @@ check_imap_mailbox x.y.z
 https://github.com/atc0005/check-mail
 
 Usage of ./check_imap_mailbox:
+  -branding
+        Toggles emission of branding details with plugin status details. This output is disabled by default.
   -folders value
         Folders or IMAP "mailboxes" to check for mail. This value is provided as a comma-separated list.
   -log-level string
