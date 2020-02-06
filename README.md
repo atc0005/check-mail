@@ -130,7 +130,7 @@ required via `stdout`.
 
 ```ShellSession
 $ /usr/lib/nagios/plugins/check_imap_mailbox -folders "Inbox, Junk Email" -server imap.example.com -username "tacotuesdays@example.com" -port 993 -password "coconuts" -log-level disabled
-OK: tacotuesdays@example.com: No messages found in folders: ["Inbox" "Junk Email"]
+OK: tacotuesdays@example.com: No messages found in folders: Inbox, Junk Email
 ```
 
 ### Output

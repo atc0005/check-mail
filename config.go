@@ -28,7 +28,7 @@ func (i *multiValueFlag) String() string {
 		return ""
 	}
 
-	return strings.Join(*i, ",")
+	return strings.Join(*i, ", ")
 }
 
 // Set is called once by the flag package, in command line order, for each

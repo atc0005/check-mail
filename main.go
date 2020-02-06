@@ -309,9 +309,9 @@ func main() {
 	// Give the all clear: no mail was found
 	log.Debug().Msg("No messages found to report")
 	nagiosExitState.LastError = nil
-	nagiosExitState.Message = fmt.Sprintf("OK: %s: No messages found in folders: %q",
+	nagiosExitState.Message = fmt.Sprintf("OK: %s: No messages found in folders: %s",
 		config.Username,
-		config.Folders,
+		config.Folders.String(),
 	)
 	nagiosExitState.StatusCode = nagios.StateOK
 
