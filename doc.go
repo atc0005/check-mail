@@ -23,6 +23,8 @@ USAGE
     https://github.com/atc0005/check-mail
 
     Usage of ./check_imap_mailbox:
+    -branding
+        Toggles emission of branding details with plugin status details. This output is disabled by default.
     -folders value
         Folders or IMAP "mailboxes" to check for mail. This value is provided as a comma-separated list.
     -log-level string
