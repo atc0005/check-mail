@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Copyright 2020 Adam Chalkley
 #
 # https://github.com/atc0005/check-mail
@@ -50,14 +48,17 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
 
-      - name: Get dependencies
-        run: |
-          go get -v -t -d ./...
+      # NOTE: Disabled in favor of top-level `vendor` folder
+      #
+      # - name: Get dependencies
+      #   run: |
+      #     go get -v -t -d ./...
 
       # Force tests to run early as it isn't worth doing much else if the
       # tests fail to run properly.
+      # Note: The `vendor` top-level folder appears to be skipped by default.
       - name: Run all tests
-        run: go test -v ./...
+        run: go test -mod=vendor -v ./...
 
       - name: Install Go linting tools
         run: |
@@ -79,12 +80,10 @@ jobs:
           export PATH=${PATH}:$(go env GOPATH)/bin
           make linting
 
-      - name: Build with default options
-        # FIXME: This will probably not work as-is; if this repo contains
-        # multiple binaries, then we will need to execute builds individually
-        # here OR rely entirely on the Makefile (which seems to be more
-        # flexible)
-        run: go build -v .
+      - name: Build with (mostly) default options
+        # Note: We use the `-mod=vendor` flag to explicitly request that our
+        # top-level vendor folder be used instead of fetching remote packages
+        run: go build -v -mod=vendor .
 
       - name: Build using project Makefile
         run: make all
