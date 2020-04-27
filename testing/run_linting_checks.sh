@@ -76,20 +76,8 @@ make lintinstall
 EOF
     exit 1
 else
-    golangci-lint run \
-        -E goimports \
-        -E gosec \
-        -E stylecheck \
-        -E goconst \
-        -E depguard \
-        -E prealloc \
-        -E misspell \
-        -E maligned \
-        -E dupl \
-        -E unconvert \
-        -E golint \
-        -E gocritic \
-        -E scopelint
+    # Use external config file for linter selection, settings
+    golangci-lint run
 fi
 
 status=$?
