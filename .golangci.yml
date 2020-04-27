@@ -21,3 +21,4 @@ linters:
     - golint
     - gocritic
     - scopelint
+    - gofmt
