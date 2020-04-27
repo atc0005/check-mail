@@ -25,7 +25,8 @@ failed_app=""
 
 
 # https://stackoverflow.com/a/42510278/903870
-diff -u <(echo -n) <(gofmt -l -e -d .)
+# https://github.com/golang/go/issues/33962#issue-487227277
+diff -u <(echo -n) <(gofmt -l $(find . -type f -name '*.go'| grep -v "/vendor/"))
 
 status=$?
 if [[ $status -ne 0 ]]; then
@@ -34,7 +35,7 @@ if [[ $status -ne 0 ]]; then
     echo "Non-zero exit code from $failed_app: $status"
 fi
 
-go vet ./...
+go vet -mod=vendor $(go list -mod=vendor ./... | grep -v /vendor/)
 
 status=$?
 if [[ $status -ne 0 ]]; then
@@ -54,7 +55,7 @@ make lintinstall
 EOF
     exit 1
 else
-    golint -set_exit_status ./...
+    golint -set_exit_status $(go list -mod=vendor ./... | grep -v /vendor/)
 fi
 
 # TODO: This might not be needed based on use of "-set_exit_status"
@@ -98,7 +99,7 @@ make lintinstall
 EOF
     exit 1
 else
-    staticcheck ./...
+    staticcheck $(go list -mod=vendor ./... | grep -v /vendor/)
 fi
 
 status=$?

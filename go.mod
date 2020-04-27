@@ -6,4 +6,5 @@ require (
 	github.com/atc0005/go-nagios v0.2.0
 	github.com/emersion/go-imap v1.0.4
 	github.com/rs/zerolog v1.18.0
+	golang.org/x/text v0.3.2
 )
