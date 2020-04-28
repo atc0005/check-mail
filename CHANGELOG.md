@@ -26,6 +26,49 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.2.0] - 2020-04-28
+
+### Changed
+
+- Use common `cmd` subdirectory structure in order to more easily support
+  multiple binaries
+
+- Vendor dependencies
+
+- Update Makefile and helper shell scripts
+  - include `-mod=vendor` build flag for applicable `go` commands to reflect
+    Go 1.13 vendoring
+    - this includes specifying `-mod=vendor` even for `go list` commands,
+        which unless specified results in dependencies being downloaded, even
+        when they're already provided in a local, top-level `vendor` directory
+
+- Update GitHub Actions Workflows
+  - Disable running `go get` after checking out code
+  - Exclude `vendor` folder from ...
+    - Markdown linting checks
+    - tests
+    - basic build
+  - Echo Go version used for CI runs
+  - Update Go versions used
+    - Remove Go 1.12 (no longer supported)
+    - Add Go 1.14 (recent release)
+
+- Dependencies
+  - Update rs/zerolog to v1.18.0
+  - Update emersion/go-imap to v1.0.4
+
+- Linting
+  - Move golangci-lint settings to external file
+  - Add scopelint golangci-lint linter
+  - Use golangci-lint binary instead of building src
+  - Replace external shell scripts by incorporating applicable commands
+    directly into the Makefile
+  - Disable gofmt, golint external commands, rely on golangci-lint for that
+    linting functionality
+
+- Documentation
+  - Update README to reflect recent updates to build process/layout
+
 ## [v0.1.2] - 2020-02-06
 
 ### Fixed
@@ -69,7 +112,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/atc0005/check-mail/releases/tag/v0.2.0
 [v0.1.2]: https://github.com/atc0005/check-mail/releases/tag/v0.1.2
 [v0.1.1]: https://github.com/atc0005/check-mail/releases/tag/v0.1.1
 [v0.1.0]: https://github.com/atc0005/check-mail/releases/tag/v0.1.0
