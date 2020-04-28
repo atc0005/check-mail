@@ -86,21 +86,19 @@ Tested using:
    - for CentOS Linux
      1. `sudo yum install make gcc`
 1. Build
-   - for current operating system with default `go` build options
-     - `go build`
-   - for all supported platforms
+   - for current operating system
+     - `go build -mod=vendor ./cmd/check_imap_mailbox/`
+       - *forces build to use bundled dependencies in top-level `vendor`
+         folder*
+   - for all supported platforms (where `make` is installed)
       - `make all`
    - for Windows
       - `make windows`
    - for Linux
      - `make linux`
 1. Copy the applicable binary to whatever systems needs to run it
-   1. Linux
-     - if using `Makefile`: `/tmp/check-mail/check_imap_mailbox`
-     - if using `go build`: `/tmp/check-mail/check-mail`
-   1. Windows
-     - if using `Makefile`: `/tmp/check-mail/check_imap_mailbox.exe`
-     - if using `go build`: `/tmp/check-mail/check-mail.exe`
+   - if using `Makefile`: look in `/tmp/release_assets/check_imap_mailbox/`
+   - if using `go build`: look in `/tmp/check-mail/`
 
 ## Configuration Options
 
