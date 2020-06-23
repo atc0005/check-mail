@@ -706,14 +706,18 @@ func ParseAddressList(fields []interface{}) (addrs []*Address) {
 }
 
 // Format an address list to fields.
-func FormatAddressList(addrs []*Address) (fields []interface{}) {
-	fields = make([]interface{}, len(addrs))
+func FormatAddressList(addrs []*Address) interface{} {
+	if len(addrs) == 0 {
+		return nil
+	}
+
+	fields := make([]interface{}, len(addrs))
 
 	for i, addr := range addrs {
 		fields[i] = addr.Format()
 	}
 
-	return
+	return fields
 }
 
 // A message envelope, ie. message metadata from its headers.
@@ -806,12 +810,12 @@ type BodyStructure struct {
 	MIMEType string
 	// The MIME subtype (e.g. "plain", "png")
 	MIMESubType string
-	// The MIME parameters. Values are encoded.
+	// The MIME parameters.
 	Params map[string]string
 
 	// The Content-Id header.
 	Id string
-	// The Content-Description header. This is the raw encoded value.
+	// The Content-Description header.
 	Description string
 	// The Content-Encoding header.
 	Encoding string
@@ -836,7 +840,7 @@ type BodyStructure struct {
 
 	// The Content-Disposition header field value.
 	Disposition string
-	// The Content-Disposition header field parameters. Values are encoded.
+	// The Content-Disposition header field parameters.
 	DispositionParams map[string]string
 	// The Content-Language header field, if multipart.
 	Language []string
