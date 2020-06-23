@@ -118,3 +118,19 @@ func (r *StatusResp) WriteTo(w *Writer) error {
 
 	return w.writeCrlf()
 }
+
+// ErrStatusResp can be returned by a server.Handler to replace the default status
+// response. The response tag must be empty.
+//
+// To suppress default response, Resp should be set to nil.
+type ErrStatusResp struct {
+	// Response to send instead of default.
+	Resp *StatusResp
+}
+
+func (err *ErrStatusResp) Error() string {
+	if err.Resp == nil {
+		return "imap: suppressed response"
+	}
+	return err.Resp.Info
+}
