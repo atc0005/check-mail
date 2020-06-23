@@ -26,6 +26,30 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.2.1] - 2020-06-23
+
+### Added
+
+- Enable Dependabot updates
+  - Go Modules
+  - GitHub Actions
+
+### Changed
+
+- Dependencies
+  - `rs/zerolog`
+    - `v1.18.0` to `v1.19.0`
+  - `emersion/go-imap`
+    - `v1.0.4` to `v1.0.5`
+  - `actions/setup-go`
+    - `v1` to `v2.0.3`
+  - `actions/checkout`
+    - `v1` to `v2.3.1`
+  - `actions/setup-node`
+    - `v1` to `v2.0.0`
+  - `golangci-lint`
+    - `1.25.0` to `v1.27.0`
+
 ## [v0.2.0] - 2020-04-28
 
 ### Changed
@@ -112,7 +136,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.1...HEAD
+[v0.2.1]: https://github.com/atc0005/check-mail/releases/tag/v0.2.1
 [v0.2.0]: https://github.com/atc0005/check-mail/releases/tag/v0.2.0
 [v0.1.2]: https://github.com/atc0005/check-mail/releases/tag/v0.1.2
 [v0.1.1]: https://github.com/atc0005/check-mail/releases/tag/v0.1.1
