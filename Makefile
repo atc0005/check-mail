@@ -40,7 +40,7 @@ VERSION 				= $(shell git describe --always --long --dirty)
 
 # https://github.com/golangci/golangci-lint#install
 # https://github.com/golangci/golangci-lint/releases/latest
-GOLANGCI_LINT_VERSION		= v1.25.1
+GOLANGCI_LINT_VERSION		= v1.27.0
 
 # The default `go build` process embeds debugging information. Building
 # without that debugging information reduces the binary size by around 28%.
