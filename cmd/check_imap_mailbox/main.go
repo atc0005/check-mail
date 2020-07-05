@@ -62,7 +62,7 @@ func main() {
 	// Start off assuming all is well, adjust as we go.
 	var nagiosExitState = NagiosExitState{
 		LastError:  nil,
-		StatusCode: nagios.StateOK,
+		StatusCode: nagios.StateOKExitCode,
 	}
 
 	config := Config{}
@@ -105,9 +105,12 @@ func main() {
 
 	if err := config.Validate(); err != nil {
 		log.Err(err).Msg("Error validating configuration")
-		nagiosExitState.Message = "Error validating configuration"
+		nagiosExitState.Message = fmt.Sprintf(
+			"%s: Error validating configuration",
+			nagios.StateCRITICALLabel,
+		)
 		nagiosExitState.LastError = err
-		nagiosExitState.StatusCode = nagios.StateCRITICAL
+		nagiosExitState.StatusCode = nagios.StateCRITICALExitCode
 		return
 	}
 
@@ -133,8 +136,11 @@ func main() {
 	if err := logging.SetLoggingLevel(config.LoggingLevel); err != nil {
 		log.Err(err).Msg("configuring logging level")
 		nagiosExitState.LastError = err
-		nagiosExitState.Message = "Error configuring logging level"
-		nagiosExitState.StatusCode = nagios.StateCRITICAL
+		nagiosExitState.Message = fmt.Sprintf(
+			"%s: Error configuring logging level",
+			nagios.StateCRITICALLabel,
+		)
+		nagiosExitState.StatusCode = nagios.StateCRITICALExitCode
 		return
 	}
 
@@ -145,8 +151,12 @@ func main() {
 	if err != nil {
 		log.Error().Err(err).Msgf("error connecting to server")
 		nagiosExitState.LastError = err
-		nagiosExitState.Message = fmt.Sprintf("Error connecting to %s", server)
-		nagiosExitState.StatusCode = nagios.StateCRITICAL
+		nagiosExitState.Message = fmt.Sprintf(
+			"%s: Error connecting to %s",
+			nagios.StateCRITICALLabel,
+			server,
+		)
+		nagiosExitState.StatusCode = nagios.StateCRITICALExitCode
 		return
 	}
 	log.Debug().Msg("Connected")
@@ -155,8 +165,11 @@ func main() {
 	if err := c.Login(config.Username, config.Password); err != nil {
 		log.Error().Err(err).Msg("Login error occurred")
 		nagiosExitState.LastError = err
-		nagiosExitState.Message = "Login error occurred"
-		nagiosExitState.StatusCode = nagios.StateCRITICAL
+		nagiosExitState.Message = fmt.Sprintf(
+			"%s: Login error occurred",
+			nagios.StateCRITICALLabel,
+		)
+		nagiosExitState.StatusCode = nagios.StateCRITICALExitCode
 		return
 	}
 	log.Debug().Msg("Logged in")
@@ -176,8 +189,11 @@ func main() {
 		if err := c.Logout(); err != nil {
 			log.Error().Err(err).Msg("")
 			nagiosExitState.LastError = err
-			nagiosExitState.Message = "Error logging out"
-			nagiosExitState.StatusCode = nagios.StateWARNING
+			nagiosExitState.Message = fmt.Sprintf(
+				"%s: Error logging out",
+				nagios.StateWARNINGLabel,
+			)
+			nagiosExitState.StatusCode = nagios.StateWARNINGExitCode
 		}
 	}(config.Username)
 
@@ -204,8 +220,11 @@ func main() {
 	if err := <-done; err != nil {
 		log.Error().Err(err).Msg("Error occurred listing mailboxes")
 		nagiosExitState.LastError = err
-		nagiosExitState.Message = "Error occurred listing mailboxes"
-		nagiosExitState.StatusCode = nagios.StateCRITICAL
+		nagiosExitState.Message = fmt.Sprintf(
+			"%s: Error occurred listing mailboxes",
+			nagios.StateCRITICALLabel,
+		)
+		nagiosExitState.StatusCode = nagios.StateCRITICALExitCode
 		return
 	}
 
@@ -252,8 +271,11 @@ func main() {
 
 			log.Error().Str("mailbox", folder).Bool("found", false).Msg("")
 			nagiosExitState.LastError = fmt.Errorf("mailbox not found: %q", folder)
-			nagiosExitState.Message = "Mailbox not found"
-			nagiosExitState.StatusCode = nagios.StateCRITICAL
+			nagiosExitState.Message = fmt.Sprintf(
+				"%s: Mailbox not found",
+				nagios.StateCRITICALLabel,
+			)
+			nagiosExitState.StatusCode = nagios.StateCRITICALExitCode
 			return
 		}
 
@@ -274,8 +296,12 @@ func main() {
 		if err != nil {
 			log.Error().Err(err).Str("mailbox", folder).Msg("Error occurred selecting mailbox")
 			nagiosExitState.LastError = err
-			nagiosExitState.Message = fmt.Sprintf("Error occurred selecting mailbox %s", folder)
-			nagiosExitState.StatusCode = nagios.StateCRITICAL
+			nagiosExitState.Message = fmt.Sprintf(
+				"%s: Error occurred selecting mailbox %s",
+				nagios.StateCRITICALLabel,
+				folder,
+			)
+			nagiosExitState.StatusCode = nagios.StateCRITICALExitCode
 			return
 		}
 
@@ -297,22 +323,26 @@ func main() {
 			results.MessagesFoundSummary(),
 		)
 		nagiosExitState.LastError = nil
-		nagiosExitState.Message = fmt.Sprintf("WARNING: %s: %d messages found: %s",
+		nagiosExitState.Message = fmt.Sprintf(
+			"%s: %s: %d messages found: %s",
+			nagios.StateWARNINGLabel,
 			config.Username,
 			results.TotalMessagesFound(),
 			results.MessagesFoundSummary(),
 		)
-		nagiosExitState.StatusCode = nagios.StateWARNING
+		nagiosExitState.StatusCode = nagios.StateWARNINGExitCode
 		return
 	}
 
 	// Give the all clear: no mail was found
 	log.Debug().Msg("No messages found to report")
 	nagiosExitState.LastError = nil
-	nagiosExitState.Message = fmt.Sprintf("OK: %s: No messages found in folders: %s",
+	nagiosExitState.Message = fmt.Sprintf(
+		"%s: %s: No messages found in folders: %s",
+		nagios.StateOKLabel,
 		config.Username,
 		config.Folders.String(),
 	)
-	nagiosExitState.StatusCode = nagios.StateOK
+	nagiosExitState.StatusCode = nagios.StateOKExitCode
 
 }

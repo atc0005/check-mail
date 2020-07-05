@@ -18,9 +18,20 @@ package nagios
 //
 // See also http://nagios-plugins.org/doc/guidelines.html
 const (
-	StateOK        int = 0
-	StateWARNING   int = 1
-	StateCRITICAL  int = 2
-	StateUNKNOWN   int = 3
-	StateDEPENDENT int = 4
+	StateOKExitCode        int = 0
+	StateWARNINGExitCode   int = 1
+	StateCRITICALExitCode  int = 2
+	StateUNKNOWNExitCode   int = 3
+	StateDEPENDENTExitCode int = 4
+)
+
+// Nagios plugin/service check state "labels". These constants are provided as
+// an alternative to using literal state strings throughout client application
+// code.
+const (
+	StateOKLabel        string = "OK"
+	StateWARNINGLabel   string = "WARNING"
+	StateCRITICALLabel  string = "CRITICAL"
+	StateUNKNOWNLabel   string = "UKNOWN"
+	StateDEPENDENTLabel string = "DEPENDENT"
 )

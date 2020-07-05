@@ -11,7 +11,7 @@ Various tools used to monitor mail services
   - [Project home](#project-home)
   - [Overview](#overview)
   - [Features](#features)
-    - [`check_imap_mailbox`](#checkimapmailbox)
+    - [`check_imap_mailbox`](#check_imap_mailbox)
     - [`list-emails`](#list-emails)
   - [Requirements](#requirements)
   - [Installation](#installation)
@@ -97,7 +97,7 @@ Tested using:
    - for Linux
      - `make linux`
 1. Copy the applicable binary to whatever systems needs to run it
-   - if using `Makefile`: look in `/tmp/release_assets/check_imap_mailbox/`
+   - if using `Makefile`: look in `/tmp/check-mail/release_assets/check_imap_mailbox/`
    - if using `go build`: look in `/tmp/check-mail/`
 
 ## Configuration Options
