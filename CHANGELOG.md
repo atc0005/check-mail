@@ -26,6 +26,28 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.2.2] - 2020-07-05
+
+### Changed
+
+- Dependencies
+  - `actions/setup-go`
+    - `v2.0.3` to `v2.1.0`
+  - `actions/setup-node`
+    - `v2.0.0` to `v2.1.0`
+  - `atc0005/go-nagios`
+    - `v0.2.0` to `v0.3.0`
+
+- Replace hard-coded status strings with const refs
+  - New in `v0.3.0` of `atc0005/go-nagios`
+
+- Fix exit code references
+  - These have changed as of `v0.3.0` of `atc0005/go-nagios`
+
+- Minor README tweaks
+  - Fix path to generated binaries
+  - Markdown VSCode extension (`yzhang.markdown-all-in-one`) auto-fixes to ToC
+
 ## [v0.2.1] - 2020-06-23
 
 ### Added
@@ -136,7 +158,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.2...HEAD
+[v0.2.2]: https://github.com/atc0005/check-mail/releases/tag/v0.2.2
 [v0.2.1]: https://github.com/atc0005/check-mail/releases/tag/v0.2.1
 [v0.2.0]: https://github.com/atc0005/check-mail/releases/tag/v0.2.0
 [v0.1.2]: https://github.com/atc0005/check-mail/releases/tag/v0.1.2
