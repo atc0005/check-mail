@@ -10,7 +10,7 @@ Shared Golang package for Nagios plugins
 
 This package contains common types and package-level variables used when
 developing Nagios plugins. The intent is to reduce code duplication between
-various plugins.
+various plugins and help reduce typos associated with literal strings.
 
 ## Features
 
@@ -42,12 +42,20 @@ import (
 )
   ```
 
-Then in your code reference the data types as you would from any other
+Then in your code, reference the data types as you would from any other
 package:
 
 ```golang
 fmt.Println("OK: All checks have passed")
-os.Exit(nagios.StateOK)
+os.Exit(nagios.StateOKExitCode)
+```
+
+Alternatively, you can also use the provided state "labels" (constants) to
+avoid using literal string state values:
+
+```golang
+fmt.Printf("%s: All checks have passed\r\n", nagios.StateOKLabel)
+os.Exit(nagios.StateOKExitCode)
 ```
 
 When you next build your package this one should be pulled in.
