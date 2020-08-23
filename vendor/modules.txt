@@ -1,6 +1,8 @@
 # github.com/atc0005/go-nagios v0.3.0
+## explicit
 github.com/atc0005/go-nagios
 # github.com/emersion/go-imap v1.0.5
+## explicit
 github.com/emersion/go-imap
 github.com/emersion/go-imap/client
 github.com/emersion/go-imap/commands
@@ -9,6 +11,7 @@ github.com/emersion/go-imap/utf7
 # github.com/emersion/go-sasl v0.0.0-20191210011802-430746ea8b9b
 github.com/emersion/go-sasl
 # github.com/rs/zerolog v1.19.0
+## explicit
 github.com/rs/zerolog
 github.com/rs/zerolog/internal/cbor
 github.com/rs/zerolog/internal/json

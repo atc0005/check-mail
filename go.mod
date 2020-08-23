@@ -1,6 +1,6 @@
 module github.com/atc0005/check-mail
 
-go 1.13
+go 1.14
 
 require (
 	github.com/atc0005/go-nagios v0.3.0
