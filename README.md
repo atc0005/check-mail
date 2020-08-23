@@ -1,3 +1,4 @@
+<!-- omit in toc -->
 # Check Mail
 
 Various tools used to monitor mail services
@@ -9,23 +10,25 @@ Various tools used to monitor mail services
 [![Lint and Build using Makefile](https://github.com/atc0005/check-mail/workflows/Lint%20and%20Build%20using%20Makefile/badge.svg)](https://github.com/atc0005/check-mail/actions?query=workflow%3A%22Lint+and+Build+using+Makefile%22)
 [![Quick Validation](https://github.com/atc0005/check-mail/workflows/Quick%20Validation/badge.svg)](https://github.com/atc0005/check-mail/actions?query=workflow%3A%22Quick+Validation%22)
 
-- [Check Mail](#check-mail)
-  - [Project home](#project-home)
-  - [Overview](#overview)
-  - [Features](#features)
-    - [`check_imap_mailbox`](#check_imap_mailbox)
-    - [`list-emails`](#list-emails)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
-  - [Configuration Options](#configuration-options)
-    - [Command-line Arguments](#command-line-arguments)
-  - [Examples](#examples)
-    - [As a Nagios plugin](#as-a-nagios-plugin)
-    - [Output](#output)
-      - [Login failure](#login-failure)
-      - [Help Output](#help-output)
-  - [License](#license)
-  - [References](#references)
+<!-- omit in toc -->
+## Table of contents
+
+- [Project home](#project-home)
+- [Overview](#overview)
+- [Features](#features)
+  - [`check_imap_mailbox`](#check_imap_mailbox)
+  - [`list-emails`](#list-emails)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration Options](#configuration-options)
+  - [Command-line Arguments](#command-line-arguments)
+- [Examples](#examples)
+  - [As a Nagios plugin](#as-a-nagios-plugin)
+  - [Output](#output)
+    - [Login failure](#login-failure)
+    - [Help Output](#help-output)
+- [License](#license)
+- [References](#references)
 
 ## Project home
 
