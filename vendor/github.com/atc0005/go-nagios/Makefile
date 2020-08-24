@@ -5,11 +5,12 @@
 # Licensed under the MIT License. See LICENSE file in the project root for
 # full license information.
 
-SHELL = /bin/bash
-
+# REFERENCES
+#
 # https://github.com/golangci/golangci-lint#install
 # https://github.com/golangci/golangci-lint/releases/latest
-GOLANGCI_LINT_VERSION		= v1.27.0
+
+SHELL = /bin/bash
 
 BUILDCMD				=	go build -mod=vendor ./...
 GOCLEANCMD				=	go clean -mod=vendor ./...
@@ -41,8 +42,8 @@ lintinstall:
 	@echo "Explicitly enabling Go modules mode per command"
 	(cd; GO111MODULE="on" go get honnef.co/go/tools/cmd/staticcheck)
 
-	@echo Installing golangci-lint ${GOLANGCI_LINT_VERSION} per official binary installation docs ...
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin ${GOLANGCI_LINT_VERSION}
+	@echo Installing latest stable golangci-lint version per official installation script ...
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin
 	golangci-lint --version
 
 	@echo "Finished updating linting tools"
