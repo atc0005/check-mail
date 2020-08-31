@@ -26,7 +26,33 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
-## [v0.3.1] - 2020-8-23
+## [v0.4.0] - 2020-8-31
+
+### Added
+
+- Add initial "framework workflow"
+  - `ExitState` type with `ReturnCheckResults` method
+    - used to process and return all applicable check results to Nagios for
+      further processing/display
+    - supports "branding" callback function to display application name,
+      version, or other information as a "trailer" for check results provided
+      to Nagios
+      - this could be useful for identifying what version of a plugin
+        determined the service or host state to be an issue
+  - README
+    - extend examples to reflect new type/method
+
+### Changed
+
+- GoDoc coverage
+  - simple example retained, reader referred to README for further examples
+
+### Fixed
+
+- GitHub Actions Workflow shallow build depth
+- `YYYY-MM-DD` changelog version entries
+
+## [v0.3.1] - 2020-08-23
 
 ### Added
 
@@ -143,7 +169,8 @@ Initial package state
 
 - Nagios state map
 
-[Unreleased]: https://github.com/atc0005/go-nagios/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/atc0005/go-nagios/compare/v0.4.0...HEAD
+[v0.4.0]: https://github.com/atc0005/go-nagios/releases/tag/v0.4.0
 [v0.3.1]: https://github.com/atc0005/go-nagios/releases/tag/v0.3.1
 [v0.3.0]: https://github.com/atc0005/go-nagios/releases/tag/v0.3.0
 [v0.2.0]: https://github.com/atc0005/go-nagios/releases/tag/v0.2.0
