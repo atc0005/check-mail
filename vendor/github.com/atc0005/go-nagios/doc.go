@@ -14,6 +14,12 @@ See our GitHub repo (https://github.com/atc0005/go-nagios) for the latest
 code, to file an issue or submit improvements for review and potential
 inclusion into the project.
 
+FEATURES
+
+• Nagios state labels (e.g., `StateOKLabel`), state exit codes (e.g., `StateOKExitCode`)
+
+• `ExitState` type with `ReturnCheckResults` method used to process and return all applicable check results to Nagios for further processing/display
+
 HOW TO USE
 
 Assuming that you're using Go Modules
@@ -37,6 +43,8 @@ package:
     os.Exit(nagios.StateOK)
 
 When you next build your package this one should be pulled in.
+
+See the README for this project for further examples.
 
 */
 package nagios
