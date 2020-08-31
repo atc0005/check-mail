@@ -79,6 +79,21 @@ type Config struct {
 	EmitBranding bool
 }
 
+// Version emits application name, version and repo location.
+func Version() string {
+	return fmt.Sprintf("%s %s (%s)", myAppName, version, myAppURL)
+}
+
+// Branding accepts a message and returns a function that concatenates that
+// message with version information. This function is intended to be called as
+// a final step before application exit after any other output has already
+// been emitted.
+func Branding(msg string) func() string {
+	return func() string {
+		return strings.Join([]string{msg, Version()}, "")
+	}
+}
+
 // Validate verifies all Config struct fields have been provided acceptable
 // values.
 func (c Config) Validate() error {
