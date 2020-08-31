@@ -26,6 +26,17 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.2.4] - 2020-8-31
+
+### Changes
+
+- Dependencies
+  - upgrade `atc0005/go-nagios`
+    - `v0.3.1` to `v0.4.0`
+
+- Integration changes to replace custom check results handling with
+  functionality provided by `v0.4.0` of the `atc0005/go-nagios` package
+
 ## [v0.2.3] - 2020-08-23
 
 ### Added
@@ -224,7 +235,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.4...HEAD
+[v0.2.4]: https://github.com/atc0005/check-mail/releases/tag/v0.2.4
 [v0.2.3]: https://github.com/atc0005/check-mail/releases/tag/v0.2.3
 [v0.2.2]: https://github.com/atc0005/check-mail/releases/tag/v0.2.2
 [v0.2.1]: https://github.com/atc0005/check-mail/releases/tag/v0.2.1
