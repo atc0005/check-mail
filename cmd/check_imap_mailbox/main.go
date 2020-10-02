@@ -37,6 +37,9 @@ func main() {
 		ExitStatusCode: nagios.StateOKExitCode,
 	}
 
+	// defer this from the start so it is the last deferred function to run
+	defer nagiosExitState.ReturnCheckResults()
+
 	// Setup configuration by parsing user-provided flags
 	cfg := config.Config{}
 
@@ -50,7 +53,7 @@ func main() {
 		)
 		nagiosExitState.LastError = err
 		nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
-		nagiosExitState.ReturnCheckResults()
+		return
 	}
 
 	if cfg.EmitBranding {
@@ -85,7 +88,7 @@ func main() {
 			nagios.StateCRITICALLabel,
 		)
 		nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
-		nagiosExitState.ReturnCheckResults()
+		return
 	}
 
 	server := fmt.Sprintf("%s:%d", cfg.Server, cfg.Port)
@@ -101,7 +104,7 @@ func main() {
 			server,
 		)
 		nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
-		nagiosExitState.ReturnCheckResults()
+		return
 	}
 	log.Debug().Msg("Connected")
 
@@ -114,7 +117,7 @@ func main() {
 			nagios.StateCRITICALLabel,
 		)
 		nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
-		nagiosExitState.ReturnCheckResults()
+		return
 	}
 	log.Debug().Msg("Logged in")
 
@@ -137,14 +140,14 @@ func main() {
 				nagios.StateWARNINGLabel,
 			)
 			nagiosExitState.ExitStatusCode = nagios.StateWARNINGExitCode
-			nagiosExitState.ReturnCheckResults()
+			return
 		}
 	}(cfg.Username)
 
 	// Generate background job to list mailboxes, send down channel until done
 	mailboxes := make(chan *imap.MailboxInfo, 10)
 	done := make(chan error, 1)
-	// TODO: Aside from app exit, what shuts down this goroutine?
+	// NOTE: This goroutine shuts down once c.List() finishes its work
 	go func() {
 		log.Debug().Msg("Running c.List() to fetch a list of available mailboxes")
 		done <- c.List("", "*", mailboxes)
@@ -156,11 +159,6 @@ func main() {
 		mailboxesList = append(mailboxesList, m.Name)
 	}
 
-	// At this point we are finished with the done channel? At what point
-	// should we *move on* after wrapping up our use of the channel? The
-	// official README "client" example shows checking the channel results
-	// *after* ranging over it, so presumably it doesn't need to be checked
-	// upfront? Why is this?
 	if err := <-done; err != nil {
 		log.Error().Err(err).Msg("Error occurred listing mailboxes")
 		nagiosExitState.LastError = err
@@ -169,7 +167,7 @@ func main() {
 			nagios.StateCRITICALLabel,
 		)
 		nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
-		nagiosExitState.ReturnCheckResults()
+		return
 	}
 
 	log.Debug().Msg("no errors encountered listing mailboxes")
@@ -220,7 +218,7 @@ func main() {
 				nagios.StateCRITICALLabel,
 			)
 			nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
-			nagiosExitState.ReturnCheckResults()
+			return
 		}
 
 	}
@@ -246,7 +244,7 @@ func main() {
 				folder,
 			)
 			nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
-			nagiosExitState.ReturnCheckResults()
+			return
 		}
 
 		log.Debug().Str("mailbox", folder).Msgf("Mailbox flags: %v", mailbox.Flags)
@@ -275,7 +273,7 @@ func main() {
 			results.MessagesFoundSummary(),
 		)
 		nagiosExitState.ExitStatusCode = nagios.StateWARNINGExitCode
-		nagiosExitState.ReturnCheckResults()
+		return
 	}
 
 	// Give the all clear: no mail was found
@@ -288,5 +286,6 @@ func main() {
 		cfg.Folders.String(),
 	)
 	nagiosExitState.ExitStatusCode = nagios.StateOKExitCode
+	// implied return here :)
 
 }
