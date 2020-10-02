@@ -95,27 +95,29 @@ type ExitState struct {
 	BrandingCallback ExitCallBackFunc
 }
 
-// ReturnCheckResults is intended to be called with the defer keyword.
+// ReturnCheckResults is intended to provide a reliable way to return a
+// desired exit code from applications used as Nagios plugins. In most cases,
+// this method should be registered as the first deferred function in client
+// code.
 //
-// Nagios relies on plugin exit codes to determine success/failure of checks;
-// in order to safely apply a final exit code without halting normal program
-// execution the defer keyword is used to allow this function to execute after
-// normal program execution completes.
-//
-// The approach that is most often used with other languages is to use
+// Since Nagios relies on plugin exit codes to determine success/failure of
+// checks, the approach that is most often used with other languages is to use
 // something like Using os.Exit() directly and force an early exit of the
 // application with an explicit exit code. Using os.Exit() directly in Go does
-// not run deferred functions; other Go-based plugins that do not rely on
-// deferring function calls may get away with using os.Exit(), but introducing
-// new dependencies could introduce problems.
+// not run deferred functions. Go-based plugins that do not rely on deferring
+// function calls may be able to use os.Exit(), but introducing new
+// dependencies later could introduce problems if those dependencies rely on
+// deferring functions.
 //
-// We attempt to explicitly allow deferred functions to work as intended
-// by queuing up values as the app runs and then have this block of code
-// scheduled (deferred) to process those queued values, including the
-// intended plugin exit state. Since this codeblock runs as the last step
-// in the application, it can safely call os.Exit() to set the desired
-// exit code without blocking other deferred functions from running.
-func (es ExitState) ReturnCheckResults() {
+// Before calling this method, client code should first set appropriate field
+// values on the receiver. When called, this method will process them and exit
+// with the desired exit code and status output.
+//
+// To repeat, if scheduled via defer, this method should be registered first;
+// because this method calls os.Exit to set the intended plugin exit state, no
+// other deferred functions will have an opportunity to run, so register this
+// method first so that when deferred, it will be run last (FILO).
+func (es *ExitState) ReturnCheckResults() {
 
 	// ##################################################################
 	// Note: fmt.Println() has the same issue as `\n`: Nagios seems to
@@ -142,13 +144,32 @@ func (es ExitState) ReturnCheckResults() {
 
 		if es.LongServiceOutput != "" {
 
-			fmt.Printf(
-				"%s**THRESHOLDS**%s%s",
-				CheckOutputEOL, CheckOutputEOL, CheckOutputEOL,
-			)
+			fmt.Printf("%s**THRESHOLDS**%s", CheckOutputEOL, CheckOutputEOL)
 
-			fmt.Printf("* %v%s", es.CriticalThreshold, CheckOutputEOL)
-			fmt.Printf("* %v%s", es.WarningThreshold, CheckOutputEOL)
+			if es.CriticalThreshold != "" || es.WarningThreshold != "" {
+
+				fmt.Print(CheckOutputEOL)
+
+				if es.CriticalThreshold != "" {
+					fmt.Printf(
+						"* %s: %v%s",
+						StateCRITICALLabel,
+						es.CriticalThreshold,
+						CheckOutputEOL,
+					)
+				}
+
+				if es.WarningThreshold != "" {
+					fmt.Printf(
+						"* %s: %v%s",
+						StateWARNINGLabel,
+						es.WarningThreshold,
+						CheckOutputEOL,
+					)
+				}
+			} else {
+				fmt.Printf("%s* Not specified%s", CheckOutputEOL, CheckOutputEOL)
+			}
 
 			fmt.Printf("%s**DETAILED INFO**%s", CheckOutputEOL, CheckOutputEOL)
 
@@ -156,7 +177,12 @@ func (es ExitState) ReturnCheckResults() {
 			// interpret them literally instead of emitting an actual newline.
 			// We work around that by using fmt.Printf() for output that is
 			// intended for display within the Nagios web UI.
-			fmt.Printf("%v%s", es.LongServiceOutput, CheckOutputEOL)
+			fmt.Printf(
+				"%s%v%s",
+				CheckOutputEOL,
+				es.LongServiceOutput,
+				CheckOutputEOL,
+			)
 		}
 
 	}
