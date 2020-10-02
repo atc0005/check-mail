@@ -116,41 +116,40 @@ import (
 )
 ```
 
-then in your code, create an instance of `ExitState` and populate with
-applicable values. This is usually at the point when a significant event has
-occurred and you're now ready to return the results to Nagios for processing.
+then in your code, create an instance of `ExitState` and immediately defer
+`ReturnCheckResults()`. If you don't, any other deferred functions *will not
+run*.
+
 Here we're optimistic and we are going to note that all went well.
 
 ```golang
 
-    serviceOutput := certs.OneLineCheckSummary(
+    var nagiosExitState = nagios.ExitState{
+        LastError:         nil,
+        ExitStatusCode:    nagios.StateOKExitCode,
+    }
+
+    defer nagiosExitState.ReturnCheckResults()
+
+    // more stuff here
+
+    nagiosExitState.ServiceOutput = certs.OneLineCheckSummary(
         nagios.StateOKLabel,
         certChain,
         certsSummary.Summary,
     )
 
-    longServiceOutput := certs.GenerateCertsReport(
+    nagiosExitState.LongServiceOutput := certs.GenerateCertsReport(
         certChain,
         certsExpireAgeCritical,
         certsExpireAgeWarning,
     )
 
-    var nagiosExitState = nagios.ExitState{
-        LastError:         nil,
-        ExitStatusCode:    nagios.StateOKExitCode,
-        ServiceOutput:     serviceOutput,
-        LongServiceOutput: longServiceOutput,
-    }
 ```
 
-once all required and desired fields are setup, return the results to Nagios:
-
-```golang
-
-    // ...
-    nagiosExitState.ReturnCheckResults()
-
-```
+For handling error cases, the approach is roughly the same, only you call
+`return` explicitly to end execution of the client code and allow deferred
+functions to run.
 
 ### Use `ReturnCheckResults` method with a branding callback
 
@@ -177,6 +176,13 @@ opted to emit branding information.
 
 ```golang
 func main() {
+
+    var nagiosExitState = nagios.ExitState{
+        LastError:         nil,
+        ExitStatusCode:    nagios.StateOKExitCode,
+    }
+
+    defer nagiosExitState.ReturnCheckResults()
 
     // ...
 
@@ -209,7 +215,12 @@ but you could just as easily create an anonymous function as the callback:
 ```golang
 func main() {
 
-    // ...
+    var nagiosExitState = nagios.ExitState{
+        LastError:         nil,
+        ExitStatusCode:    nagios.StateOKExitCode,
+    }
+
+    defer nagiosExitState.ReturnCheckResults()
 
     if config.EmitBranding {
         // If enabled, show application details at end of notification
@@ -223,15 +234,6 @@ func main() {
     // ...
 
 }
-```
-
-and then once everything is setup, return the results to Nagios:
-
-```golang
-
-    // ...
-    nagiosExitState.ReturnCheckResults()
-
 ```
 
 ## License
