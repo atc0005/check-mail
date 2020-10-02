@@ -5,14 +5,32 @@
 // Licensed under the MIT License. See LICENSE file in the project root for
 // full license information.
 
-package main
+package config
 
 import (
+	"flag"
 	"fmt"
+	"os"
 	"strings"
 
-	"github.com/atc0005/check-mail/logging"
+	"github.com/atc0005/check-mail/internal/logging"
 )
+
+// Updated via Makefile builds. Setting placeholder value here so that
+// something resembling a version string will be provided for non-Makefile
+// builds.
+var version string = "x.y.z"
+
+const myAppName string = "check_imap_mailbox"
+const myAppURL string = "https://github.com/atc0005/check-mail"
+
+// Usage is a custom override for the default Help text provided by the flag
+// package. Here we prepend some additional metadata to the existing output.
+var Usage = func() {
+	fmt.Fprintf(flag.CommandLine.Output(), "%s %s\n%s\n\n", myAppName, version, myAppURL)
+	fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
+	flag.PrintDefaults()
+}
 
 // multiValueFlag is a custom type that satisfies the flag.Value interface in
 // order to accept multiple values for some of our flags.
@@ -92,6 +110,17 @@ func Branding(msg string) func() string {
 	return func() string {
 		return strings.Join([]string{msg, Version()}, "")
 	}
+}
+
+// New is a factory function that produces a new Config object based on user
+// provided flag and config file values.
+func New() (*Config, error) {
+	var config Config
+
+	config.handleFlagsConfig()
+
+	return &config, nil
+
 }
 
 // Validate verifies all Config struct fields have been provided acceptable
