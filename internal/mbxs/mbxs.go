@@ -5,28 +5,28 @@
 // Licensed under the MIT License. See LICENSE file in the project root for
 // full license information.
 
-package main
+package mbxs
 
 import (
 	"fmt"
 	"strings"
 )
 
-// mailboxCheckResult notes how many mail items were found for a specific
+// MailboxCheckResult notes how many mail items were found for a specific
 // mailbox
-type mailboxCheckResult struct {
-	mailboxName string
-	itemsFound  int
+type MailboxCheckResult struct {
+	MailboxName string
+	ItemsFound  int
 }
 
-// mailboxCheckResults represents a collection of all results from mailbox
+// MailboxCheckResults represents a collection of all results from mailbox
 // checks.
-type mailboxCheckResults []mailboxCheckResult
+type MailboxCheckResults []MailboxCheckResult
 
 // GotMail returns true if mail was found in checked mailboxes or false if not.
-func (mcr mailboxCheckResults) GotMail() bool {
+func (mcr MailboxCheckResults) GotMail() bool {
 	for _, result := range mcr {
-		if result.itemsFound > 0 {
+		if result.ItemsFound > 0 {
 			return true
 		}
 	}
@@ -35,20 +35,20 @@ func (mcr mailboxCheckResults) GotMail() bool {
 
 // TotalMessagesFound returns a count of all messages found across all checked
 // mailboxes.
-func (mcr mailboxCheckResults) TotalMessagesFound() int {
+func (mcr MailboxCheckResults) TotalMessagesFound() int {
 	var total int
 	for _, result := range mcr {
-		total += result.itemsFound
+		total += result.ItemsFound
 	}
 	return total
 }
 
 // MessagesFoundSummary returns a one-line summary of the mail items found in
 // checked mailboxes.
-func (mcr mailboxCheckResults) MessagesFoundSummary() string {
+func (mcr MailboxCheckResults) MessagesFoundSummary() string {
 	var summary string
 	for index, result := range mcr {
-		summary += fmt.Sprintf("%s(%d)", result.mailboxName, result.itemsFound)
+		summary += fmt.Sprintf("%s(%d)", result.MailboxName, result.ItemsFound)
 		if index < (len(mcr) - 1) {
 			// Append separator chars if not processing the last index item
 			summary += ", "
