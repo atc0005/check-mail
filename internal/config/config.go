@@ -114,12 +114,12 @@ func Branding(msg string) func() string {
 
 // New is a factory function that produces a new Config object based on user
 // provided flag and config file values.
-func New() (*Config, error) {
+func New() *Config {
 	var config Config
 
 	config.handleFlagsConfig()
 
-	return &config, nil
+	return &config
 
 }
 
