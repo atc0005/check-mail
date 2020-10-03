@@ -56,14 +56,18 @@ The following types of changes will be recorded in this file:
 
 - Move `config`, `mailboxes` code into subpackages
 
-- `ReturnNagiosResults` not deferred in correct orderdeferred first, allowed
-  to run last (as intended) to handle setting final exit code
+- `ReturnNagiosResults` deferred first, allowed to run last (as intended) to
+  handle setting final exit code
+  - this was changed to match new functionality added in `atc0005/go-nagios`
+    dependency
 
 ### Fixed
 
 - Makefile build options do not generate static binaries
 - Typo in CHANGELOG release date format
 - Makefile generates checksums with qualified path
+- Failure to initialize application configuration at startup; "Error
+  validating configuration: one or more folders not provided" message printed
 
 ## [v0.2.4] - 2020-08-31
 
