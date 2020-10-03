@@ -41,7 +41,7 @@ func main() {
 	defer nagiosExitState.ReturnCheckResults()
 
 	// Setup configuration by parsing user-provided flags
-	cfg := config.Config{}
+	cfg := config.New()
 
 	if err := cfg.Validate(); err != nil {
 		// We're using the standalone Err function from rs/zerolog/log as we
