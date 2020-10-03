@@ -26,7 +26,46 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
-## [v0.2.4] - 2020-8-31
+## [v0.2.5] - 2020-10-03
+
+### Added
+
+- First (limited) binary release
+  - built using Go 1.15.2
+    - see GH-94 and GH-95
+  - windows
+    - x86
+    - x64
+  - linux
+    - x86
+    - x64
+
+### Changed
+
+- Dependencies
+  - built using Go 1.15.2
+    - see GH-94 and GH-95
+  - `atc0005/go-nagios`
+    - `v0.4.0` to `v0.5.1`
+  - `rs/zerolog`
+    - `v1.19.0` to `v1.20.0`
+  - `actions/checkout`
+    - `v2.3.2` to `v2.3.3`
+  - `actions/setup-node`
+    - `v2.1.1` to `v2.1.2`
+
+- Move `config`, `mailboxes` code into subpackages
+
+- `ReturnNagiosResults` not deferred in correct orderdeferred first, allowed
+  to run last (as intended) to handle setting final exit code
+
+### Fixed
+
+- Makefile build options do not generate static binaries
+- Typo in CHANGELOG release date format
+- Makefile generates checksums with qualified path
+
+## [v0.2.4] - 2020-08-31
 
 ### Changes
 
@@ -235,7 +274,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.5...HEAD
+[v0.2.5]: https://github.com/atc0005/check-mail/releases/tag/v0.2.5
 [v0.2.4]: https://github.com/atc0005/check-mail/releases/tag/v0.2.4
 [v0.2.3]: https://github.com/atc0005/check-mail/releases/tag/v0.2.3
 [v0.2.2]: https://github.com/atc0005/check-mail/releases/tag/v0.2.2
