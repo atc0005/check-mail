@@ -83,7 +83,7 @@ VERSION 				= $(shell git describe --always --long --dirty)
 #	explicitly disable use of cgo
 #	removes potential need for linkage against local c library (e.g., glibc)
 # BUILDCMD				=	go build -mod=vendor -tags 'osusergo,netgo' -a -ldflags "-extldflags '-static' -s -w -X $(VERSION_VAR_PKG).version=$(VERSION)"
-BUILDCMD				=	CGO_ENABLED=0 go build -mod=vendor -a -ldflags "-s -w -X $(VERSION_VAR_PKG).version=$(VERSION)"
+BUILDCMD				=	CGO_ENABLED=0 go build -trimpath -mod=vendor -a -ldflags "-s -w -X $(VERSION_VAR_PKG).version=$(VERSION)"
 
 GOCLEANCMD				=	go clean -mod=vendor ./...
 GITCLEANCMD				= 	git clean -xfd
