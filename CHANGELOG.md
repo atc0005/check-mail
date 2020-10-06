@@ -26,6 +26,22 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.2.6] - 2020-10-06
+
+### Changed
+
+- Add `-trimpath` build flag
+  - intended to help prune verbose/unnecessary details from output
+
+### Fixed
+
+- Makefile build options generate static binaries which *potentially* bundle
+  glibc (LGPL license)
+  - I have been unable to confirm this, so attempting to "play it safe"
+  - the goal is to avoid attaching the LGPL license to this project until I've
+    properly researched and understand the ramifications of doing so for this
+    project, for future forks, etc.
+
 ## [v0.2.5] - 2020-10-03
 
 ### Added
@@ -278,7 +294,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.6...HEAD
+[v0.2.6]: https://github.com/atc0005/check-mail/releases/tag/v0.2.6
 [v0.2.5]: https://github.com/atc0005/check-mail/releases/tag/v0.2.5
 [v0.2.4]: https://github.com/atc0005/check-mail/releases/tag/v0.2.4
 [v0.2.3]: https://github.com/atc0005/check-mail/releases/tag/v0.2.3
