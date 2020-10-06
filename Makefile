@@ -25,6 +25,7 @@
 # https://godoc.org/github.com/golang/go/src/os/user
 # https://github.com/go-gitea/gitea/blob/master/Makefile
 # https://golang.org/src/cmd/cgo/doc.go
+# https://golang.org/cmd/cgo/
 # https://github.com/golang/go/issues/26492
 
 SHELL = /bin/bash
@@ -76,7 +77,13 @@ VERSION 				= $(shell git describe --always --long --dirty)
 #   be specific to the WSL environment used for builds, but since this is a
 #   new issue and and I do not yet know much about this option, I am leaving
 #   it out.
-BUILDCMD				=	go build -mod=vendor -tags 'osusergo,netgo' -a -ldflags "-extldflags '-static' -s -w -X $(VERSION_VAR_PKG).version=$(VERSION)"
+#
+# CGO_ENABLED=0
+#	https://golang.org/cmd/cgo/
+#	explicitly disable use of cgo
+#	removes potential need for linkage against local c library (e.g., glibc)
+# BUILDCMD				=	go build -mod=vendor -tags 'osusergo,netgo' -a -ldflags "-extldflags '-static' -s -w -X $(VERSION_VAR_PKG).version=$(VERSION)"
+BUILDCMD				=	CGO_ENABLED=0 go build -mod=vendor -a -ldflags "-s -w -X $(VERSION_VAR_PKG).version=$(VERSION)"
 
 GOCLEANCMD				=	go clean -mod=vendor ./...
 GITCLEANCMD				= 	git clean -xfd
