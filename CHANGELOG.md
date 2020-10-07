@@ -28,6 +28,9 @@ The following types of changes will be recorded in this file:
 
 ## [v0.2.6] - 2020-10-06
 
+Follow-up binary release built using Go 1.15.2, cgo explicitly disabled. See
+GH-101 for more details.
+
 ### Changed
 
 - Add `-trimpath` build flag
