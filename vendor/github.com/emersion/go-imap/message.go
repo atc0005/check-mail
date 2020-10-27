@@ -119,6 +119,11 @@ func encodeHeader(s string) string {
 	return mime.QEncoding.Encode("utf-8", s)
 }
 
+func stringLowered(i interface{}) (string, bool) {
+	s, ok := i.(string)
+	return strings.ToLower(s), ok
+}
+
 func parseHeaderParamList(fields []interface{}) (map[string]string, error) {
 	params, err := ParseParamList(fields)
 	if err != nil {
@@ -126,8 +131,14 @@ func parseHeaderParamList(fields []interface{}) (map[string]string, error) {
 	}
 
 	for k, v := range params {
+		if lower := strings.ToLower(k); lower != k {
+			delete(params, k)
+			k = lower
+		}
+
 		params[k], _ = decodeHeader(v)
 	}
+
 	return params, nil
 }
 
@@ -326,6 +337,10 @@ func (m *Message) GetBody(section *BodySectionName) Literal {
 
 	for s, body := range m.Body {
 		if section.Equal(s) {
+			if body == nil {
+				// Server can return nil, we need to treat as empty string per RFC 3501
+				body = bytes.NewReader(nil)
+			}
 			return body
 		}
 	}
@@ -659,12 +674,18 @@ func (addr *Address) Parse(fields []interface{}) error {
 	if s, err := ParseString(fields[1]); err == nil {
 		addr.AtDomainList, _ = decodeHeader(s)
 	}
-	if s, err := ParseString(fields[2]); err == nil {
-		addr.MailboxName, _ = decodeHeader(s)
+
+	s, err := ParseString(fields[2])
+	if err != nil {
+		return errors.New("Mailbox name could not be parsed")
 	}
-	if s, err := ParseString(fields[3]); err == nil {
-		addr.HostName, _ = decodeHeader(s)
+	addr.MailboxName, _ = decodeHeader(s)
+
+	s, err = ParseString(fields[3])
+	if err != nil {
+		return errors.New("Host name could not be parsed")
 	}
+	addr.HostName, _ = decodeHeader(s)
 
 	return nil
 }
@@ -691,13 +712,11 @@ func (addr *Address) Format() []interface{} {
 
 // Parse an address list from fields.
 func ParseAddressList(fields []interface{}) (addrs []*Address) {
-	addrs = make([]*Address, len(fields))
-
-	for i, f := range fields {
+	for _, f := range fields {
 		if addrFields, ok := f.([]interface{}); ok {
 			addr := &Address{}
 			if err := addr.Parse(addrFields); err == nil {
-				addrs[i] = addr
+				addrs = append(addrs, addr)
 			}
 		}
 	}
@@ -787,18 +806,32 @@ func (e *Envelope) Parse(fields []interface{}) error {
 
 // Format an envelope to fields.
 func (e *Envelope) Format() (fields []interface{}) {
-	return []interface{}{
-		envelopeDateTime(e.Date),
-		encodeHeader(e.Subject),
+	fields = make([]interface{}, 0, 10)
+	fields = append(fields, envelopeDateTime(e.Date))
+	if e.Subject != "" {
+		fields = append(fields, encodeHeader(e.Subject))
+	} else {
+		fields = append(fields, nil)
+	}
+	fields = append(fields,
 		FormatAddressList(e.From),
 		FormatAddressList(e.Sender),
 		FormatAddressList(e.ReplyTo),
 		FormatAddressList(e.To),
 		FormatAddressList(e.Cc),
 		FormatAddressList(e.Bcc),
-		e.InReplyTo,
-		e.MessageId,
+	)
+	if e.InReplyTo != "" {
+		fields = append(fields, e.InReplyTo)
+	} else {
+		fields = append(fields, nil)
 	}
+	if e.MessageId != "" {
+		fields = append(fields, e.MessageId)
+	} else {
+		fields = append(fields, nil)
+	}
+	return fields
 }
 
 // A body structure.
@@ -897,6 +930,7 @@ func (bs *BodyStructure) Parse(fields []interface{}) error {
 			if disp, ok := fields[end].([]interface{}); ok && len(disp) >= 2 {
 				if s, ok := disp[0].(string); ok {
 					bs.Disposition, _ = decodeHeader(s)
+					bs.Disposition = strings.ToLower(bs.Disposition)
 				}
 				if params, ok := disp[1].([]interface{}); ok {
 					bs.DispositionParams, _ = parseHeaderParamList(params)
@@ -925,8 +959,8 @@ func (bs *BodyStructure) Parse(fields []interface{}) error {
 			return errors.New("Non-multipart body part doesn't have 7 fields")
 		}
 
-		bs.MIMEType, _ = fields[0].(string)
-		bs.MIMESubType, _ = fields[1].(string)
+		bs.MIMEType, _ = stringLowered(fields[0])
+		bs.MIMESubType, _ = stringLowered(fields[1])
 
 		params, _ := fields[2].([]interface{})
 		bs.Params, _ = parseHeaderParamList(params)
@@ -935,7 +969,7 @@ func (bs *BodyStructure) Parse(fields []interface{}) error {
 		if desc, err := ParseString(fields[4]); err == nil {
 			bs.Description, _ = decodeHeader(desc)
 		}
-		bs.Encoding, _ = fields[5].(string)
+		bs.Encoding, _ = stringLowered(fields[5])
 		bs.Size, _ = ParseNumber(fields[6])
 
 		end := 7
@@ -979,6 +1013,7 @@ func (bs *BodyStructure) Parse(fields []interface{}) error {
 			if disp, ok := fields[end].([]interface{}); ok && len(disp) >= 2 {
 				if s, ok := disp[0].(string); ok {
 					bs.Disposition, _ = decodeHeader(s)
+					bs.Disposition = strings.ToLower(bs.Disposition)
 				}
 				if params, ok := disp[1].([]interface{}); ok {
 					bs.DispositionParams, _ = parseHeaderParamList(params)
