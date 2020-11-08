@@ -51,6 +51,9 @@ various plugins and help reduce typos associated with literal strings.
     Nagios
     - this could be useful for identifying what version of a plugin determined
       the service or host state to be an issue
+  - captures panics from client code
+    - surfaces these panics as `CRITICAL` state and overrides service output
+      and error details to make any panics prominent
 
 ## Changelog
 
@@ -274,3 +277,5 @@ SOFTWARE.
 - Go Modules
   - <https://www.ardanlabs.com/blog/2020/04/modules-06-vendoring.html>
   - <https://github.com/golang/go/wiki/Modules>
+- Panics, stack traces
+  - <https://www.golangprograms.com/example-stack-and-caller-from-runtime-package.html>
