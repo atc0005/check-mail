@@ -12,6 +12,7 @@ package nagios
 import (
 	"fmt"
 	"os"
+	"runtime"
 )
 
 // Nagios plugin/service check states. These constants replicate the values
@@ -98,7 +99,7 @@ type ExitState struct {
 // ReturnCheckResults is intended to provide a reliable way to return a
 // desired exit code from applications used as Nagios plugins. In most cases,
 // this method should be registered as the first deferred function in client
-// code.
+// code. See remarks regarding "masking" or "swallowing" application panics.
 //
 // Since Nagios relies on plugin exit codes to determine success/failure of
 // checks, the approach that is most often used with other languages is to use
@@ -117,7 +118,48 @@ type ExitState struct {
 // because this method calls os.Exit to set the intended plugin exit state, no
 // other deferred functions will have an opportunity to run, so register this
 // method first so that when deferred, it will be run last (FILO).
+//
+// Because this method is (or should be) deferred first within client code, it
+// will run after all other deferred functions. It will also run before a
+// panic in client code forces the application to exit. As already noted, this
+// method calls os.Exit to set the plugin exit state. Because os.Exit forces
+// the application to terminate immediately without running other deferred
+// functions or processing panics, this "masks", "swallows" or "blocks" panics
+// from client code from surfacing. This method checks for unhandled panics
+// and if found, overrides exit state details from client code and surfaces
+// details from the panic instead as a CRITICAL state.
 func (es *ExitState) ReturnCheckResults() {
+
+	// Check for unhandled panic in client code. If present, override
+	// ExitState and make clear that the client code/plugin crashed.
+	if err := recover(); err != nil {
+
+		es.LastError = fmt.Errorf("plugin crash/panic detected")
+
+		es.ServiceOutput = fmt.Sprintf(
+			"%s: plugin crash detected. See details via web UI or run plugin manually via CLI.",
+			StateCRITICALLabel,
+		)
+
+		// Gather stack trace associated with panic for display.
+		// NOTE: runtime.Stack *requires* that we preallocate the slice and
+		// with zero values.
+		stackTrace := make([]byte, 512)
+		stackTraceSize := runtime.Stack(stackTrace, false)
+
+		// Using literal `<pre>` tags in an effort to wrap the stack trace
+		// details so that they are not interpreted as formatting characters
+		// when passed through web UI, text, email, Teams, etc.
+		es.LongServiceOutput = fmt.Sprintf(
+			"<pre>%s%s%s</pre>",
+			CheckOutputEOL,
+			stackTrace[0:stackTraceSize],
+			CheckOutputEOL,
+		)
+
+		es.ExitStatusCode = StateCRITICALExitCode
+
+	}
 
 	// ##################################################################
 	// Note: fmt.Println() has the same issue as `\n`: Nagios seems to
