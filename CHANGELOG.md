@@ -26,6 +26,30 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.2.7] - 2020-11-16
+
+### Changed
+
+- Dependencies
+  - built using Go 1.15.5
+    - **Statically linked**
+    - Windows
+      - x86
+      - x64
+    - Linux
+      - x86
+      - x64
+  - `atc0005/go-nagios`
+    - `v0.5.1` to `v0.5.2`
+  - `emersion/go-imap`
+    - `v1.0.5` to `v1.0.6`
+  - `actions/checkout`
+    - `v2.3.3` to `v2.3.4`
+
+### Fixed
+
+- Add additional context to `v0.2.6` release notes
+
 ## [v0.2.6] - 2020-10-06
 
 Follow-up binary release built using Go 1.15.2, cgo explicitly disabled. See
@@ -297,7 +321,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.6...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.7...HEAD
+[v0.2.7]: https://github.com/atc0005/check-mail/releases/tag/v0.2.7
 [v0.2.6]: https://github.com/atc0005/check-mail/releases/tag/v0.2.6
 [v0.2.5]: https://github.com/atc0005/check-mail/releases/tag/v0.2.5
 [v0.2.4]: https://github.com/atc0005/check-mail/releases/tag/v0.2.4
