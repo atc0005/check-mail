@@ -26,6 +26,25 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.2.8] - 2020-11-17
+
+### Overview
+
+- Built using Go 1.15.5
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+- Minor changes overall, mostly setup work for further development.
+
+### Added
+
+- Add version flag
+
+### Changed
+
+- Internal refactoring of config initialization, logging and flags
+
 ## [v0.2.7] - 2020-11-16
 
 ### Changed
@@ -321,7 +340,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.7...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.8...HEAD
+[v0.2.8]: https://github.com/atc0005/check-mail/releases/tag/v0.2.8
 [v0.2.7]: https://github.com/atc0005/check-mail/releases/tag/v0.2.7
 [v0.2.6]: https://github.com/atc0005/check-mail/releases/tag/v0.2.6
 [v0.2.5]: https://github.com/atc0005/check-mail/releases/tag/v0.2.5
