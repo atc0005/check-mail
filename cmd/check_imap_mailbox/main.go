@@ -8,6 +8,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -40,7 +41,13 @@ func main() {
 
 	// Setup configuration by parsing user-provided flags
 	cfg, cfgErr := config.New()
-	if cfgErr != nil {
+	switch {
+	case errors.Is(cfgErr, config.ErrVersionRequested):
+		fmt.Println(config.Version())
+
+		return
+
+	case cfgErr != nil:
 		// We're using the standalone Err function from rs/zerolog/log as we
 		// do not have a working configuration.
 		zlog.Err(cfgErr).Msg("Error initializing application")
@@ -50,8 +57,8 @@ func main() {
 		)
 		nagiosExitState.LastError = cfgErr
 		nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
-		return
 
+		return
 	}
 
 	if cfg.EmitBranding {

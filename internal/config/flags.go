@@ -18,6 +18,7 @@ func (c *Config) handleFlagsConfig() {
 	flag.IntVar(&c.Port, "port", defaultPort, portFlagHelp)
 	flag.StringVar(&c.LoggingLevel, "log-level", defaultLoggingLevel, loggingLevelFlagHelp)
 	flag.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
+	flag.BoolVar(&c.ShowVersion, "version", defaultDisplayVersionAndExit, versionFlagHelp)
 
 	// Allow our function to override the default Help output
 	flag.Usage = Usage

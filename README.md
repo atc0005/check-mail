@@ -119,6 +119,7 @@ Tested using:
 | `port`          | No       | `993`          | No     | *valid IMAP TCP port*                                                   | TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections.                                                                  |
 | `logging-level` | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                             |
 | `branding`      | No       | `false`        | No     | `true`, `false`                                                         | Toggles emission of branding details with plugin status details. Because this output may not mix well with branding information emitted by other tools, this output is disabled by default. |
+| `version`       | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                |
 
 ## Examples
 
@@ -176,6 +177,8 @@ Usage of ./check_imap_mailbox:
         The fully-qualified domain name of the remote mail server.
   -username string
         The account used to login to the remote mail server. This is often in the form of an email address.
+  -version
+        Whether to display application version and then immediately exit application.
 ```
 
 ## License

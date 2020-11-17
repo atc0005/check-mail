@@ -8,6 +8,7 @@
 package config
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -22,7 +23,7 @@ import (
 // builds.
 var version string = "x.y.z"
 
-const myAppName string = "check_imap_mailbox"
+const myAppName string = "check-mail"
 const myAppURL string = "https://github.com/atc0005/check-mail"
 
 // Usage is a custom override for the default Help text provided by the flag
@@ -32,6 +33,10 @@ var Usage = func() {
 	fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
 	flag.PrintDefaults()
 }
+
+// ErrVersionRequested indicates that the user requested application version
+// information
+var ErrVersionRequested = errors.New("version information requested")
 
 // multiValueFlag is a custom type that satisfies the flag.Value interface in
 // order to accept multiple values for some of our flags.
@@ -97,6 +102,10 @@ type Config struct {
 	// their own branding output.
 	EmitBranding bool
 
+	// ShowVersion is a flag indicating whether the user opted to display only
+	// the version string and then immediately exit the application.
+	ShowVersion bool
+
 	// Log is an embedded zerolog Logger initialized via config.New().
 	Log zerolog.Logger
 }
@@ -124,6 +133,10 @@ func New() (*Config, error) {
 	var config Config
 
 	config.handleFlagsConfig()
+
+	if config.ShowVersion {
+		return nil, ErrVersionRequested
+	}
 
 	if err := config.validate(); err != nil {
 		return nil, fmt.Errorf("configuration validation failed: %w", err)
