@@ -16,14 +16,16 @@ const (
 	portFlagHelp         string = "TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections."
 	loggingLevelFlagHelp string = "Sets log level to one of disabled, panic, fatal, error, warn, info, debug or trace."
 	emitBrandingFlagHelp string = "Toggles emission of branding details with plugin status details. This output is disabled by default."
+	versionFlagHelp      string = "Whether to display application version and then immediately exit application."
 )
 
 // Default flag settings if not overridden by user input
 const (
-	defaultLoggingLevel string = "info"
-	defaultEmitBranding bool   = false
-	defaultPort         int    = 993
-	defaultServer       string = ""
-	defaultPassword     string = ""
-	defaultUsername     string = ""
+	defaultLoggingLevel          string = "info"
+	defaultEmitBranding          bool   = false
+	defaultPort                  int    = 993
+	defaultServer                string = ""
+	defaultPassword              string = ""
+	defaultUsername              string = ""
+	defaultDisplayVersionAndExit bool   = false
 )
