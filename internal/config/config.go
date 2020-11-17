@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/atc0005/check-mail/internal/logging"
+	"github.com/rs/zerolog"
 )
 
 // Updated via Makefile builds. Setting placeholder value here so that
@@ -95,6 +96,9 @@ type Config struct {
 	// output from other tools such as atc0005/send2teams which also insert
 	// their own branding output.
 	EmitBranding bool
+
+	// Log is an embedded zerolog Logger initialized via config.New().
+	Log zerolog.Logger
 }
 
 // Version emits application name, version and repo location.
@@ -113,19 +117,48 @@ func Branding(msg string) func() string {
 }
 
 // New is a factory function that produces a new Config object based on user
-// provided flag and config file values.
-func New() *Config {
+// provided flag and config file values. It is responsible for validating
+// user-provided values and initializing the logging settings used by this
+// application.
+func New() (*Config, error) {
 	var config Config
 
 	config.handleFlagsConfig()
 
-	return &config
+	if err := config.validate(); err != nil {
+		return nil, fmt.Errorf("configuration validation failed: %w", err)
+	}
+
+	// Note: Nagios doesn't look at stderr, only stdout. We have to make sure
+	// that only whatever output is meant for consumption is emitted to stdout
+	// and whatever is meant for troubleshooting is sent to stderr. To help
+	// keep these two goals separate (and because Nagios doesn't really do
+	// anything special with JSON output from plugins), we use stdlib fmt
+	// package output functions for Nagios via stdout and logging package for
+	// troubleshooting via stderr.
+	//
+	// Also, set common fields here so that we don't have to repeat them
+	// explicitly later. This will hopefully help to standardize the log
+	// messages to make them easier to search through later when
+	// troubleshooting.
+	config.Log = zerolog.New(os.Stderr).With().Caller().
+		Str("version", Version()).
+		Str("username", config.Username).
+		Str("server", config.Server).
+		Int("port", config.Port).
+		Str("folders_to_check", config.Folders.String()).Logger()
+
+	if err := logging.SetLoggingLevel(config.LoggingLevel); err != nil {
+		return nil, err
+	}
+
+	return &config, nil
 
 }
 
 // Validate verifies all Config struct fields have been provided acceptable
 // values.
-func (c Config) Validate() error {
+func (c Config) validate() error {
 
 	if c.Folders == nil {
 		return fmt.Errorf("one or more folders not provided")
