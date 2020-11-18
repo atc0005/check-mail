@@ -178,15 +178,7 @@ func main() {
 		}
 
 		cfg.Log.Debug().Str("mailbox", folder).Msg("Performing case-sensitive validation")
-		if textutils.InList(folder, mailboxesList, false) {
-
-			// At this point we have confirmed that the requested folder to
-			// monitor is in the list of folders found on the server
-			cfg.Log.Debug().Str("mailbox", folder).Bool("found", true).Msg("")
-			validatedMailboxesList = append(validatedMailboxesList, folder)
-
-		} else {
-
+		if !textutils.InList(folder, mailboxesList, false) {
 			cfg.Log.Error().Str("mailbox", folder).Bool("found", false).Msg("")
 			nagiosExitState.LastError = fmt.Errorf("mailbox not found: %q", folder)
 			nagiosExitState.ServiceOutput = fmt.Sprintf(
@@ -194,8 +186,14 @@ func main() {
 				nagios.StateCRITICALLabel,
 			)
 			nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
+
 			return
 		}
+
+		// At this point we have confirmed that the requested folder to
+		// monitor is in the list of folders found on the server
+		cfg.Log.Debug().Str("mailbox", folder).Bool("found", true).Msg("")
+		validatedMailboxesList = append(validatedMailboxesList, folder)
 
 	}
 
