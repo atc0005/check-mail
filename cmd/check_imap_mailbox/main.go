@@ -106,9 +106,9 @@ func main() {
 	// run AND that we'll have an opportunity to report those logout issues as
 	// this application exits.
 	defer func(accountName string) {
-		cfg.Log.Debug().Msg("Logging out")
+		cfg.Log.Debug().Msgf("%s: Logging out", accountName)
 		if err := c.Logout(); err != nil {
-			cfg.Log.Error().Err(err).Msg("")
+			cfg.Log.Error().Err(err).Msgf("%s: Failed to log out", accountName)
 			nagiosExitState.LastError = err
 			nagiosExitState.ServiceOutput = fmt.Sprintf(
 				"%s: Error logging out",
@@ -117,6 +117,7 @@ func main() {
 			nagiosExitState.ExitStatusCode = nagios.StateWARNINGExitCode
 			return
 		}
+		cfg.Log.Debug().Msgf("%s: Logged out", accountName)
 	}(cfg.Username)
 
 	// Generate background job to list mailboxes, send down channel until done
