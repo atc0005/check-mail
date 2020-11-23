@@ -26,6 +26,30 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.2.9] - 2020-11-23
+
+### Overview
+
+- Built using Go 1.15.5
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+- Minor refactoring
+- Minor code polish
+
+### Changed
+
+- Update Nagios plugin to support checking multiple accounts
+  - this isn't currently exposed (via command-line flags or otherwise)
+  - this was added to support upcoming inclusion of the `list-emails`
+    application which will process accounts in bulk
+
+### Fixed
+
+- Minor "happy path" fix
+- Update logging for deferred logout step
+
 ## [v0.2.8] - 2020-11-17
 
 ### Overview
@@ -340,7 +364,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.8...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.9...HEAD
+[v0.2.9]: https://github.com/atc0005/check-mail/releases/tag/v0.2.9
 [v0.2.8]: https://github.com/atc0005/check-mail/releases/tag/v0.2.8
 [v0.2.7]: https://github.com/atc0005/check-mail/releases/tag/v0.2.7
 [v0.2.6]: https://github.com/atc0005/check-mail/releases/tag/v0.2.6
