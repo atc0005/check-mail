@@ -9,21 +9,34 @@ package config
 
 import "flag"
 
-func (c *Config) handleFlagsConfig() {
+func (c *Config) handleFlagsConfig(acceptConfigFile bool) {
 
-	flag.Var(&c.Folders, "folders", foldersFlagHelp)
-	flag.StringVar(&c.Username, "username", defaultUsername, usernameFlagHelp)
-	flag.StringVar(&c.Password, "password", defaultPassword, passwordFlagHelp)
-	flag.StringVar(&c.Server, "server", defaultServer, serverFlagHelp)
-	flag.IntVar(&c.Port, "port", defaultPort, portFlagHelp)
-	flag.StringVar(&c.LoggingLevel, "log-level", defaultLoggingLevel, loggingLevelFlagHelp)
-	flag.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
+	var account MailAccount
+
+	// shared flags
 	flag.BoolVar(&c.ShowVersion, "version", defaultDisplayVersionAndExit, versionFlagHelp)
+	flag.StringVar(&c.LoggingLevel, "log-level", defaultLoggingLevel, loggingLevelFlagHelp)
+
+	// currently only applies to Nagios plugin
+	if !acceptConfigFile {
+		flag.Var(&account.Folders, "folders", foldersFlagHelp)
+		flag.StringVar(&account.Username, "username", defaultUsername, usernameFlagHelp)
+		flag.StringVar(&account.Password, "password", defaultPassword, passwordFlagHelp)
+		flag.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
+		flag.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
+		flag.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
+	}
 
 	// Allow our function to override the default Help output
 	flag.Usage = Usage
 
 	// parse flag definitions from the argument list
 	flag.Parse()
+
+	// if CLI-provided values were given then record those as an entry in the
+	// list
+	if !acceptConfigFile {
+		c.Accounts = append(c.Accounts, account)
+	}
 
 }
