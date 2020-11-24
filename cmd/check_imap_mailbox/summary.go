@@ -31,9 +31,8 @@ func setSummary(accounts []config.MailAccount, nes *nagios.ExitState) {
 	}
 
 	nes.ServiceOutput = fmt.Sprintf(
-		"%s: %s: No messages found in specified folders for accounts: %v",
+		"%s: No messages found in specified folders for accounts: %v",
 		nagios.StateOKLabel,
-		accounts[0].Username,
 		accounts,
 	)
 
