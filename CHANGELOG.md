@@ -26,6 +26,34 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.3.0] - 2020-11-26
+
+### Overview
+
+- Add Go version of [`list-emails`](https://github.com/atc0005/list-emails)
+  Python script
+
+- Built using Go 1.15.5
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+- Significant refactoring
+
+### Added
+
+- Port [`list-emails`](https://github.com/atc0005/list-emails) Python script
+
+### Changed
+
+- Internal: significant refactoring to share code with `list-emails` CLI
+  application
+
+### Fixed
+
+- Fix breadcrumb URLs
+- Fix ServiceOutput templating for multiple accounts
+
 ## [v0.2.9] - 2020-11-23
 
 ### Overview
@@ -364,7 +392,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.2.9...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.3.0...HEAD
+[v0.3.0]: https://github.com/atc0005/check-mail/releases/tag/v0.3.0
 [v0.2.9]: https://github.com/atc0005/check-mail/releases/tag/v0.2.9
 [v0.2.8]: https://github.com/atc0005/check-mail/releases/tag/v0.2.8
 [v0.2.7]: https://github.com/atc0005/check-mail/releases/tag/v0.2.7
