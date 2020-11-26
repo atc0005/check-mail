@@ -14,7 +14,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/atc0005/check-mail/internal/logging"
 	"github.com/rs/zerolog"
 )
 
@@ -98,6 +97,33 @@ type Config struct {
 	// the version string and then immediately exit the application.
 	ShowVersion bool
 
+	// configFileLoaded is an internal flag indicating whether a user-provided
+	// config file was specified *and* loaded, or a config file was
+	// automatically detected *and* loaded.
+	ConfigFileLoaded bool
+
+	// configFile is the path to the user-provided config file. This config
+	// file is not currently used by the check_imap_mailbox plugin provided by
+	// this project.
+	ConfigFile string
+
+	// configFileUsed is an internal field indicating *what* config file was
+	// loaded, be it explicitly specified by the user or automatically
+	// detected from a known location.
+	ConfigFileUsed string
+
+	// ReportFileOutputDir is the full path to the directory where email
+	// summary report files will be generated. Not currently used by the
+	// Nagios plugin.
+	ReportFileOutputDir string
+
+	// LogFileOutputDir is the full path to the directory where log files will
+	// be generated. Not currently used by the Nagios plugin.
+	LogFileOutputDir string
+
+	// LogFileHandle is reference to a log file for deferred closure.
+	LogFileHandle *os.File
+
 	// LoggingLevel is the supported logging level for this application.
 	LoggingLevel string
 
@@ -128,7 +154,7 @@ func Branding(msg string) func() string {
 // provided flag and config file values. It is responsible for validating
 // user-provided values and initializing the logging settings used by this
 // application.
-func New(useConfigFile bool) (*Config, error) {
+func New(useConfigFile bool, useLogFile bool) (*Config, error) {
 	var config Config
 
 	config.handleFlagsConfig(useConfigFile)
@@ -141,26 +167,30 @@ func New(useConfigFile bool) (*Config, error) {
 		return nil, fmt.Errorf("configuration validation failed: %w", err)
 	}
 
-	// Note: Nagios doesn't look at stderr, only stdout. We have to make sure
-	// that only whatever output is meant for consumption is emitted to stdout
-	// and whatever is meant for troubleshooting is sent to stderr. To help
-	// keep these two goals separate (and because Nagios doesn't really do
-	// anything special with JSON output from plugins), we use stdlib fmt
-	// package output functions for Nagios via stdout and logging package for
-	// troubleshooting via stderr.
-	//
-	// We set some common fields here so that we don't have to repeat them
-	// explicitly later and then set additional fields while processing each
-	// email account. This approach is intended to help standardize the log
-	// messages to make them easier to search through later when
-	// troubleshooting.
-	config.Log = zerolog.New(os.Stderr).With().Caller().
-		Str("version", Version()).
-		Logger()
-
-	if err := logging.SetLoggingLevel(config.LoggingLevel); err != nil {
-		return nil, err
+	// initialize logging "early", just as soon as validation is complete so
+	// that we can rely on it to debug further configuration init work
+	if err := config.setupLogging(useLogFile); err != nil {
+		return nil, fmt.Errorf(
+			"failed to set logging configuration: %w",
+			err,
+		)
 	}
+
+	if useConfigFile {
+		if err := config.load(); err != nil {
+
+			// We log this message in an effort to populate the log file with
+			// something useful; an empty log file isn't that helpful if
+			// someone needs to debug later what happened (and the person
+			// running the application didn't catch the error output).
+			errMsg := "failed to load configuration file"
+			config.Log.Error().Err(err).Msgf(errMsg)
+
+			return nil, fmt.Errorf("%s: %w", errMsg, err)
+		}
+	}
+
+	// fmt.Printf("config: %+v\n", config)
 
 	return &config, nil
 
@@ -169,6 +199,19 @@ func New(useConfigFile bool) (*Config, error) {
 // validate verifies all Config struct fields have been provided acceptable
 // values.
 func (c Config) validate(useConfigFile bool) error {
+
+	// NOTE: It's fine to *not* specify a config file. The expected behavior
+	// is that specifying a config file will be a rare thing; users will more
+	// often than not rely on config file auto-detection behavior.
+	//
+	// That said, if a user does not specify a config file, we need to require
+	// that one was found and loaded.
+	//
+	// if useConfigFile {
+	// 	if c.ConfigFile == "" {
+	// 		return fmt.Errorf("config file required, but not specified")
+	// 	}
+	// }
 
 	for _, account := range c.Accounts {
 		if account.Folders == nil {
@@ -205,12 +248,86 @@ func (c Config) validate(useConfigFile bool) error {
 		}
 	}
 
+	// set with a default value if not specified by the user, so should not
+	// ever be empty
+	if c.ReportFileOutputDir == "" {
+		return fmt.Errorf("missing report file output directory")
+	}
+
+	// set with a default value if not specified by the user, so should not
+	// ever be empty
+	if c.LogFileOutputDir == "" {
+		return fmt.Errorf("missing log file output directory")
+	}
+
 	requestedLoggingLevel := strings.ToLower(c.LoggingLevel)
-	if _, ok := logging.LoggingLevels[requestedLoggingLevel]; !ok {
+	if _, ok := loggingLevels[requestedLoggingLevel]; !ok {
 		return fmt.Errorf("invalid logging level %s", c.LoggingLevel)
 	}
 
 	// Optimist
 	return nil
 
+}
+
+// load is a helper function to handle the bulk of the configuration loading
+// work for the New constructor function.
+func (c *Config) load() error {
+
+	configFiles := make([]string, 0, 3)
+
+	switch {
+
+	// If specified, load user-specified config file.
+	case c.ConfigFile != "":
+
+		c.Log.Debug().
+			Str("config_file_candidate", c.ConfigFile).
+			Msg("Trying to load user-requested config file")
+
+		loadErr := c.loadConfigFile(c.ConfigFile)
+		if loadErr != nil {
+			return fmt.Errorf(
+				"failed to load configuration from file %q: %w",
+				c.ConfigFile,
+				loadErr,
+			)
+		}
+
+	// If not explicitly specified, attempt to automatically load a
+	// configuration file from known locations preferring to load a local
+	// configuration file from the current working directory first.
+	case c.ConfigFile == "":
+
+		localINIConfig, localFileErr := c.localConfigFile(defaultINIConfigFileName)
+		if localFileErr != nil {
+			return fmt.Errorf(
+				"failed to construct path to local config file :%w",
+				localFileErr,
+			)
+		}
+		configFiles = append(configFiles, localINIConfig)
+
+		userConfigFile, userConfigFileErr := c.userConfigFile(
+			myAppName, defaultINIConfigFileName,
+		)
+		if userConfigFileErr != nil {
+			return fmt.Errorf(
+				"failed to construct path to user config file :%w",
+				userConfigFileErr,
+			)
+		}
+		configFiles = append(configFiles, userConfigFile)
+
+		loadErr := c.loadConfigFile(configFiles...)
+		if loadErr != nil {
+			return fmt.Errorf(
+				"failed to load candidate config files %v: %w",
+				configFiles,
+				loadErr,
+			)
+		}
+	}
+
+	return nil
 }

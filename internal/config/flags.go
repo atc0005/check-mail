@@ -9,6 +9,11 @@ package config
 
 import "flag"
 
+// handleFlagsConfig handles toggling the exposure of specific configuration
+// flags to the user. This behavior is controlled via a boolean value
+// initially set by each cmd. If enabled, a smaller subset of flags specific
+// to the list-emails cmd is exposed, otherwise the set of flags specific to
+// the Nagios plugin are exposed and processed.
 func (c *Config) handleFlagsConfig(acceptConfigFile bool) {
 
 	var account MailAccount
@@ -16,6 +21,13 @@ func (c *Config) handleFlagsConfig(acceptConfigFile bool) {
 	// shared flags
 	flag.BoolVar(&c.ShowVersion, "version", defaultDisplayVersionAndExit, versionFlagHelp)
 	flag.StringVar(&c.LoggingLevel, "log-level", defaultLoggingLevel, loggingLevelFlagHelp)
+
+	// currently only applies to list-emails app, don't expose to Nagios plugin
+	if acceptConfigFile {
+		flag.StringVar(&c.ConfigFile, "config-file", defaultINIConfigFileName, iniConfigFileFlagHelp)
+		flag.StringVar(&c.ReportFileOutputDir, "report-file-dir", defaultReportFileOutputDir, reportFileOutputDirFlagHelp)
+		flag.StringVar(&c.LogFileOutputDir, "log-file-dir", defaultLogFileOutputDir, logFileOutputDirFlagHelp)
+	}
 
 	// currently only applies to Nagios plugin
 	if !acceptConfigFile {
