@@ -23,27 +23,26 @@ func TestReplaceAstralUnicode(t *testing.T) {
 			"Celebrate WooCommerce Day with 40% off everything 🎉",
 			"Celebrate WooCommerce Day with 40% off everything ✂",
 		},
-
 		{
 			"SALE: 30% off WooCommerce.com until midnight 👻",
 			"SALE: 30% off WooCommerce.com until midnight ✂",
 		},
-
 		{
 			"🔔 Last chance to take 35% off WooCommerce.com",
 			"✂ Last chance to take 35% off WooCommerce.com",
 		},
-
 		{
 			"⏰ Just a few more hours! ⏰",
 			"⏰ Just a few more hours! ⏰",
 		},
-
+		{
+			"Early Cyber Deals are Here! 🐱🎉🐶",
+			"Early Cyber Deals are Here! ✂✂✂",
+		},
 		{
 			"Don’t miss the WooCommerce.com marketplace sale! ⏰",
 			"Don’t miss the WooCommerce.com marketplace sale! ⏰",
 		},
-
 		{
 			"🎉 WooCommerce 3.2 is here, bringing improved coupons, extension management, and more!",
 			"✂ WooCommerce 3.2 is here, bringing improved coupons, extension management, and more!",
