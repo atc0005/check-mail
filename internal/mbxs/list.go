@@ -48,7 +48,7 @@ func ListMailboxes(c *client.Client, logger zerolog.Logger) ([]string, error) {
 
 }
 
-// ValidateMailboxesList returns a list of requested mailboxes and returns a
+// ValidateMailboxesList receives a list of requested mailboxes and returns a
 // list of mailboxes from that list which have been confirmed to be present
 // for the associated user account.
 func ValidateMailboxesList(c *client.Client, userMBXList []string, logger zerolog.Logger) ([]string, error) {
@@ -74,7 +74,8 @@ func ValidateMailboxesList(c *client.Client, userMBXList []string, logger zerolo
 		// folders/mailboxes, but haven't yet confirmed that they exist as
 		// mailboxes on the remote server.
 
-		if strings.ToLower(mbx) == "inbox" {
+		if strings.ToLower(mbx) == "inbox" ||
+			strings.HasPrefix(strings.ToLower(mbx), "inbox/") {
 
 			// NOTE: The "inbox" mailbox/folder name is NOT case-sensitive,
 			// but *all* others should be considered case-sensitive. We should
