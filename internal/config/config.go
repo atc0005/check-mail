@@ -248,16 +248,21 @@ func (c Config) validate(useConfigFile bool) error {
 		}
 	}
 
-	// set with a default value if not specified by the user, so should not
-	// ever be empty
-	if c.ReportFileOutputDir == "" {
-		return fmt.Errorf("missing report file output directory")
-	}
+	// these settings only apply to the list-emails application
+	if useConfigFile {
 
-	// set with a default value if not specified by the user, so should not
-	// ever be empty
-	if c.LogFileOutputDir == "" {
-		return fmt.Errorf("missing log file output directory")
+		// set with a default value if not specified by the user, so should not
+		// ever be empty
+		if c.ReportFileOutputDir == "" {
+			return fmt.Errorf("missing report file output directory")
+		}
+
+		// set with a default value if not specified by the user, so should not
+		// ever be empty
+		if c.LogFileOutputDir == "" {
+			return fmt.Errorf("missing log file output directory")
+		}
+
 	}
 
 	requestedLoggingLevel := strings.ToLower(c.LoggingLevel)
