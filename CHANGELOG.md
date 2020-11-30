@@ -26,6 +26,23 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.3.1] - 2020-11-30
+
+### Overview
+
+- Bugfixes
+
+- Built using Go 1.15.5
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Fixed
+
+- Validation of log file and report output directories fail for Nagios plugin
+- Sub-mailboxes beneath "Inbox" require uppercase "INBOX" name as prefix in
+  order to reference them
+
 ## [v0.3.0] - 2020-11-26
 
 ### Overview
@@ -392,7 +409,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.3.1...HEAD
+[v0.3.1]: https://github.com/atc0005/check-mail/releases/tag/v0.3.1
 [v0.3.0]: https://github.com/atc0005/check-mail/releases/tag/v0.3.0
 [v0.2.9]: https://github.com/atc0005/check-mail/releases/tag/v0.2.9
 [v0.2.8]: https://github.com/atc0005/check-mail/releases/tag/v0.2.8
