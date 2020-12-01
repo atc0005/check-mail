@@ -7,18 +7,20 @@
 
 package textutils
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
-func TestReplaceAstralUnicode(t *testing.T) {
+func TestInspectString(t *testing.T) {
 
 	for _, v := range testStrings {
 
-		want := v.modified
-		got := ReplaceAstralUnicode(v.original, EmojiScissors)
+		var want error = nil
+		got := InspectString(v.original, os.Stderr)
 
 		if got != want {
 			t.Error("Expected", want, "Got", got)
 		}
 	}
-
 }
