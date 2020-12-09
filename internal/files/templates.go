@@ -30,7 +30,7 @@ h5. Overview
 
 | Report generated | {{ .ReportTime.Format "2006-01-02 15:04:05" }} |
 | Summary | {{ .MessagesFoundSummary }} |
-| Placeholder | {{ .UnicodeCharSubstitute }} (substituted for Emoji incompatible with MySQL utf8mb3 character set) |
+| Placeholder character | {{ .UnicodeCharSubstitute }} (substituted for Emoji incompatible with MySQL utf8mb3 character set) |
 
 h5. Emails found
 
