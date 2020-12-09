@@ -48,7 +48,7 @@ h5. Emails found
 
 h5. Reported emails
 
-|_.Folder|_.Subject|_.Date|
+|_.Folder|_.Subject|_.Date|_.Reported on|
 | PLACEHOLDER | PLACEHOLDER | PLACEHOLDER |
 
 h5. Emails moved to applicable folders
