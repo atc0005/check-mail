@@ -26,6 +26,25 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.3.2] - 2020-12-09
+
+### Changed
+
+- Extend Unicode string tests
+  - new entries
+  - refactored to store all test strings separately for reuse
+
+- Minor template tweaks
+  - New `Reported on` column in report
+  - Tweak description of placeholder character in an attempt to better
+    communicate purpose
+
+- Dependencies
+  - built using Go 1.15.6
+    - Statically linked
+    - Windows (x86, x64)
+    - Linux (x86, x64)
+
 ## [v0.3.1] - 2020-11-30
 
 ### Overview
@@ -409,7 +428,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.3.2...HEAD
+[v0.3.2]: https://github.com/atc0005/check-mail/releases/tag/v0.3.2
 [v0.3.1]: https://github.com/atc0005/check-mail/releases/tag/v0.3.1
 [v0.3.0]: https://github.com/atc0005/check-mail/releases/tag/v0.3.0
 [v0.2.9]: https://github.com/atc0005/check-mail/releases/tag/v0.2.9
