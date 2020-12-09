@@ -78,6 +78,18 @@ var testStrings = []struct {
 		"✂✂✂ TONS of Christmas Printables + LAST Day to Join TLC & MMB",
 	},
 	{
+		"💻 Cyber Monday! Free shipping today only and deals throughout the week!",
+		"✂ Cyber Monday! Free shipping today only and deals throughout the week!",
+	},
+	{
+		"Adam, cozy up to soup season. 🥣",
+		"Adam, cozy up to soup season. ✂",
+	},
+	{
+		"🎄 More Christmas Printables + 🕎 Hanukkah Pack",
+		"✂ More Christmas Printables + ✂ Hanukkah Pack",
+	},
+	{
 		"Don’t miss the WooCommerce.com marketplace sale! ⏰",
 		"Don’t miss the WooCommerce.com marketplace sale! ⏰",
 	},
