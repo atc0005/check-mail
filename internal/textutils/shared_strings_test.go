@@ -86,6 +86,10 @@ var testStrings = []struct {
 		"Adam, cozy up to soup season. ✂",
 	},
 	{
+		"Don’t Miss Your Chance to Save! ⏰🎁💰",
+		"Don’t Miss Your Chance to Save! ⏰✂✂",
+	},
+	{
 		"🎄 More Christmas Printables + 🕎 Hanukkah Pack",
 		"✂ More Christmas Printables + ✂ Hanukkah Pack",
 	},
