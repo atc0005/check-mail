@@ -98,6 +98,10 @@ var testStrings = []struct {
 		"Don’t miss the WooCommerce.com marketplace sale! ⏰",
 	},
 	{
+		"Adam, Get New Year Ready! 🎆🍾🎉",
+		"Adam, Get New Year Ready! ✂✂✂",
+	},
+	{
 		"🎉 WooCommerce 3.2 is here, bringing improved coupons, extension management, and more!",
 		"✂ WooCommerce 3.2 is here, bringing improved coupons, extension management, and more!",
 	},
