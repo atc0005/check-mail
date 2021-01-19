@@ -173,4 +173,8 @@ var testStrings = []struct {
 		"☀",
 		"☀",
 	},
+	{
+		"🍓🍆Fruit & Veggies Beginning Letter Sounds + 🐧Penguin Playdough Mat!",
+		"✂✂Fruit & Veggies Beginning Letter Sounds + ✂Penguin Playdough Mat!",
+	},
 }
