@@ -177,4 +177,8 @@ var testStrings = []struct {
 		"🍓🍆Fruit & Veggies Beginning Letter Sounds + 🐧Penguin Playdough Mat!",
 		"✂✂Fruit & Veggies Beginning Letter Sounds + ✂Penguin Playdough Mat!",
 	},
+	{
+		"Sip some stressed spelled backwards 🍰 🍵 🍫",
+		"Sip some stressed spelled backwards ✂ ✂ ✂",
+	},
 }
