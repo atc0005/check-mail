@@ -181,4 +181,8 @@ var testStrings = []struct {
 		"Sip some stressed spelled backwards 🍰 🍵 🍫",
 		"Sip some stressed spelled backwards ✂ ✂ ✂",
 	},
+	{
+		"All the Essentials, All Right Here! ✅🐶🐱",
+		"All the Essentials, All Right Here! ✅✂✂",
+	},
 }
