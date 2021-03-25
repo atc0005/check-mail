@@ -10,7 +10,7 @@ github.com/emersion/go-imap/responses
 github.com/emersion/go-imap/utf7
 # github.com/emersion/go-sasl v0.0.0-20191210011802-430746ea8b9b
 github.com/emersion/go-sasl
-# github.com/rs/zerolog v1.20.0
+# github.com/rs/zerolog v1.21.0
 ## explicit
 github.com/rs/zerolog
 github.com/rs/zerolog/internal/cbor
@@ -18,7 +18,7 @@ github.com/rs/zerolog/internal/json
 github.com/rs/zerolog/log
 # github.com/smartystreets/goconvey v1.6.4
 ## explicit
-# golang.org/x/text v0.3.2
+# golang.org/x/text v0.3.3
 golang.org/x/text/encoding
 golang.org/x/text/encoding/internal/identifier
 golang.org/x/text/transform
