@@ -7,7 +7,17 @@
 
 package textutils
 
-var testStrings = []struct {
+var formattingTestStrings = []struct {
+	original string
+	modified string
+}{
+	{
+		"[EXT] SANS | GIAC Week in Preview – March 28, 2021: New SANS Security Awareness Report™; Graduate Programs Info Session",
+		"[EXT] SANS &#124; GIAC Week in Preview – March 28, 2021: New SANS Security Awareness Report™; Graduate Programs Info Session",
+	},
+}
+
+var unicodeAstralTestStrings = []struct {
 	original string
 	modified string
 }{
