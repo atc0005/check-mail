@@ -53,8 +53,8 @@ type Message struct {
 	// message found within a specificed mailbox.
 	OriginalSubject string
 
-	// ModifiedSubject is the subject line of the original email message has
-	// not been modified to remove characters incompatible with the a target
+	// ModifiedSubject is the subject line of the original email message that
+	// has been modified to remove characters incompatible with the a target
 	// character set (e.g., MySQL's utf8mb3).
 	ModifiedSubject string
 }
