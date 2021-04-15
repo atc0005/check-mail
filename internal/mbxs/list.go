@@ -184,12 +184,18 @@ func CheckMail(c *client.Client, username string, validatedMBXList []string, log
 			var subject string
 			switch {
 			case !textutils.WithinUTF8MB3Range(msg.Envelope.Subject):
+				logger.Debug().Msg("Replacing Astral Unicode characters")
 				subject = textutils.ReplaceAstralUnicode(
 					msg.Envelope.Subject, DefaultReplacementString)
 			default:
+				logger.Debug().Msg("Using original subject line")
 				subject = msg.Envelope.Subject
 			}
 			// fmt.Println("*", subject)
+
+			// Replace any output formatting characters that may be present.
+			logger.Debug().Msg("Replacing any Textile characters known to cause issues")
+			subject = textutils.ReplaceTextileFormatCharacters(subject)
 
 			msgSummary := Message{
 				MessageID:             msg.Envelope.MessageId,
