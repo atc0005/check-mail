@@ -1,14 +1,14 @@
 # github.com/atc0005/go-nagios v0.6.0
 ## explicit
 github.com/atc0005/go-nagios
-# github.com/emersion/go-imap v1.0.6
+# github.com/emersion/go-imap v1.1.0
 ## explicit
 github.com/emersion/go-imap
 github.com/emersion/go-imap/client
 github.com/emersion/go-imap/commands
 github.com/emersion/go-imap/responses
 github.com/emersion/go-imap/utf7
-# github.com/emersion/go-sasl v0.0.0-20191210011802-430746ea8b9b
+# github.com/emersion/go-sasl v0.0.0-20200509203442-7bfe0ed36a21
 github.com/emersion/go-sasl
 # github.com/rs/zerolog v1.21.0
 ## explicit
@@ -18,7 +18,7 @@ github.com/rs/zerolog/internal/json
 github.com/rs/zerolog/log
 # github.com/smartystreets/goconvey v1.6.4
 ## explicit
-# golang.org/x/text v0.3.3
+# golang.org/x/text v0.3.6
 golang.org/x/text/encoding
 golang.org/x/text/encoding/internal/identifier
 golang.org/x/text/transform
