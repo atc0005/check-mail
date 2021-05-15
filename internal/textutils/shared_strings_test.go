@@ -15,6 +15,10 @@ var formattingTestStrings = []struct {
 		"[EXT] SANS | GIAC Week in Preview – March 28, 2021: New SANS Security Awareness Report™; Graduate Programs Info Session",
 		"[EXT] SANS &#124; GIAC Week in Preview – March 28, 2021: New SANS Security Awareness Report™; Graduate Programs Info Session",
 	},
+	{
+		"[Redmine - Feature #8488] Create an 'Involve' mechanism to private issues",
+		"[Redmine - Feature &#35;8488] Create an 'Involve' mechanism to private issues",
+	},
 }
 
 var unicodeAstralTestStrings = []struct {

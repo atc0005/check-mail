@@ -16,6 +16,10 @@ var textileFormattingCharReplacements = map[rune]string{
 
 	// replace pipe characters with HTML entity equivalent
 	'|': "&#124;",
+
+	// replace octothorpe (aka, "hashtag", "pound sign" or "number sign")
+	// character with HTML entity equivalent
+	'#': "&#35;",
 }
 
 // ReplaceAstralUnicode accepts an original string and a replacement string.
