@@ -26,6 +26,39 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.2] - 2021-07-01
+
+### Overview
+
+- Workarounds
+- Dependency updates
+- built using Go 1.16.5
+
+### Added
+
+- (GH-167) Create "canary" Dockerfile to track stable Go releases, serve as a
+  reminder to generate fresh binaries
+
+### Changed
+
+- (GH-166) Attempt to connect to each server IP before aborting connection
+  attempt
+  - NOTE: This is intended to workaround IPv6 connection failures from an
+    IPv4-only Nagios console. See also GH-169 and GH-172.
+- (GH-166, GH-170) Explicitly require TLS minimum version of `v1.2` over
+  default of `v1.0`
+  - NOTE: Per GH-169, this is intended to be user-configurable in the future
+
+- Dependencies
+  - built using Go 1.16.5
+    - Statically linked
+    - Windows (x86, x64)
+    - Linux (x86, x64)
+  - `actions/setup-node`
+    - `v2.1.5` to `v2.2.0`
+  - `rs/zerolog`
+    - `v1.22.0` to `v1.23.0`
+
 ## [v0.4.1] - 2021-05-15
 
 ### Overview
@@ -504,7 +537,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.2...HEAD
+[v0.4.2]: https://github.com/atc0005/check-mail/releases/tag/v0.4.2
 [v0.4.1]: https://github.com/atc0005/check-mail/releases/tag/v0.4.1
 [v0.4.0]: https://github.com/atc0005/check-mail/releases/tag/v0.4.0
 [v0.3.3]: https://github.com/atc0005/check-mail/releases/tag/v0.3.3
