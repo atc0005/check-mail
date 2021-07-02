@@ -11,6 +11,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net"
+	"strconv"
 	"strings"
 
 	"github.com/emersion/go-imap/client"
@@ -52,7 +53,7 @@ func Connect(server string, port int, logger zerolog.Logger) (*client.Client, er
 			Str("hostname", server).
 			Msg("Connecting to server")
 
-		s := fmt.Sprintf("%s:%d", addr, port)
+		s := net.JoinHostPort(addr, strconv.Itoa(port))
 
 		// pass in explicitly set TLS config using provided server name, but
 		// attempt to connect to specific IP Address returned from earlier
@@ -85,8 +86,9 @@ func Connect(server string, port int, logger zerolog.Logger) (*client.Client, er
 	// Log all failed IP Addresses for review.
 	if connectErr != nil {
 		errMsg := fmt.Sprintf(
-			"failed to connect to server using any of %d IP Addresses",
+			"failed to connect to server using any of %d IP Addresses (%s)",
 			len(addrs),
+			strings.Join(addrs, ", "),
 		)
 		logger.Error().
 			Err(connectErr).
