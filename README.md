@@ -70,7 +70,9 @@ This repo contains various tools used to monitor mail services.
   - choice of `disabled`, `panic`, `fatal`, `error`, `warn`, `info` (the
     default), `debug` or `trace`
 - TLS IMAP4 connectivity
-  - defaults to 993/tcp
+  - port defaults to 993/tcp
+  - network type defaults to either of IPv4 and IPv6, but optionally limited
+    to IPv4-only or IPv6-only
 - Optional branding "signature"
   - used to indicate what Nagios plugin (and what version) is responsible for
     the service check result
@@ -84,7 +86,9 @@ This repo contains various tools used to monitor mail services.
     default), `debug` or `trace`
   - bulk of logging directed to per-invocation log file
 - TLS IMAP4 connectivity
-  - defaults to 993/tcp
+  - port defaults to 993/tcp
+  - network type defaults to either of IPv4 and IPv6, but optionally limited
+    to IPv4-only or IPv6-only
 - Minimal output to console unless requested
   - via `debug` logging level
 - Textile (Redmine compatible) formatted report generated per specified email
@@ -191,6 +195,7 @@ Tested using:
 | `password`      | Yes      | *empty string* | No     | *valid password*                                                        | The remote mail server account password.                                                                                                                                                    |
 | `server`        | Yes      | *empty string* | No     | *valid FQDN or IP Address*                                              | The fully-qualified domain name of the remote mail server.                                                                                                                                  |
 | `port`          | No       | `993`          | No     | *valid IMAP TCP port*                                                   | TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections.                                                                  |
+| `net-type`      | No       | `auto`         | No     | `auto`, `tcp4`, `tcp6`                                                  | Limits network connections to remote mail servers to one of the specified types.                                                                                                            |
 | `logging-level` | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                             |
 | `branding`      | No       | `false`        | No     | `true`, `false`                                                         | Toggles emission of branding details with plugin status details. Because this output may not mix well with branding information emitted by other tools, this output is disabled by default. |
 | `version`       | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                |
@@ -210,6 +215,7 @@ Tested using:
 | `config-file`     | No       | `accounts.ini` | No     | *valid path to INI configuration file for this application*             | Full path to the INI-formatted configuration file used by this application. See contrib/list-emails/accounts.example.ini for a starter template. Rename to accounts.ini, update with applicable information and place in a directory of your choice. If this file is found in your current working directory you need not use this flag. |
 | `log-file-dir`    | No       | `log`          | No     | *valid, writable path to a directory*                                   | Full path to the directory where log files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist.                                                                 |
 | `report-file-dir` | No       | `output`       | No     | *valid, writable path to a directory*                                   | Full path to the directory where email summary report files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist.                                                |
+| `net-type`        | No       | `auto`         | No     | `auto`, `tcp4`, `tcp6`                                                  | Limits network connections to remote mail servers to one of the specified types.                                                                                                                                                                                                                                                         |
 | `logging-level`   | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                                                                                                                                                                          |
 | `version`         | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                                                                                                                                                             |
 
