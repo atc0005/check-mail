@@ -26,6 +26,22 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.3] - 2021-07-04
+
+### Overview
+
+- Bugfix
+- built using Go 1.16.5
+
+### Changed
+
+- Include list of IP Addresses that connection attempts were made against in
+  connection failure error message
+
+### Fixed
+
+- String formatting of remote IP Address fails to work for IPv6 addresses
+
 ## [v0.4.2] - 2021-07-01
 
 ### Overview
@@ -537,7 +553,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.2...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.3...HEAD
+[v0.4.3]: https://github.com/atc0005/check-mail/releases/tag/v0.4.3
 [v0.4.2]: https://github.com/atc0005/check-mail/releases/tag/v0.4.2
 [v0.4.1]: https://github.com/atc0005/check-mail/releases/tag/v0.4.1
 [v0.4.0]: https://github.com/atc0005/check-mail/releases/tag/v0.4.0
