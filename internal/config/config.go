@@ -97,20 +97,25 @@ type Config struct {
 	// the version string and then immediately exit the application.
 	ShowVersion bool
 
-	// configFileLoaded is an internal flag indicating whether a user-provided
+	// ConfigFileLoaded is an internal flag indicating whether a user-provided
 	// config file was specified *and* loaded, or a config file was
 	// automatically detected *and* loaded.
 	ConfigFileLoaded bool
 
-	// configFile is the path to the user-provided config file. This config
+	// ConfigFile is the path to the user-provided config file. This config
 	// file is not currently used by the check_imap_mailbox plugin provided by
 	// this project.
 	ConfigFile string
 
-	// configFileUsed is an internal field indicating *what* config file was
+	// ConfigFileUsed is an internal field indicating *what* config file was
 	// loaded, be it explicitly specified by the user or automatically
 	// detected from a known location.
 	ConfigFileUsed string
+
+	// NetworkType indicates whether an attempt should be made to connect to
+	// only IPv4, only IPv6 or IMAP servers listening on either of IPv4 or
+	// IPv6 addresses ("auto").
+	NetworkType string
 
 	// ReportFileOutputDir is the full path to the directory where email
 	// summary report files will be generated. Not currently used by the
@@ -263,6 +268,14 @@ func (c Config) validate(useConfigFile bool) error {
 			return fmt.Errorf("missing log file output directory")
 		}
 
+	}
+
+	switch c.NetworkType {
+	case netTypeTCPAuto:
+	case netTypeTCP4:
+	case netTypeTCP6:
+	default:
+		return fmt.Errorf("invalid network type keyword: %s", c.NetworkType)
 	}
 
 	requestedLoggingLevel := strings.ToLower(c.LoggingLevel)

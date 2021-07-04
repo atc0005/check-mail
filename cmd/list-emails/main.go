@@ -85,10 +85,11 @@ func main() {
 			Str("username", account.Username).
 			Str("server", account.Server).
 			Int("port", account.Port).
+			Str("network_type", cfg.NetworkType).
 			Str("folders_to_check", account.Folders.String()).
 			Logger()
 
-		c, connectErr := mbxs.Connect(account.Server, account.Port, logger)
+		c, connectErr := mbxs.Connect(account.Server, account.Port, cfg.NetworkType, logger)
 		if connectErr != nil {
 			logger.Error().Err(connectErr).Msg("failed to connect to server")
 

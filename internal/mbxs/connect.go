@@ -18,12 +18,12 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// Connect opens a connection to the specified IMAP server, returns a client
-// connection.
-func Connect(server string, port int, logger zerolog.Logger) (*client.Client, error) {
+// Connect opens a connection to the specified IMAP server using the specified
+// network type, returns a client connection.
+func Connect(server string, port int, netType string, logger zerolog.Logger) (*client.Client, error) {
 
 	logger.Debug().Msg("resolving hostname")
-	addrs, lookupErr := net.LookupHost(server)
+	lookupResults, lookupErr := net.LookupHost(server)
 	if lookupErr != nil {
 		errMsg := "error resolving hostname " + server
 		logger.Error().Err(lookupErr).Msg(errMsg)
@@ -34,6 +34,59 @@ func Connect(server string, port int, logger zerolog.Logger) (*client.Client, er
 			lookupErr,
 		)
 	}
+
+	logger.Debug().
+		Int("count", len(lookupResults)).
+		Str("ips", strings.Join(lookupResults, ", ")).
+		Msg("successfully resolved IP Addresses for hostname")
+
+	addrs := make([]string, 0, len(lookupResults))
+	ips := make([]net.IP, 0, len(lookupResults))
+
+	logger.Debug().Msg("converting DNS lookup results to net.IP values for net type validation")
+	for i := range lookupResults {
+		ip := net.ParseIP(lookupResults[i])
+		if ip == nil {
+			return nil, fmt.Errorf(
+				"error parsing %s as an IP Address",
+				lookupResults[i],
+			)
+		}
+		ips = append(ips, ip)
+	}
+
+	// Flag validation ensures that we only see valid named networks as
+	// supported by the `net` stdlib package.
+	switch netType {
+	case NetTypeTCP4:
+		logger.Debug().Msg("user opted for IPv4-only connectivity, gathering only IPv4 addresses")
+		for i := range ips {
+			if ips[i].To4() != nil {
+				addrs = append(addrs, ips[i].String())
+			}
+		}
+
+	case NetTypeTCP6:
+		logger.Debug().Msg("user opted for IPv6-only connectivity, gathering only IPv6 addresses")
+		for i := range ips {
+			if ips[i].To4() == nil {
+				// if earlier attempts to parse the IP Address succeeded, but
+				// this is not considered an IPv4 address, we will consider it
+				// a valid IPv6 address.
+				addrs = append(addrs, ips[i].String())
+			}
+		}
+
+	// either of IPv4 or IPv6 is acceptable
+	default:
+		logger.Debug().Msg("auto behavior enabled, gathering all addresses")
+		addrs = lookupResults
+	}
+
+	logger.Debug().
+		Int("count", len(addrs)).
+		Str("ips", strings.Join(addrs, ", ")).
+		Msg("successfully gathered IP Addresses for connection attempts")
 
 	var c *client.Client
 	var connectErr error
@@ -96,7 +149,7 @@ func Connect(server string, port int, logger zerolog.Logger) (*client.Client, er
 			Str("hostname", server).
 			Msg(errMsg)
 
-		return nil, fmt.Errorf("%s: %w", errMsg, connectErr)
+		return nil, fmt.Errorf("%s; last error: %w", errMsg, connectErr)
 	}
 
 	return c, nil

@@ -16,6 +16,7 @@ const (
 	passwordFlagHelp            string = "The remote mail server account password."
 	serverFlagHelp              string = "The fully-qualified domain name of the remote mail server."
 	portFlagHelp                string = "TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections."
+	networkTypeFlagHelp         string = "Limits network connections to remote mail servers to one of tcp4 (IPv4-only), tcp6 (IPv6-only) or auto (either)."
 	loggingLevelFlagHelp        string = "Sets log level to one of disabled, panic, fatal, error, warn, info, debug or trace."
 	emitBrandingFlagHelp        string = "Toggles emission of branding details with plugin status details. This output is disabled by default."
 	versionFlagHelp             string = "Whether to display application version and then immediately exit application."
@@ -32,6 +33,7 @@ const (
 	defaultServer                string = ""
 	defaultPassword              string = ""
 	defaultUsername              string = ""
+	defaultNetworkType           string = netTypeTCPAuto
 	defaultDisplayVersionAndExit bool   = false
 
 	// By default these directories are created/used in the user's current
@@ -61,6 +63,18 @@ const (
 	// This will likely require reworking the configuration struct and other
 	// config load behavior.
 	// defaultTOMLConfigFileName string = "config.toml"
+)
+
+const (
+	// netTypeTCPAuto is a custom keyword indicating that either of IPv4 or
+	// IPv6 is an acceptable network type.
+	netTypeTCPAuto string = "auto"
+
+	// netTypeTCP4 indicates that IPv4 network connections are required.
+	netTypeTCP4 string = "tcp4"
+
+	// netTypeTCP6 indicates that IPv6 network connections are required
+	netTypeTCP6 string = "tcp6"
 )
 
 // these keys are found in the `DEFAULT` section of the INI file.

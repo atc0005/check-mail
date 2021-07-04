@@ -21,6 +21,7 @@ func (c *Config) handleFlagsConfig(acceptConfigFile bool) {
 	// shared flags
 	flag.BoolVar(&c.ShowVersion, "version", defaultDisplayVersionAndExit, versionFlagHelp)
 	flag.StringVar(&c.LoggingLevel, "log-level", defaultLoggingLevel, loggingLevelFlagHelp)
+	flag.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
 
 	// currently only applies to list-emails app, don't expose to Nagios plugin
 	if acceptConfigFile {
