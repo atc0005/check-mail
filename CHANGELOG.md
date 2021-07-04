@@ -26,6 +26,26 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.4] - 2021-07-04
+
+### Overview
+
+- Bugfix
+- built using Go 1.16.5
+
+### Added
+
+- (GH-172, GH-178) Add net-type flag to allow limiting network type to one of
+  tcp4 (IPv4-only), tcp6 (IPv6-only) or auto (either).
+  - NOTE: This is intended to workaround IPv6 connection failures from an
+    IPv4-only Nagios console. See also GH-166 and GH-172.
+
+### Changed
+
+- Documentation
+  - minor updates to remove dated information, opting to replace with "see
+    also" or general information
+
 ## [v0.4.3] - 2021-07-04
 
 ### Overview
@@ -553,7 +573,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.3...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.4...HEAD
+[v0.4.4]: https://github.com/atc0005/check-mail/releases/tag/v0.4.4
 [v0.4.3]: https://github.com/atc0005/check-mail/releases/tag/v0.4.3
 [v0.4.2]: https://github.com/atc0005/check-mail/releases/tag/v0.4.2
 [v0.4.1]: https://github.com/atc0005/check-mail/releases/tag/v0.4.1
