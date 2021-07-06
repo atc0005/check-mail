@@ -26,6 +26,30 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.5] - 2021-07-06
+
+### Overview
+
+- Add new flag
+- Extend initial workaround
+- Bug fixes
+- built using Go 1.16.5
+
+### Added
+
+- (GH-169, GH-182) Add new `min-tls` flag for specifying minimum supported TLS
+  version for use with remote mail server connections
+
+### Changed
+
+- (GH-181) Extend support for user-specified network types (e.g., IPv4-only,
+  IPV6-only)
+
+### Fixed
+
+- (GH-184) `net-type` flag keywords comparison is (unintentionally)
+  case-sensitive
+
 ## [v0.4.4] - 2021-07-04
 
 ### Overview
@@ -573,7 +597,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.4...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.5...HEAD
+[v0.4.5]: https://github.com/atc0005/check-mail/releases/tag/v0.4.5
 [v0.4.4]: https://github.com/atc0005/check-mail/releases/tag/v0.4.4
 [v0.4.3]: https://github.com/atc0005/check-mail/releases/tag/v0.4.3
 [v0.4.2]: https://github.com/atc0005/check-mail/releases/tag/v0.4.2
