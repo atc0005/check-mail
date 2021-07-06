@@ -59,8 +59,9 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 
 	// Flag validation ensures that we see valid named networks as supported
 	// by the `net` stdlib package, along with the "auto" keyword. Here we pay
-	// attention to only the valid named networks.
-	switch netType {
+	// attention to only the valid named networks. Since we're working with
+	// user specified keywords, we compare case-insensitively.
+	switch strings.ToLower(netType) {
 	case NetTypeTCP4:
 		logger.Debug().Msg("user opted for IPv4-only connectivity, gathering only IPv4 addresses")
 		for i := range ips {
