@@ -71,6 +71,7 @@ This repo contains various tools used to monitor mail services.
   - port defaults to 993/tcp
   - network type defaults to either of IPv4 and IPv6, but optionally limited
     to IPv4-only or IPv6-only
+  - user-specified minimum TLS version
 - Optional branding "signature"
   - used to indicate what Nagios plugin (and what version) is responsible for
     the service check result
@@ -87,6 +88,7 @@ This repo contains various tools used to monitor mail services.
   - port defaults to 993/tcp
   - network type defaults to either of IPv4 and IPv6, but optionally limited
     to IPv4-only or IPv6-only
+  - user-specified minimum TLS version
 - Minimal output to console unless requested
   - via `debug` logging level
 - Textile (Redmine compatible) formatted report generated per specified email
@@ -194,6 +196,7 @@ Tested using:
 | `server`        | Yes      | *empty string* | No     | *valid FQDN or IP Address*                                              | The fully-qualified domain name of the remote mail server.                                                                                                                                  |
 | `port`          | No       | `993`          | No     | *valid IMAP TCP port*                                                   | TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections.                                                                  |
 | `net-type`      | No       | `auto`         | No     | `auto`, `tcp4`, `tcp6`                                                  | Limits network connections to remote mail servers to one of the specified types.                                                                                                            |
+| `min-tls`       | No       | `tls12`        | No     | `tls10`, `tls11`, `tls12`, `tls13`                                      | Limits version of TLS used for connections to remote mail servers.                                                                                                                          |
 | `logging-level` | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                             |
 | `branding`      | No       | `false`        | No     | `true`, `false`                                                         | Toggles emission of branding details with plugin status details. Because this output may not mix well with branding information emitted by other tools, this output is disabled by default. |
 | `version`       | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                |
@@ -214,6 +217,7 @@ Tested using:
 | `log-file-dir`    | No       | `log`          | No     | *valid, writable path to a directory*                                   | Full path to the directory where log files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist.                                                                 |
 | `report-file-dir` | No       | `output`       | No     | *valid, writable path to a directory*                                   | Full path to the directory where email summary report files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist.                                                |
 | `net-type`        | No       | `auto`         | No     | `auto`, `tcp4`, `tcp6`                                                  | Limits network connections to remote mail servers to one of the specified types.                                                                                                                                                                                                                                                         |
+| `min-tls`         | No       | `tls12`        | No     | `tls10`, `tls11`, `tls12`, `tls13`                                      | Limits version of TLS used for connections to remote mail servers.                                                                                                                                                                                                                                                                       |
 | `logging-level`   | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                                                                                                                                                                          |
 | `version`         | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                                                                                                                                                             |
 

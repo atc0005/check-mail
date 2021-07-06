@@ -158,6 +158,8 @@ func (c *Config) setupLogging(useLogFile bool) error {
 	c.Log = zerolog.New(logOutput).With().Caller().
 		Str("version", Version()).
 		Bool("use_log_file", useLogFile).
+		Str("network_type", c.NetworkType).
+		Str("min_tls_version", c.MinTLSVersionKeyword()).
 		Logger()
 
 	if err := setLoggingLevel(c.LoggingLevel); err != nil {
