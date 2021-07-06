@@ -55,8 +55,11 @@ func Connect(server string, port int, netType string, logger zerolog.Logger) (*c
 		ips = append(ips, ip)
 	}
 
-	// Flag validation ensures that we only see valid named networks as
-	// supported by the `net` stdlib package.
+	var dialer Dialer
+
+	// Flag validation ensures that we see valid named networks as supported
+	// by the `net` stdlib package, along with the "auto" keyword. Here we pay
+	// attention to only the valid named networks.
 	switch netType {
 	case NetTypeTCP4:
 		logger.Debug().Msg("user opted for IPv4-only connectivity, gathering only IPv4 addresses")
@@ -65,6 +68,7 @@ func Connect(server string, port int, netType string, logger zerolog.Logger) (*c
 				addrs = append(addrs, ips[i].String())
 			}
 		}
+		dialer.NetworkTypeUserOverride = NetTypeTCP4
 
 	case NetTypeTCP6:
 		logger.Debug().Msg("user opted for IPv6-only connectivity, gathering only IPv6 addresses")
@@ -76,6 +80,8 @@ func Connect(server string, port int, netType string, logger zerolog.Logger) (*c
 				addrs = append(addrs, ips[i].String())
 			}
 		}
+
+		dialer.NetworkTypeUserOverride = NetTypeTCP6
 
 	// either of IPv4 or IPv6 is acceptable
 	default:
@@ -98,7 +104,6 @@ func Connect(server string, port int, netType string, logger zerolog.Logger) (*c
 		// TODO: Revisit as part of GH-169
 		MinVersion: tls.VersionTLS12,
 	}
-	dialer := &net.Dialer{}
 
 	for _, addr := range addrs {
 		logger.Debug().
@@ -112,7 +117,17 @@ func Connect(server string, port int, netType string, logger zerolog.Logger) (*c
 		// attempt to connect to specific IP Address returned from earlier
 		// lookup. We'll attempt to loop over each available IP Address until
 		// we are able to successfully connect to one of them.
-		c, connectErr = client.DialWithDialerTLS(dialer, s, tlsConfig)
+		c, connectErr = client.DialWithDialerTLS(&dialer, s, tlsConfig)
+
+		// log override just before checking for an error; this value could be
+		// useful in troubleshooting why a connection attempt fails
+		if dialer.NetworkTypeUserOverride != "" {
+			logger.Debug().
+				Str("dialer_network_original_value", dialer.NetworkTypeOriginalValue).
+				Str("dialer_network_overridden_value", dialer.NetworkTypeUserOverride).
+				Msg("dialer network overridden with user supplied value")
+		}
+
 		if connectErr != nil {
 			logger.Error().
 				Err(connectErr).
