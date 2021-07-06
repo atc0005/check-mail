@@ -80,6 +80,7 @@ const (
 )
 
 // TLS keywords used to map to TLS versions in the tls stdlib package.
+// https://golang.org/pkg/crypto/tls/#pkg-constants
 const (
 	minTLSVersion10 string = "tls10"
 	minTLSVersion11 string = "tls11"

@@ -17,6 +17,7 @@ import (
 // keyword.
 func (c Config) MinTLSVersion() uint16 {
 
+	// https://golang.org/pkg/crypto/tls/#pkg-constants
 	var tlsVersion uint16
 
 	switch strings.ToLower(c.minTLSVersion) {
