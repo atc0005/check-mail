@@ -17,6 +17,7 @@ const (
 	serverFlagHelp              string = "The fully-qualified domain name of the remote mail server."
 	portFlagHelp                string = "TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections."
 	networkTypeFlagHelp         string = "Limits network connections to remote mail servers to one of tcp4 (IPv4-only), tcp6 (IPv6-only) or auto (either)."
+	minTLSVersionFlagHelp       string = "Limits version of TLS used for connections to remote mail servers to one of tls10 (TLS v1.0), tls11, tls12 or tls13 (TLS v1.3)."
 	loggingLevelFlagHelp        string = "Sets log level to one of disabled, panic, fatal, error, warn, info, debug or trace."
 	emitBrandingFlagHelp        string = "Toggles emission of branding details with plugin status details. This output is disabled by default."
 	versionFlagHelp             string = "Whether to display application version and then immediately exit application."
@@ -34,6 +35,7 @@ const (
 	defaultPassword              string = ""
 	defaultUsername              string = ""
 	defaultNetworkType           string = netTypeTCPAuto
+	defaultMinTLSVersion         string = minTLSVersion12
 	defaultDisplayVersionAndExit bool   = false
 
 	// By default these directories are created/used in the user's current
@@ -75,6 +77,14 @@ const (
 
 	// netTypeTCP6 indicates that IPv6 network connections are required
 	netTypeTCP6 string = "tcp6"
+)
+
+// TLS keywords used to map to TLS versions in the tls stdlib package.
+const (
+	minTLSVersion10 string = "tls10"
+	minTLSVersion11 string = "tls11"
+	minTLSVersion12 string = "tls12"
+	minTLSVersion13 string = "tls13"
 )
 
 // these keys are found in the `DEFAULT` section of the INI file.

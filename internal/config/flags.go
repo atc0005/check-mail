@@ -22,6 +22,7 @@ func (c *Config) handleFlagsConfig(acceptConfigFile bool) {
 	flag.BoolVar(&c.ShowVersion, "version", defaultDisplayVersionAndExit, versionFlagHelp)
 	flag.StringVar(&c.LoggingLevel, "log-level", defaultLoggingLevel, loggingLevelFlagHelp)
 	flag.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
+	flag.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
 
 	// currently only applies to list-emails app, don't expose to Nagios plugin
 	if acceptConfigFile {

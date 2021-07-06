@@ -20,7 +20,7 @@ import (
 
 // Connect opens a connection to the specified IMAP server using the specified
 // network type, returns a client connection.
-func Connect(server string, port int, netType string, logger zerolog.Logger) (*client.Client, error) {
+func Connect(server string, port int, netType string, minTLSVer uint16, logger zerolog.Logger) (*client.Client, error) {
 
 	logger.Debug().Msg("resolving hostname")
 	lookupResults, lookupErr := net.LookupHost(server)
@@ -96,13 +96,12 @@ func Connect(server string, port int, netType string, logger zerolog.Logger) (*c
 
 	var c *client.Client
 	var connectErr error
+
+	// #nosec G402; allow user to choose minimum TLS version, fallback to a
+	// secure default
 	tlsConfig := &tls.Config{
 		ServerName: server,
-		// NOTE: Explicitly setting minimum TLS version to resolve `G402: TLS
-		// MinVersion too low. (gosec)`
-		//
-		// TODO: Revisit as part of GH-169
-		MinVersion: tls.VersionTLS12,
+		MinVersion: minTLSVer,
 	}
 
 	for _, addr := range addrs {

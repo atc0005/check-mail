@@ -117,6 +117,10 @@ type Config struct {
 	// IPv6 addresses ("auto").
 	NetworkType string
 
+	// minTLSVersion is the keyword representing the minimum version of TLS
+	// supported for encrypted IMAP server connections.
+	minTLSVersion string
+
 	// ReportFileOutputDir is the full path to the directory where email
 	// summary report files will be generated. Not currently used by the
 	// Nagios plugin.
@@ -270,7 +274,16 @@ func (c Config) validate(useConfigFile bool) error {
 
 	}
 
-	switch c.NetworkType {
+	switch strings.ToLower(c.minTLSVersion) {
+	case minTLSVersion10:
+	case minTLSVersion11:
+	case minTLSVersion12:
+	case minTLSVersion13:
+	default:
+		return fmt.Errorf("invalid TLS version keyword: %s", c.minTLSVersion)
+	}
+
+	switch strings.ToLower(c.NetworkType) {
 	case netTypeTCPAuto:
 	case netTypeTCP4:
 	case netTypeTCP6:
