@@ -73,7 +73,7 @@ func main() {
 
 		c, connectErr := mbxs.Connect(account.Server, account.Port, cfg.NetworkType, cfg.MinTLSVersion(), logger)
 		if connectErr != nil {
-			logger.Error().Err(connectErr).Msgf("error connecting to server")
+			logger.Error().Err(connectErr).Msg("error connecting to server")
 			nagiosExitState.LastError = connectErr
 			nagiosExitState.ServiceOutput = fmt.Sprintf(
 				"%s: Error connecting to %s",
