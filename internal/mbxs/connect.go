@@ -18,9 +18,92 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// openConnection receives a list of IP Addresses and returns a client
+// connection for the first successful connection attempt. An error is
+// returned instead if one occurs.
+func openConnection(addrs []string, port int, dialer Dialer, tlsConfig *tls.Config, logger zerolog.Logger) (*client.Client, error) {
+
+	if len(addrs) < 1 {
+		errMsg := "empty list of IP Addresses received"
+
+		logger.Error().Msg(errMsg)
+
+		return nil, fmt.Errorf(errMsg)
+	}
+
+	var c *client.Client
+	var connectErr error
+
+	for _, addr := range addrs {
+		logger.Debug().
+			Str("ip_address", addr).
+			Msg("Connecting to server")
+
+		s := net.JoinHostPort(addr, strconv.Itoa(port))
+
+		// pass in explicitly set TLS config using provided server name, but
+		// attempt to connect to specific IP Address returned from earlier
+		// lookup. We'll attempt to loop over each available IP Address until
+		// we are able to successfully connect to one of them.
+		c, connectErr = client.DialWithDialerTLS(&dialer, s, tlsConfig)
+
+		// log override just before checking for an error; this value could be
+		// useful in troubleshooting why a connection attempt fails
+		if dialer.NetworkTypeUserOverride != "" {
+			logger.Debug().
+				Str("dialer_network_original_value", dialer.NetworkTypeOriginalValue).
+				Str("dialer_network_overridden_value", dialer.NetworkTypeUserOverride).
+				Msg("dialer network overridden with user supplied value")
+		}
+
+		if connectErr != nil {
+			logger.Error().
+				Err(connectErr).
+				Str("ip_address", addr).
+				Msg("error connecting to server")
+
+			continue
+		}
+
+		// If no connection errors were received, we can consider the
+		// connection attempt a success, clear any previous error and abort
+		// attempts to connect to any remaining IP Addresses for the specified
+		// server name.
+		logger.Info().
+			Str("ip_address", addr).
+			Msg("Connected to server")
+
+		return c, nil
+	}
+
+	// If all connection attempts failed, report the last connection error.
+	// Log all failed IP Addresses for review.
+	if connectErr != nil {
+		errMsg := fmt.Sprintf(
+			"failed to connect to server using any of %d IP Addresses (%s)",
+			len(addrs),
+			strings.Join(addrs, ", "),
+		)
+		logger.Error().
+			Err(connectErr).
+			Str("failed_ip_addresses", strings.Join(addrs, ", ")).
+			Msg(errMsg)
+
+		return nil, fmt.Errorf("%s; last error: %w", errMsg, connectErr)
+	}
+
+	return c, nil
+
+}
+
 // Connect opens a connection to the specified IMAP server using the specified
-// network type, returns a client connection.
+// network type, returns a client connection or an error if one occurs.
 func Connect(server string, port int, netType string, minTLSVer uint16, logger zerolog.Logger) (*client.Client, error) {
+
+	logger = logger.With().
+		Str("hostname", server).
+		Str("net_type", netType).
+		Logger()
 
 	logger.Debug().Msg("resolving hostname")
 	lookupResults, lookupErr := net.LookupHost(server)
@@ -35,10 +118,25 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 		)
 	}
 
-	logger.Debug().
-		Int("count", len(lookupResults)).
-		Str("ips", strings.Join(lookupResults, ", ")).
-		Msg("successfully resolved IP Addresses for hostname")
+	switch {
+	case len(lookupResults) < 1:
+		errMsg := fmt.Sprintf(
+			"failed to resolve hostname %s to IP Addresses",
+			server,
+		)
+
+		logger.Error().
+			Msg(errMsg)
+
+		return nil, fmt.Errorf(errMsg)
+
+	default:
+		logger.Debug().
+			Int("count", len(lookupResults)).
+			Str("ips", strings.Join(lookupResults, ", ")).
+			Msg("successfully resolved IP Addresses for hostname")
+
+	}
 
 	addrs := make([]string, 0, len(lookupResults))
 	ips := make([]net.IP, 0, len(lookupResults))
@@ -53,6 +151,18 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 			)
 		}
 		ips = append(ips, ip)
+	}
+
+	switch {
+	case len(ips) < 1:
+		errMsg := "failed to to convert DNS lookup results to net.IP values"
+
+		logger.Error().Msg(errMsg)
+
+		return nil, fmt.Errorf(errMsg)
+
+	default:
+		logger.Debug().Msg("successfully converted DNS lookup results to net.IP values")
 	}
 
 	var dialer Dialer
@@ -90,13 +200,22 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 		addrs = lookupResults
 	}
 
-	logger.Debug().
-		Int("count", len(addrs)).
-		Str("ips", strings.Join(addrs, ", ")).
-		Msg("successfully gathered IP Addresses for connection attempts")
+	// No IPs remain after filtering against IPv4-only or IPv6-only
+	// requirement.
+	switch {
+	case len(addrs) < 1:
+		errMsg := "failed to gather IP Addresses for connection attempts"
 
-	var c *client.Client
-	var connectErr error
+		logger.Error().Msg(errMsg)
+
+		return nil, fmt.Errorf(errMsg)
+
+	default:
+		logger.Debug().
+			Int("count", len(addrs)).
+			Str("ips", strings.Join(addrs, ", ")).
+			Msg("successfully gathered IP Addresses for connection attempts")
+	}
 
 	// #nosec G402; allow user to choose minimum TLS version, fallback to a
 	// secure default
@@ -105,66 +224,17 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 		MinVersion: minTLSVer,
 	}
 
-	for _, addr := range addrs {
-		logger.Debug().
-			Str("ip_address", addr).
-			Str("hostname", server).
-			Msg("Connecting to server")
-
-		s := net.JoinHostPort(addr, strconv.Itoa(port))
-
-		// pass in explicitly set TLS config using provided server name, but
-		// attempt to connect to specific IP Address returned from earlier
-		// lookup. We'll attempt to loop over each available IP Address until
-		// we are able to successfully connect to one of them.
-		c, connectErr = client.DialWithDialerTLS(&dialer, s, tlsConfig)
-
-		// log override just before checking for an error; this value could be
-		// useful in troubleshooting why a connection attempt fails
-		if dialer.NetworkTypeUserOverride != "" {
-			logger.Debug().
-				Str("dialer_network_original_value", dialer.NetworkTypeOriginalValue).
-				Str("dialer_network_overridden_value", dialer.NetworkTypeUserOverride).
-				Msg("dialer network overridden with user supplied value")
-		}
-
-		if connectErr != nil {
-			logger.Error().
-				Err(connectErr).
-				Str("ip_address", addr).
-				Str("hostname", server).
-				Msg("error connecting to server")
-
-			continue
-		}
-
-		// If no connection errors were received, we can consider the
-		// connection attempt a success, clear any previous error and abort
-		// attempts to connect to any remaining IP Addresses for the specified
-		// server name.
-		logger.Info().
-			Str("ip_address", addr).
-			Str("hostname", server).
-			Msg("Connected to server")
-		connectErr = nil
-		break
+	c, connectErr := openConnection(addrs, port, dialer, tlsConfig, logger)
+	if connectErr != nil {
+		return nil, connectErr
 	}
 
-	// If all connection attempts failed, report the last connection error.
-	// Log all failed IP Addresses for review.
-	if connectErr != nil {
-		errMsg := fmt.Sprintf(
-			"failed to connect to server using any of %d IP Addresses (%s)",
-			len(addrs),
+	if c == nil {
+		return nil, fmt.Errorf(
+			"failed to create client connection to %s using any of IPs %s",
+			server,
 			strings.Join(addrs, ", "),
 		)
-		logger.Error().
-			Err(connectErr).
-			Str("failed_ip_addresses", strings.Join(addrs, ", ")).
-			Str("hostname", server).
-			Msg(errMsg)
-
-		return nil, fmt.Errorf("%s; last error: %w", errMsg, connectErr)
 	}
 
 	return c, nil
@@ -174,6 +244,17 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 // Login uses the provided client connection and credentials to login to the
 // remote server.
 func Login(client *client.Client, username string, password string, logger zerolog.Logger) error {
+
+	if client == nil {
+		errMsg := fmt.Sprintf(
+			"invalid (nil) client received while attempting login for account %s",
+			username,
+		)
+
+		logger.Error().Msg(errMsg)
+
+		return fmt.Errorf(errMsg)
+	}
 
 	logger.Debug().Msg("Logging in")
 	if err := client.Login(username, password); err != nil {
