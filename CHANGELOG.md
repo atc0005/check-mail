@@ -26,6 +26,28 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.7] - 2021-07-23
+
+### Overview
+
+- Bugfixes
+- Dependency updates
+- built using Go 1.16.6
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `actions/setup-node`
+    - `v2.2.0` to `v2.3.0`
+
+### Fixed
+
+- (GH-190, GH-197) runtime error: invalid memory address or nil pointer
+  dereference (github.com/emersion/go-imap/client.(*Client).Login)
+
 ## [v0.4.6] - 2021-07-15
 
 ### Overview
@@ -615,7 +637,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.6...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.7...HEAD
+[v0.4.7]: https://github.com/atc0005/check-mail/releases/tag/v0.4.7
 [v0.4.6]: https://github.com/atc0005/check-mail/releases/tag/v0.4.6
 [v0.4.5]: https://github.com/atc0005/check-mail/releases/tag/v0.4.5
 [v0.4.4]: https://github.com/atc0005/check-mail/releases/tag/v0.4.4
