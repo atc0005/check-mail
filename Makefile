@@ -120,6 +120,18 @@ lintinstall:
 
 	@echo "Finished updating linting tools"
 
+.PHONY: gogeninstall
+## gogeninstall: install tools used by go generate
+gogeninstall:
+	@echo "Installing go generate dependencies"
+
+	@export PATH="${PATH}:$(go env GOPATH)/bin"
+
+	@echo "Installing go-winres ..."
+	@go install github.com/tc-hib/go-winres@latest
+
+	@echo "Finished installing go generate dependencies"
+
 .PHONY: linting
 ## linting: runs common linting checks
 linting:
@@ -180,8 +192,16 @@ windows:
 
 	@for target in $(WHAT); do \
 		mkdir -p $(OUTPUTDIR)/$$target && \
+		echo "Running go generate for $$target 386 binaries ..." && \
+		cd ./cmd/$$target && \
+		env GOOS=windows GOARCH=386 go generate && \
+		cd $$OLDPWD && \
 		echo "Building $$target 386 binaries" && \
 		env GOOS=windows GOARCH=386 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-windows-386.exe ./cmd/$$target && \
+		echo "Running go generate for amd64 binaries ..." && \
+		cd ./cmd/$$target && \
+		env GOOS=windows GOARCH=amd64 go generate && \
+		cd $$OLDPWD && \
 		echo "Building $$target amd64 binaries" && \
 		env GOOS=windows GOARCH=amd64 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-windows-amd64.exe ./cmd/$$target && \
 		echo "Generating $$target checksum files" && \
@@ -190,6 +210,7 @@ windows:
 		$(CHECKSUMCMD) $$target-$(VERSION)-windows-amd64.exe > $$target-$(VERSION)-windows-amd64.exe.sha256 && \
 		cd $$OLDPWD; \
 	done
+
 
 	@echo "Completed build tasks for windows"
 

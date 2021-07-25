@@ -108,6 +108,9 @@ This repo contains various tools used to monitor mail services.
   - if building with custom options (as the provided `Makefile` does)
 - `make`
   - if using the provided `Makefile`
+- `tc-hib/go-winres`
+  - if using the provided `Makefile`
+  - used to generate Windows resource files
 
 Tested using:
 
@@ -372,3 +375,4 @@ SOFTWARE.
 - <https://github.com/rs/zerolog>
 - <https://github.com/go-ini/ini>
 - <https://github.com/atc0005/go-nagios>
+- <https://github.com/tc-hib/go-winres>
