@@ -155,7 +155,10 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 
 	switch {
 	case len(ips) < 1:
-		errMsg := "failed to to convert DNS lookup results to net.IP values"
+		errMsg := fmt.Sprintf(
+			"failed to to convert DNS lookup results to net.IP values after receiving %d DNS lookup results",
+			len(lookupResults),
+		)
 
 		logger.Error().Msg(errMsg)
 
@@ -204,7 +207,10 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 	// requirement.
 	switch {
 	case len(addrs) < 1:
-		errMsg := "failed to gather IP Addresses for connection attempts"
+		errMsg := fmt.Sprintf(
+			"failed to gather IP Addresses for connection attempts after receiving and parsing %d DNS lookup results",
+			len(lookupResults),
+		)
 
 		logger.Error().Msg(errMsg)
 
