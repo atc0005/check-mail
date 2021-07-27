@@ -26,6 +26,25 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.9] - 2021-07-27
+
+### Overview
+
+- Output tweak
+- Windows binaries metadata
+- built using Go 1.16.6
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Added
+
+- (GH-200, GH-204) Add version details to Windows executables
+
+### Changed
+
+- (GH-205, GH-206) Expose DNS lookup results for troubleshooting
+
 ## [v0.4.8] - 2021-07-25
 
 ### Overview
@@ -652,7 +671,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.8...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.9...HEAD
+[v0.4.9]: https://github.com/atc0005/check-mail/releases/tag/v0.4.9
 [v0.4.8]: https://github.com/atc0005/check-mail/releases/tag/v0.4.8
 [v0.4.7]: https://github.com/atc0005/check-mail/releases/tag/v0.4.7
 [v0.4.6]: https://github.com/atc0005/check-mail/releases/tag/v0.4.6
