@@ -14,7 +14,7 @@ Monitor remote mail services.
 
 FEATURES
 
-• Nagios plugin for monitoring one or mail remote IMAP mailboxes
+• Nagios plugin for monitoring one or more remote IMAP mailboxes
 
 • Command-line tool for generating reports of specified folders/mailboxes
 
