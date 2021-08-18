@@ -7,7 +7,6 @@
 
 version: 2
 updates:
-
   # Enable version updates for Go modules
   - package-ecosystem: "gomod"
 
@@ -38,7 +37,6 @@ updates:
     commit-message:
       # Prefix all commit messages with "go.mod"
       prefix: "go.mod"
-
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -76,3 +74,10 @@ updates:
       - dependency-type: "all"
     commit-message:
       prefix: "canary"
+    ignore:
+      - dependency-name: "golang"
+        versions:
+          # Ignore updates from series associated with the latest "stable"
+          # Go release and no longer supported Go versions.
+          - ">= 1.17"
+          - "< 1.16"
