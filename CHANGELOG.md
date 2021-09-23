@@ -26,6 +26,28 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.11] - 2021-09-23
+
+### Overview
+
+- Dependency updates
+- built using Go 1.16.8
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.16.7` to `1.16.8`
+  - `atc0005/go-nagios`
+    - `v0.6.1` to `v0.7.0`
+  - `gopkg.in/ini.v1`
+    - `v1.62.0` to `1.63.2`
+  - `rs/zerolog`
+    - `v1.23.0` to `v1.25.0`
+
 ## [v0.4.10] - 2021-08-06
 
 ### Overview
@@ -694,7 +716,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.10...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.11...HEAD
+[v0.4.11]: https://github.com/atc0005/check-mail/releases/tag/v0.4.11
 [v0.4.10]: https://github.com/atc0005/check-mail/releases/tag/v0.4.10
 [v0.4.9]: https://github.com/atc0005/check-mail/releases/tag/v0.4.9
 [v0.4.8]: https://github.com/atc0005/check-mail/releases/tag/v0.4.8
