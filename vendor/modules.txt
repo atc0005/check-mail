@@ -1,7 +1,9 @@
 # github.com/atc0005/go-nagios v0.8.0
 ## explicit
 github.com/atc0005/go-nagios
-# github.com/emersion/go-imap v1.1.0
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+# github.com/emersion/go-imap v1.2.0
 ## explicit
 github.com/emersion/go-imap
 github.com/emersion/go-imap/client
@@ -16,7 +18,9 @@ github.com/rs/zerolog
 github.com/rs/zerolog/internal/cbor
 github.com/rs/zerolog/internal/json
 github.com/rs/zerolog/log
-# golang.org/x/text v0.3.6
+# github.com/stretchr/testify v1.3.0
+## explicit
+# golang.org/x/text v0.3.7
 golang.org/x/text/encoding
 golang.org/x/text/encoding/internal/identifier
 golang.org/x/text/transform
