@@ -128,11 +128,16 @@ You can now use `telnet localhost 1143` to manually connect to the server.
 Support for several IMAP extensions is included in go-imap itself. This
 includes:
 
+* [APPENDLIMIT](https://tools.ietf.org/html/rfc7889)
+* [CHILDREN](https://tools.ietf.org/html/rfc3348)
+* [ENABLE](https://tools.ietf.org/html/rfc5161)
+* [IDLE](https://tools.ietf.org/html/rfc2177)
 * [IMPORTANT](https://tools.ietf.org/html/rfc8457)
 * [LITERAL+](https://tools.ietf.org/html/rfc7888)
+* [MOVE](https://tools.ietf.org/html/rfc6851)
 * [SASL-IR](https://tools.ietf.org/html/rfc4959)
 * [SPECIAL-USE](https://tools.ietf.org/html/rfc6154)
-* [CHILDREN](https://tools.ietf.org/html/rfc3348)
+* [UNSELECT](https://tools.ietf.org/html/rfc3691)
 
 Support for other extensions is provided via separate packages. See below.
 
@@ -144,17 +149,12 @@ Commands defined in IMAP extensions are available in other packages. See [the
 wiki](https://github.com/emersion/go-imap/wiki/Using-extensions#using-client-extensions)
 to learn how to use them.
 
-* [APPENDLIMIT](https://github.com/emersion/go-imap-appendlimit)
 * [COMPRESS](https://github.com/emersion/go-imap-compress)
-* [ENABLE](https://github.com/emersion/go-imap-enable)
 * [ID](https://github.com/ProtonMail/go-imap-id)
-* [IDLE](https://github.com/emersion/go-imap-idle)
 * [METADATA](https://github.com/emersion/go-imap-metadata)
-* [MOVE](https://github.com/emersion/go-imap-move)
 * [NAMESPACE](https://github.com/foxcpp/go-imap-namespace)
 * [QUOTA](https://github.com/emersion/go-imap-quota)
 * [SORT and THREAD](https://github.com/emersion/go-imap-sortthread)
-* [UNSELECT](https://github.com/emersion/go-imap-unselect)
 * [UIDPLUS](https://github.com/emersion/go-imap-uidplus)
 
 ### Server backends
