@@ -40,6 +40,10 @@ func (c *Config) readConfigFile(configFile ...string) ([]byte, error) {
 			continue
 		}
 		c.Log.Debug().Str("config_file", file).Msg("Config file opened")
+
+		// #nosec G307
+		// Believed to be a false-positive from recent gosec release
+		// https://github.com/securego/gosec/issues/714
 		defer func() {
 			if err := fh.Close(); err != nil {
 				// Ignore "file already closed" errors
