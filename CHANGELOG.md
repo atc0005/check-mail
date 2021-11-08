@@ -42,7 +42,7 @@ The following types of changes will be recorded in this file:
   - `Go`
     - `1.16.8` to `1.16.10`
   - `emersion/go-imap`
-  - `v1.1.0` to `v1.2.0`
+    - `v1.1.0` to `v1.2.0`
   - `atc0005/go-nagios`
     - `v0.7.0` to `v0.8.1`
   - `actions/checkout`
