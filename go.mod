@@ -8,5 +8,5 @@ require (
 	github.com/emersion/go-imap v1.2.0
 	github.com/rs/zerolog v1.26.0
 	github.com/stretchr/testify v1.3.0 // indirect
-	gopkg.in/ini.v1 v1.64.0
+	gopkg.in/ini.v1 v1.65.0
 )
