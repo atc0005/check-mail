@@ -28,7 +28,13 @@ const myAppURL string = "https://github.com/atc0005/check-mail"
 // Usage is a custom override for the default Help text provided by the flag
 // package. Here we prepend some additional metadata to the existing output.
 var Usage = func() {
-	fmt.Fprintf(flag.CommandLine.Output(), "%s %s\n%s\n\n", myAppName, version, myAppURL)
+
+	// Override default of stderr as destination for help output. This allows
+	// Nagios XI and similar monitoring systems to call plugins with the
+	// `--help` flag and have it display within the Admin web UI.
+	flag.CommandLine.SetOutput(os.Stdout)
+
+	fmt.Fprintln(flag.CommandLine.Output(), "\n"+Version()+"\n")
 	fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
 	flag.PrintDefaults()
 }
