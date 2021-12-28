@@ -31,7 +31,7 @@ The following types of changes will be recorded in this file:
 ### Overview
 
 - Dependency updates
-- built using Go 1.16.10
+- built using Go 1.16.12
   - Statically linked
   - Windows (x86, x64)
   - Linux (x86, x64)
