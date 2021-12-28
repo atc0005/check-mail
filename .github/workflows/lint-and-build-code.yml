@@ -79,7 +79,23 @@ jobs:
 
       - name: Check out code
         uses: actions/checkout@v2.4.0
+        with:
+          # We need the tags in order to use go-winres 'git-tag' option. This
+          # option is reliant on tags.
+          fetch-depth: 0
+
+      - name: Install go generate dependencies
+        run: |
+          go install github.com/tc-hib/go-winres@latest
+          go-winres --help
 
       - name: Build using vendored dependencies
         run: |
+          # Normal Linux builds
           go build -v -mod=vendor ./cmd/check_imap_mailbox
+          go build -v -mod=vendor ./cmd/list-emails
+
+          # Windows specific build to test go-winres functionality
+          go generate -v ./cmd/list-emails
+          GOOS=windows go build -v -mod=vendor ./cmd/list-emails
+          ls -la
