@@ -19,6 +19,8 @@ Various tools used to monitor mail services
   - [`check_imap_mailbox`](#check_imap_mailbox)
   - [`list-emails`](#list-emails)
 - [Requirements](#requirements)
+  - [Building source code](#building-source-code)
+  - [Running](#running)
 - [Installation](#installation)
   - [From source](#from-source)
   - [Using release binaries](#using-release-binaries)
@@ -42,9 +44,8 @@ Various tools used to monitor mail services
 
 ## Project home
 
-See [our GitHub repo](https://github.com/atc0005/check-mail) for the latest
-code, to file an issue or submit improvements for review and potential
-inclusion into the project.
+See [our GitHub repo][repo-url] for the latest code, to file an issue or
+submit improvements for review and potential inclusion into the project.
 
 ## Overview
 
@@ -103,7 +104,18 @@ This repo contains various tools used to monitor mail services.
 
 ## Requirements
 
+The following is a loose guideline. Other combinations of Go and operating
+systems for building and running tools from this repo may work, but have not
+been tested.
+
+### Building source code
+
 - Go
+  - see this project's `go.mod` file for *preferred* version
+  - this project tests against [officially supported Go
+    releases][go-supported-releases]
+    - the most recent stable release (aka, "stable")
+    - the prior, but still supported release (aka, "oldstable")
 - GCC
   - if building with custom options (as the provided `Makefile` does)
 - `make`
@@ -112,20 +124,18 @@ This repo contains various tools used to monitor mail services.
   - if using the provided `Makefile`
   - used to generate Windows resource files
 
-Tested using:
+### Running
 
-- Go 1.13+
 - Windows 10
-  - native
-  - WSL
-- Ubuntu Linux
+- Ubuntu Linux 18.04+
 
 ## Installation
 
 ### From source
 
-1. [Download](https://golang.org/dl/) Go
-1. [Install](https://golang.org/doc/install) Go
+1. [Download][go-docs-download] Go
+1. [Install][go-docs-install] Go
+   - NOTE: Pay special attention to the remarks about `$HOME/.profile`
 1. Clone the repo
    1. `cd /tmp`
    1. `git clone https://github.com/atc0005/check-mail`
@@ -376,3 +386,15 @@ SOFTWARE.
 - <https://github.com/go-ini/ini>
 - <https://github.com/atc0005/go-nagios>
 - <https://github.com/tc-hib/go-winres>
+
+<!-- Footnotes here  -->
+
+[repo-url]: <https://github.com/atc0005/send2teams>  "This project's GitHub repo"
+
+[go-docs-download]: <https://golang.org/dl>  "Download Go"
+
+[go-docs-install]: <https://golang.org/doc/install>  "Install Go"
+
+[go-supported-releases]: <https://go.dev/doc/devel/release#policy> "Go Release Policy"
+
+<!-- []: PLACEHOLDER "DESCRIPTION_HERE" -->
