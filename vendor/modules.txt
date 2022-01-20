@@ -26,6 +26,6 @@ github.com/rs/zerolog/log
 golang.org/x/text/encoding
 golang.org/x/text/encoding/internal/identifier
 golang.org/x/text/transform
-# gopkg.in/ini.v1 v1.66.2
+# gopkg.in/ini.v1 v1.66.3
 ## explicit
 gopkg.in/ini.v1
