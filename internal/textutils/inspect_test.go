@@ -20,7 +20,7 @@ func TestInspectAstralUnicodeStrings(t *testing.T) {
 
 	for _, v := range unicodeAstralTestStrings {
 
-		var want error = nil
+		var want error
 		got := InspectString(v.original, os.Stderr)
 
 		if got != want {
@@ -39,7 +39,7 @@ func TestInspectFormattingStrings(t *testing.T) {
 
 	for _, v := range formattingTestStrings {
 
-		var want error = nil
+		var want error
 		got := InspectString(v.original, os.Stderr)
 
 		if got != want {
