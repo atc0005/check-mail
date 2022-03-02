@@ -26,6 +26,39 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.15] - 2022-03-02
+
+### Overview
+
+- Dependency updates
+- CI / linting improvements
+- Bugfixes
+- built using Go 1.17.7
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.17.6` to `1.17.7`
+  - `gopkg.in/ini.v1`
+    - `v1.66.3` to `v1.66.4`
+  - `actions/checkout`
+    - `v2.4.0` to `v3`
+  - `actions/setup-node`
+    - `v2.5.1` to `v3`
+
+- (GH-264) Expand linting GitHub Actions Workflow to include `oldstable`,
+  `unstable` container images
+- (GH-265) Switch Docker image source from Docker Hub to GitHub Container
+  Registry (GHCR)
+
+### Fixed
+
+- (GH-267) var-declaration linting errors from revive linter
+
 ## [v0.4.14] - 2022-01-21
 
 ### Overview
@@ -808,7 +841,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.14...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.15...HEAD
+[v0.4.15]: https://github.com/atc0005/check-mail/releases/tag/v0.4.15
 [v0.4.14]: https://github.com/atc0005/check-mail/releases/tag/v0.4.14
 [v0.4.13]: https://github.com/atc0005/check-mail/releases/tag/v0.4.13
 [v0.4.12]: https://github.com/atc0005/check-mail/releases/tag/v0.4.12
