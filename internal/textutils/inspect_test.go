@@ -8,6 +8,7 @@
 package textutils
 
 import (
+	"errors"
 	"os"
 	"testing"
 )
@@ -23,7 +24,7 @@ func TestInspectAstralUnicodeStrings(t *testing.T) {
 		var want error
 		got := InspectString(v.original, os.Stderr)
 
-		if got != want {
+		if !errors.Is(got, want) {
 			t.Error("Expected", want, "Got", got)
 		}
 	}
@@ -42,7 +43,7 @@ func TestInspectFormattingStrings(t *testing.T) {
 		var want error
 		got := InspectString(v.original, os.Stderr)
 
-		if got != want {
+		if !errors.Is(got, want) {
 			t.Error("Expected", want, "Got", got)
 		}
 	}
