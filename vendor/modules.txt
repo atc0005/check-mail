@@ -3,7 +3,7 @@
 github.com/atc0005/go-nagios
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
-# github.com/emersion/go-imap v1.2.0
+# github.com/emersion/go-imap v1.2.1
 ## explicit; go 1.13
 github.com/emersion/go-imap
 github.com/emersion/go-imap/client
