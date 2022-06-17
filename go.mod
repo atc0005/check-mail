@@ -3,7 +3,7 @@ module github.com/atc0005/check-mail
 go 1.17
 
 require (
-	github.com/atc0005/go-nagios v0.8.2
+	github.com/atc0005/go-nagios v0.9.0
 	github.com/emersion/go-imap v1.2.1
 	github.com/rs/zerolog v1.26.1
 	gopkg.in/ini.v1 v1.66.6
