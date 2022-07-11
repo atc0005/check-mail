@@ -52,7 +52,7 @@ func main() {
 			"%s: Error initializing application",
 			nagios.StateCRITICALLabel,
 		)
-		nagiosExitState.LastError = cfgErr
+		nagiosExitState.AddError(cfgErr)
 		nagiosExitState.ExitStatusCode = nagios.StateCRITICALExitCode
 
 		return
@@ -76,7 +76,7 @@ func main() {
 		c, connectErr := mbxs.Connect(account.Server, account.Port, cfg.NetworkType, cfg.MinTLSVersion(), logger)
 		if connectErr != nil {
 			logger.Error().Err(connectErr).Msg("error connecting to server")
-			nagiosExitState.LastError = connectErr
+			nagiosExitState.AddError(connectErr)
 			nagiosExitState.ServiceOutput = fmt.Sprintf(
 				"%s: Error connecting to %s",
 				nagios.StateCRITICALLabel,
@@ -89,7 +89,7 @@ func main() {
 
 		if loginErr := mbxs.Login(c, account.Username, account.Password, logger); loginErr != nil {
 			logger.Error().Err(loginErr).Msg("Login error occurred")
-			nagiosExitState.LastError = loginErr
+			nagiosExitState.AddError(loginErr)
 			nagiosExitState.ServiceOutput = fmt.Sprintf(
 				"%s: Login error occurred",
 				nagios.StateCRITICALLabel,
@@ -112,7 +112,7 @@ func main() {
 			logger.Debug().Msgf("%s: Logging out", accountName)
 			if err := c.Logout(); err != nil {
 				logger.Error().Err(err).Msgf("%s: Failed to log out", accountName)
-				nagiosExitState.LastError = err
+				nagiosExitState.AddError(err)
 				nagiosExitState.ServiceOutput = fmt.Sprintf(
 					"%s: Error logging out",
 					nagios.StateWARNINGLabel,
@@ -127,7 +127,7 @@ func main() {
 		validatedMBXList, validateErr := mbxs.ValidateMailboxesList(
 			c, account.Folders, logger)
 		if validateErr != nil {
-			nagiosExitState.LastError = validateErr
+			nagiosExitState.AddError(validateErr)
 			nagiosExitState.ServiceOutput = fmt.Sprintf(
 				"%s: %s",
 				nagios.StateCRITICALLabel,
@@ -141,7 +141,7 @@ func main() {
 
 		results, chkMailErr := mbxs.CheckMail(c, account.Name, validatedMBXList, logger)
 		if chkMailErr != nil {
-			nagiosExitState.LastError = chkMailErr
+			nagiosExitState.AddError(chkMailErr)
 			nagiosExitState.ServiceOutput = fmt.Sprintf(
 				"%s: Error occurred checking mail: %s",
 				nagios.StateCRITICALLabel,
@@ -157,7 +157,6 @@ func main() {
 				results.TotalMessagesFound(),
 				results.MessagesFoundSummary(),
 			)
-			nagiosExitState.LastError = nil
 			nagiosExitState.ServiceOutput = fmt.Sprintf(
 				"%s: %s: %d messages found: %s",
 				nagios.StateWARNINGLabel,
@@ -175,7 +174,6 @@ func main() {
 
 	// these values are known, consistent regardless of checking one or many
 	// accounts
-	nagiosExitState.LastError = nil
 	nagiosExitState.ExitStatusCode = nagios.StateOKExitCode
 
 	// customize ServiceOutput and LongServiceOutput based on number of
