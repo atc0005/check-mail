@@ -6,7 +6,7 @@ require (
 	github.com/atc0005/go-nagios v0.9.1
 	github.com/emersion/go-imap v1.2.1
 	github.com/rs/zerolog v1.27.0
-	gopkg.in/ini.v1 v1.66.6
+	gopkg.in/ini.v1 v1.67.0
 )
 
 require (
