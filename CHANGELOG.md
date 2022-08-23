@@ -26,6 +26,29 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.19] - 2022-08-23
+
+### Overview
+
+- Dependency updates
+- Bugfixes
+- built using Go 1.17.13
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.17.12` to `1.17.13`
+  - `gopkg.in/ini.v1`
+    - `v1.66.6` to `v1.67.0`
+
+### Fixed
+
+- (GH-296) Apply Go 1.19 specific doc comments linting fixes
+
 ## [v0.4.18] - 2022-07-21
 
 ### Overview
@@ -910,7 +933,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.18...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.19...HEAD
+[v0.4.19]: https://github.com/atc0005/check-mail/releases/tag/v0.4.19
 [v0.4.18]: https://github.com/atc0005/check-mail/releases/tag/v0.4.18
 [v0.4.17]: https://github.com/atc0005/check-mail/releases/tag/v0.4.17
 [v0.4.16]: https://github.com/atc0005/check-mail/releases/tag/v0.4.16
