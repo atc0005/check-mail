@@ -10,7 +10,7 @@ package config
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -60,7 +60,7 @@ func (c *Config) readConfigFile(configFile ...string) ([]byte, error) {
 		c.Log.Debug().Msg("Attempting to read config file")
 
 		var readErr error
-		data, readErr = ioutil.ReadAll(fh)
+		data, readErr = io.ReadAll(fh)
 		if readErr != nil {
 			finalErr = fmt.Errorf("failed to read config file: %w", readErr)
 			continue
