@@ -26,6 +26,37 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.20] - 2022-09-21
+
+### Overview
+
+- Bug fixes
+- Dependency updates
+- GitHub Actions Workflows updates
+- built using Go 1.19.1
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.17.13` to `1.19.1`
+  - `atc0005/go-nagios`
+    - `v0.9.1` to `v0.10.0`
+  - `rs/zerolog`
+    - `v1.27.0` to `v1.28.0`
+  - `github/codeql-action`
+    - `v2.1.22` to `v2.1.24`
+- (GH-301) Update project to Go 1.19
+- (GH-302) Update Makefile and GitHub Actions Workflows
+
+### Fixed
+
+- (GH-299) Add missing cmd doc files
+- (GH-300) Swap io/ioutil package for io package
+
 ## [v0.4.19] - 2022-08-23
 
 ### Overview
@@ -933,7 +964,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.19...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.20...HEAD
+[v0.4.20]: https://github.com/atc0005/check-mail/releases/tag/v0.4.20
 [v0.4.19]: https://github.com/atc0005/check-mail/releases/tag/v0.4.19
 [v0.4.18]: https://github.com/atc0005/check-mail/releases/tag/v0.4.18
 [v0.4.17]: https://github.com/atc0005/check-mail/releases/tag/v0.4.17
