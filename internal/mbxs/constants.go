@@ -29,3 +29,22 @@ const (
 	// NetTypeTCP6 indicates an IPv6-only network.
 	NetTypeTCP6 string = "tcp6"
 )
+
+// IMAP commands
+const (
+
+	// The LOGIN command identifies the client to the server and carries the
+	// plaintext password authenticating this user.
+	// https://datatracker.ietf.org/doc/html/rfc3501#section-6.2.3
+	IMAPv4CommandLogin string = "LOGIN"
+)
+
+// IMAP capabilities
+const (
+
+	// The LOGINDISABLED capability indicates that the LOGIN command is not
+	// permitted. This is most often due to TLS not active for the current
+	// connection.
+	// https://datatracker.ietf.org/doc/html/rfc3501#section-6.1.1
+	IMAPv4CapabilityLoginDisabled string = "LOGINDISABLED"
+)

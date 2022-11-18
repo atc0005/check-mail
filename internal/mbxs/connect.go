@@ -250,10 +250,11 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 }
 
 // Login uses the provided client connection and credentials to login to the
-// remote server.
-func Login(client *client.Client, username string, password string, logger zerolog.Logger) error {
+// IMAP server using plaintext authentication. Most servers will reject logins
+// unless TLS is used.
+func Login(c *client.Client, username string, password string, logger zerolog.Logger) error {
 
-	if client == nil {
+	if c == nil {
 		errMsg := fmt.Sprintf(
 			"invalid (nil) client received while attempting login for account %s",
 			username,
@@ -264,8 +265,35 @@ func Login(client *client.Client, username string, password string, logger zerol
 		return fmt.Errorf(errMsg)
 	}
 
+	// Due to logic applied during connection establishment this is highly
+	// unlikely to be true, but on the mischance that it is we issue a
+	// warning.
+	if !c.IsTLS() {
+		logger.Warn().Msg("WARNING: Connection to server is insecure (TLS is not enabled)")
+	}
+
+	// Make sure that LOGINDISABLED capability has not been set. When this is
+	// advertised by the server the LOGIN command is rejected. A common
+	// scenario where this capability is set is when the client has not yet
+	// established a secure TLS connection.
+	// https://datatracker.ietf.org/doc/html/rfc3501#section-6.2.3
+	loginDisabled, capErr := c.Support(IMAPv4CapabilityLoginDisabled)
+	if capErr != nil {
+		return fmt.Errorf(
+			"failed to detect support for logins: %w",
+			capErr,
+		)
+	}
+
+	if loginDisabled {
+		return fmt.Errorf(
+			"server has disabled logins: %w",
+			client.ErrLoginDisabled,
+		)
+	}
+
 	logger.Debug().Msg("Logging in")
-	if err := client.Login(username, password); err != nil {
+	if err := c.Login(username, password); err != nil {
 		errMsg := "login error occurred"
 		logger.Error().Err(err).Msg(errMsg)
 
