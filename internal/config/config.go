@@ -39,9 +39,41 @@ var Usage = func() {
 	flag.PrintDefaults()
 }
 
-// ErrVersionRequested indicates that the user requested application version
-// information
-var ErrVersionRequested = errors.New("version information requested")
+var (
+	// ErrVersionRequested indicates that the user requested application
+	// version information
+	ErrVersionRequested = errors.New("version information requested")
+
+	// ErrAppTypeNotSpecified indicates that a tool in this project failed to
+	// specify a valid application type.
+	ErrAppTypeNotSpecified = errors.New("valid app type not specified")
+)
+
+// AppType represents the type of application that is being
+// configured/initialized. Not all application types will use the same
+// features and as a result will not accept the same flags. Unless noted
+// otherwise, each of the application types are incompatible with each other,
+// though some flags are common to all types.
+type AppType struct {
+
+	// PluginIMAPMailboxBasicAuth represents an application used as a
+	// monitoring plugin for evaluating IMAP mailboxes.
+	//
+	// Basic Authentication is used to login.
+	PluginIMAPMailboxBasicAuth bool
+
+	// ReporterIMAPMailboxBasicAuth represents an application used for
+	// generating reports for specified IMAP mailboxes.
+	//
+	// Unlike an Inspector application which is focused on testing or
+	// gathering specific details for troubleshooting purposes or a monitoring
+	// plugin which is intended for providing a severity-based outcome, a
+	// Reporter application is intended for gathering information as an
+	// overview.
+	//
+	// Basic Authentication is used to login.
+	ReporterIMAPMailboxBasicAuth bool
+}
 
 // MailAccount represents an email account listed within a configuration file.
 type MailAccount struct {
@@ -169,29 +201,29 @@ func Branding(msg string) func() string {
 // provided flag and config file values. It is responsible for validating
 // user-provided values and initializing the logging settings used by this
 // application.
-func New(useConfigFile bool, useLogFile bool) (*Config, error) {
+func New(appType AppType) (*Config, error) {
 	var config Config
 
-	config.handleFlagsConfig(useConfigFile)
+	config.handleFlagsConfig(appType)
 
 	if config.ShowVersion {
 		return nil, ErrVersionRequested
 	}
 
-	if err := config.validate(useConfigFile); err != nil {
+	if err := config.validate(appType); err != nil {
 		return nil, fmt.Errorf("configuration validation failed: %w", err)
 	}
 
 	// initialize logging "early", just as soon as validation is complete so
 	// that we can rely on it to debug further configuration init work
-	if err := config.setupLogging(useLogFile); err != nil {
+	if err := config.setupLogging(appType); err != nil {
 		return nil, fmt.Errorf(
 			"failed to set logging configuration: %w",
 			err,
 		)
 	}
 
-	if useConfigFile {
+	if appType.ReporterIMAPMailboxBasicAuth {
 		if err := config.load(); err != nil {
 
 			// We log this message in an effort to populate the log file with
@@ -208,102 +240,6 @@ func New(useConfigFile bool, useLogFile bool) (*Config, error) {
 	// fmt.Printf("config: %+v\n", config)
 
 	return &config, nil
-
-}
-
-// validate verifies all Config struct fields have been provided acceptable
-// values.
-func (c Config) validate(useConfigFile bool) error {
-
-	// NOTE: It's fine to *not* specify a config file. The expected behavior
-	// is that specifying a config file will be a rare thing; users will more
-	// often than not rely on config file auto-detection behavior.
-	//
-	// That said, if a user does not specify a config file, we need to require
-	// that one was found and loaded.
-	//
-	// if useConfigFile {
-	// 	if c.ConfigFile == "" {
-	// 		return fmt.Errorf("config file required, but not specified")
-	// 	}
-	// }
-
-	for _, account := range c.Accounts {
-		if account.Folders == nil {
-			return fmt.Errorf(
-				"one or more folders not provided for account %s",
-				account.Name,
-			)
-		}
-
-		if account.Port < 0 {
-			return fmt.Errorf(
-				"invalid TCP port number %d provided for account %s",
-				account.Port,
-				account.Name,
-			)
-		}
-
-		if account.Username == "" {
-			return fmt.Errorf("username not provided for account %s",
-				account.Name,
-			)
-		}
-
-		if account.Password == "" {
-			return fmt.Errorf("password not provided for account %s",
-				account.Name,
-			)
-		}
-
-		if account.Server == "" {
-			return fmt.Errorf("server FQDN not provided for account %s",
-				account.Name,
-			)
-		}
-	}
-
-	// these settings only apply to the list-emails application
-	if useConfigFile {
-
-		// set with a default value if not specified by the user, so should not
-		// ever be empty
-		if c.ReportFileOutputDir == "" {
-			return fmt.Errorf("missing report file output directory")
-		}
-
-		// set with a default value if not specified by the user, so should not
-		// ever be empty
-		if c.LogFileOutputDir == "" {
-			return fmt.Errorf("missing log file output directory")
-		}
-
-	}
-
-	switch strings.ToLower(c.minTLSVersion) {
-	case minTLSVersion10:
-	case minTLSVersion11:
-	case minTLSVersion12:
-	case minTLSVersion13:
-	default:
-		return fmt.Errorf("invalid TLS version keyword: %s", c.minTLSVersion)
-	}
-
-	switch strings.ToLower(c.NetworkType) {
-	case netTypeTCPAuto:
-	case netTypeTCP4:
-	case netTypeTCP6:
-	default:
-		return fmt.Errorf("invalid network type keyword: %s", c.NetworkType)
-	}
-
-	requestedLoggingLevel := strings.ToLower(c.LoggingLevel)
-	if _, ok := loggingLevels[requestedLoggingLevel]; !ok {
-		return fmt.Errorf("invalid logging level %s", c.LoggingLevel)
-	}
-
-	// Optimist
-	return nil
 
 }
 

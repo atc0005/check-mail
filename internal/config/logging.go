@@ -96,14 +96,17 @@ func setLoggingLevel(logLevel string) error {
 
 // setupLogging is responsible for configuring logging settings for this
 // application
-func (c *Config) setupLogging(useLogFile bool) error {
+func (c *Config) setupLogging(appType AppType) error {
 
 	var logOutput io.Writer
 
-	// we want to log to a file only for list-emails
-
+	var useLogFile bool
 	switch {
-	case useLogFile:
+
+	// we want to log to a file only for list-emails
+	case appType.ReporterIMAPMailboxBasicAuth:
+
+		useLogFile = true
 
 		logFilename := fmt.Sprintf(
 			logFilenameTemplate,
@@ -135,6 +138,10 @@ func (c *Config) setupLogging(useLogFile bool) error {
 
 		// TODO: Set c.LogFileHandle to the newly opened file
 	default:
+
+		// Explicitly note that we disable use of a log file for all
+		// other application types.
+		useLogFile = false
 
 		// Nagios doesn't look at stderr, only stdout. We have to make sure
 		// that only whatever output is meant for consumption is emitted to

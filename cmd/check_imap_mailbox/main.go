@@ -31,13 +31,8 @@ func main() {
 	// defer this from the start so it is the last deferred function to run
 	defer nagiosExitState.ReturnCheckResults()
 
-	// Setup configuration by parsing user-provided flags. This plugin does
-	// not currently support retrieving settings from a user-provided config
-	// file. Because this may change in the near future, we are structuring
-	// this plugin in a way to support that direction.
-	useConfigFile := false
-	useLogFile := false
-	cfg, cfgErr := config.New(useConfigFile, useLogFile)
+	// Setup configuration by parsing user-provided flags.
+	cfg, cfgErr := config.New(config.AppType{PluginIMAPMailboxBasicAuth: true})
 	switch {
 	case errors.Is(cfgErr, config.ErrVersionRequested):
 		fmt.Println(config.Version())

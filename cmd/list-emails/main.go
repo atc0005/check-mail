@@ -40,9 +40,7 @@ func main() {
 	}(&appExitStatus)
 
 	// Setup configuration by parsing user-provided flags
-	useConfigFile := true
-	useLogFile := true
-	cfg, cfgErr := config.New(useConfigFile, useLogFile)
+	cfg, cfgErr := config.New(config.AppType{ReporterIMAPMailboxBasicAuth: true})
 	switch {
 	case errors.Is(cfgErr, config.ErrVersionRequested):
 		fmt.Println(config.Version())
