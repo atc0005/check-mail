@@ -26,6 +26,37 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.21] - 2022-11-19
+
+### Overview
+
+- Bug fixes
+- Dependency updates
+- GitHub Actions Workflows updates
+- built using Go 1.19.3
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.19.1` to `1.19.3`
+  - `atc0005/go-nagios`
+    - `v0.10.0` to `v0.10.2`
+  - `github/codeql-action`
+    - `v2.1.24` to `v2.1.25`
+- (GH-310) Refactor GitHub Actions workflows to import logic
+- (GH-324) Expand config flag handling to use "app types"
+
+### Fixed
+
+- (GH-317) Fix Makefile Go module base path detection
+- (GH-321) Skip use of `LOGIN` IMAP command if `LOGINDISABLED` capability is
+  advertised
+- (GH-323) Fix doc.go description for list-emails CLI app
+
 ## [v0.4.20] - 2022-09-21
 
 ### Overview
@@ -964,7 +995,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.20...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.21...HEAD
+[v0.4.21]: https://github.com/atc0005/check-mail/releases/tag/v0.4.21
 [v0.4.20]: https://github.com/atc0005/check-mail/releases/tag/v0.4.20
 [v0.4.19]: https://github.com/atc0005/check-mail/releases/tag/v0.4.19
 [v0.4.18]: https://github.com/atc0005/check-mail/releases/tag/v0.4.18
