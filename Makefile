@@ -195,17 +195,17 @@ windows:
 
 	@for target in $(WHAT); do \
 		mkdir -p $(OUTPUTDIR)/$$target && \
-		echo "Running go generate for $$target 386 binaries ..." && \
+		echo "Running go generate for $$target 386 binary ..." && \
 		cd ./cmd/$$target && \
 		env GOOS=windows GOARCH=386 go generate && \
 		cd $$OLDPWD && \
-		echo "Building $$target 386 binaries" && \
+		echo "Building $$target 386 binary" && \
 		env GOOS=windows GOARCH=386 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-windows-386.exe ./cmd/$$target && \
-		echo "Running go generate for amd64 binaries ..." && \
+		echo "Running go generate for $$target amd64 binary ..." && \
 		cd ./cmd/$$target && \
 		env GOOS=windows GOARCH=amd64 go generate && \
 		cd $$OLDPWD && \
-		echo "Building $$target amd64 binaries" && \
+		echo "Building $$target amd64 binary" && \
 		env GOOS=windows GOARCH=amd64 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-windows-amd64.exe ./cmd/$$target && \
 		echo "Generating $$target checksum files" && \
 		cd $(OUTPUTDIR)/$$target && \
@@ -224,9 +224,9 @@ linux:
 
 	@for target in $(WHAT); do \
 		mkdir -p $(OUTPUTDIR)/$$target && \
-		echo "Building $$target 386 binaries" && \
+		echo "Building $$target 386 binary" && \
 		env GOOS=linux GOARCH=386 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-linux-386 ./cmd/$$target && \
-		echo "Building $$target amd64 binaries" && \
+		echo "Building $$target amd64 binary" && \
 		env GOOS=linux GOARCH=amd64 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-linux-amd64 ./cmd/$$target && \
 		echo "Generating $$target checksum files" && \
 		cd $(OUTPUTDIR)/$$target && \
