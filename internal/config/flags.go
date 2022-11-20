@@ -39,8 +39,6 @@ func (c *Config) handleFlagsConfig(appType AppType) {
 		flag.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
 		flag.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
 		flag.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
-
-		c.Accounts = append(c.Accounts, account)
 	}
 
 	// Allow our function to override the default Help output
@@ -48,5 +46,12 @@ func (c *Config) handleFlagsConfig(appType AppType) {
 
 	// parse flag definitions from the argument list
 	flag.Parse()
+
+	// For all app types other than the Reporter app we need to save any
+	// configured account details provided via CLI; the Reporter app receives
+	// all account details via configuration file.
+	if !appType.ReporterIMAPMailboxBasicAuth {
+		c.Accounts = append(c.Accounts, account)
+	}
 
 }
