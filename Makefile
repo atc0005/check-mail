@@ -167,6 +167,7 @@ goclean:
 	@mkdir -p "$(OUTPUTDIR)"
 	@rm -vf $(wildcard ${OUTPUTDIR}/*/*-linux-*)
 	@rm -vf $(wildcard ${OUTPUTDIR}/*/*-windows-*)
+	@find ${OUTPUTDIR} -mindepth 1 -type d -empty -delete
 
 .PHONY: clean
 ## clean: alias for goclean
