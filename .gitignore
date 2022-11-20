@@ -39,6 +39,7 @@
 # Ignore binaries at root of repo (often generated here when testing)
 /check_imap_mailbox
 /list-emails
+/lsimap
 
 # Help prevent accidentally including this credentials file in the repo
 /accounts.ini

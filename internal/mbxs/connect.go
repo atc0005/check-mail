@@ -66,10 +66,9 @@ func openConnection(addrs []string, port int, dialer Dialer, tlsConfig *tls.Conf
 		}
 
 		// If no connection errors were received, we can consider the
-		// connection attempt a success, clear any previous error and abort
-		// attempts to connect to any remaining IP Addresses for the specified
-		// server name.
-		logger.Info().
+		// connection attempt a success and skip further attempts to connect
+		// to any remaining IP Addresses for the specified server name.
+		logger.Debug().
 			Str("ip_address", addr).
 			Msg("Connected to server")
 
@@ -299,7 +298,7 @@ func Login(c *client.Client, username string, password string, logger zerolog.Lo
 
 		return fmt.Errorf("%s: %w", errMsg, err)
 	}
-	logger.Info().Msg("Logged in")
+	logger.Debug().Msg("Logged in")
 
 	return nil
 

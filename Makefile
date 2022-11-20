@@ -31,7 +31,7 @@
 SHELL = /bin/bash
 
 # Space-separated list of cmd/BINARY_NAME directories to build
-WHAT 					= check_imap_mailbox list-emails
+WHAT 					= check_imap_mailbox list-emails lsimap
 
 # TODO: This will need to be standardized across all cmd files in order to
 # work as intended.

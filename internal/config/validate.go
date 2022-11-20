@@ -49,9 +49,9 @@ func validateLoggingLevels(c Config) error {
 	return nil
 }
 
-func validateAccounts(c Config) error {
+func validateAccounts(c Config, appType AppType) error {
 	for _, account := range c.Accounts {
-		if account.Folders == nil {
+		if account.Folders == nil && !appType.InspectorIMAPCaps {
 			return fmt.Errorf(
 				"one or more folders not provided for account %s",
 				account.Name,
@@ -66,13 +66,15 @@ func validateAccounts(c Config) error {
 			)
 		}
 
-		if account.Username == "" {
+		// Inspector app does not use this value. Other tools do.
+		if account.Username == "" && !appType.InspectorIMAPCaps {
 			return fmt.Errorf("username not provided for account %s",
 				account.Name,
 			)
 		}
 
-		if account.Password == "" {
+		// Inspector app does not use this value. Other tools do.
+		if account.Password == "" && !appType.InspectorIMAPCaps {
 			return fmt.Errorf("password not provided for account %s",
 				account.Name,
 			)
@@ -93,9 +95,29 @@ func validateAccounts(c Config) error {
 func (c Config) validate(appType AppType) error {
 
 	switch {
+	case appType.InspectorIMAPCaps:
+
+		// We're using the Accounts collection in order to obtain access to
+		// the server and port fields.
+		if err := validateAccounts(c, appType); err != nil {
+			return err
+		}
+
+		if err := validateTLSVersion(c); err != nil {
+			return err
+		}
+
+		if err := validateNetworkType(c); err != nil {
+			return err
+		}
+
+		if err := validateLoggingLevels(c); err != nil {
+			return err
+		}
+
 	case appType.PluginIMAPMailboxBasicAuth:
 
-		if err := validateAccounts(c); err != nil {
+		if err := validateAccounts(c, appType); err != nil {
 			return err
 		}
 
@@ -138,7 +160,7 @@ func (c Config) validate(appType AppType) error {
 			return fmt.Errorf("missing log file output directory")
 		}
 
-		if err := validateAccounts(c); err != nil {
+		if err := validateAccounts(c, appType); err != nil {
 			return err
 		}
 
