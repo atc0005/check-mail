@@ -18,6 +18,7 @@ Various tools used to monitor mail services
 - [Features](#features)
   - [`check_imap_mailbox`](#check_imap_mailbox)
   - [`list-emails`](#list-emails)
+  - [`lsimap`](#lsimap)
 - [Requirements](#requirements)
   - [Building source code](#building-source-code)
   - [Running](#running)
@@ -32,6 +33,8 @@ Various tools used to monitor mail services
     - [Configuration file](#configuration-file)
       - [Settings](#settings)
       - [Usage](#usage)
+  - [`lsimap`](#lsimap-1)
+    - [Command-line arguments](#command-line-arguments-2)
 - [Examples](#examples)
   - [`check_imap_mailbox`](#check_imap_mailbox-2)
     - [As a Nagios plugin](#as-a-nagios-plugin)
@@ -39,6 +42,7 @@ Various tools used to monitor mail services
   - [`list-emails`](#list-emails-2)
     - [No options](#no-options)
     - [Alternate locations for config file, log and report directories](#alternate-locations-for-config-file-log-and-report-directories)
+  - [`lsimap`](#lsimap-2)
 - [License](#license)
 - [References](#references)
 
@@ -51,10 +55,11 @@ submit improvements for review and potential inclusion into the project.
 
 This repo contains various tools used to monitor mail services.
 
-| Tool Name            | Overall Status | Description                                                |
-| -------------------- | -------------- | ---------------------------------------------------------- |
-| `check_imap_mailbox` | Stable         | Nagios plugin used to monitor mailboxes for items          |
-| `list-emails`        | Stable         | Small CLI app used to generate listing of mailbox contents |
+| Tool Name            | Overall Status | Description                                                              |
+| -------------------- | -------------- | ------------------------------------------------------------------------ |
+| `check_imap_mailbox` | Stable         | Nagios plugin used to monitor mailboxes for items                        |
+| `list-emails`        | Stable         | Small CLI app used to generate listing of mailbox contents               |
+| `lsimap`             | Alpha          | Small CLI tool to list advertised capabilities for specified IMAP server |
 
 ## Features
 
@@ -101,6 +106,21 @@ This repo contains various tools used to monitor mail services.
     character set with a placeholder character
     - the intent is to help prevent MySQL errors when posting summary reports
       - e.g., `ERROR 1366 (22007): Incorrect string value`
+
+### `lsimap`
+
+- Quick one-off tool to list advertised capabilities for specified IMAP server
+- Leveled logging
+  - `console writer`: human-friendly, colorized output
+  - choice of `disabled`, `panic`, `fatal`, `error`, `warn`, `info` (the
+    default), `debug` or `trace`
+  - enable `debug` level to monitor submitted IMAP commands and received IMAP
+    server responses
+- TLS IMAP4 connectivity
+  - port defaults to 993/tcp
+  - network type defaults to either of IPv4 and IPv6, but optionally limited
+    to IPv4-only or IPv6-only
+  - user-specified minimum TLS version
 
 ## Requirements
 
@@ -288,6 +308,24 @@ You may also place the file wherever you like and refer to it using the
 `-config-file` (full-length flag name). See the [Examples](#examples) and
 [Command-line arguments](#command-line-arguments) sections for usage details.
 
+### `lsimap`
+
+#### Command-line arguments
+
+- Flags marked as **`required`** must be set via CLI flag.
+- Flags *not* marked as required are for settings where a useful default is
+  already defined.
+
+| Option          | Required | Default        | Repeat | Possible                                                                | Description                                                                                                                |
+| --------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `h`, `help`     | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them.                         |
+| `server`        | Yes      | *empty string* | No     | *valid FQDN or IP Address*                                              | The fully-qualified domain name of the remote mail server.                                                                 |
+| `port`          | No       | `993`          | No     | *valid IMAP TCP port*                                                   | TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections. |
+| `net-type`      | No       | `auto`         | No     | `auto`, `tcp4`, `tcp6`                                                  | Limits network connections to remote mail servers to one of the specified types.                                           |
+| `min-tls`       | No       | `tls12`        | No     | `tls10`, `tls11`, `tls12`, `tls13`                                      | Limits version of TLS used for connections to remote mail servers.                                                         |
+| `logging-level` | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                            |
+| `version`       | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                               |
+
 ## Examples
 
 ### `check_imap_mailbox`
@@ -349,6 +387,54 @@ then reference each item via separate flags.
 Checking account: email1
 Checking account: email2
 OK: Successfully generated reports for accounts: email1@example.com, email2@example.com
+```
+
+### `lsimap`
+
+Quick listings for outlook.office365.com and imap.gmail.com.
+
+This tool can be useful for determining at a glance what authentication
+mechanisms are supported by an IMAP server.
+
+```console
+$ ./lsimap --server outlook.office365.com
+6:10AM INF cmd\lsimap\main.go:61 > Connection established to server
+6:10AM INF cmd\lsimap\main.go:70 > Gathering pre-login capabilities
+6:10AM INF cmd\lsimap\main.go:87 > Capability: AUTH=PLAIN
+6:10AM INF cmd\lsimap\main.go:87 > Capability: AUTH=XOAUTH2
+6:10AM INF cmd\lsimap\main.go:87 > Capability: CHILDREN
+6:10AM INF cmd\lsimap\main.go:87 > Capability: ID
+6:10AM INF cmd\lsimap\main.go:87 > Capability: IDLE
+6:10AM INF cmd\lsimap\main.go:87 > Capability: IMAP4
+6:10AM INF cmd\lsimap\main.go:87 > Capability: IMAP4rev1
+6:10AM INF cmd\lsimap\main.go:87 > Capability: LITERAL+
+6:10AM INF cmd\lsimap\main.go:87 > Capability: MOVE
+6:10AM INF cmd\lsimap\main.go:87 > Capability: NAMESPACE
+6:10AM INF cmd\lsimap\main.go:87 > Capability: SASL-IR
+6:10AM INF cmd\lsimap\main.go:87 > Capability: UIDPLUS
+6:10AM INF cmd\lsimap\main.go:87 > Capability: UNSELECT
+6:10AM INF cmd\lsimap\main.go:95 > Connection to server closed
+
+$ ./lsimap --server imap.gmail.com
+6:10AM INF cmd\lsimap\main.go:61 > Connection established to server
+6:10AM INF cmd\lsimap\main.go:70 > Gathering pre-login capabilities
+6:10AM INF cmd\lsimap\main.go:87 > Capability: AUTH=OAUTHBEARER
+6:10AM INF cmd\lsimap\main.go:87 > Capability: AUTH=PLAIN
+6:10AM INF cmd\lsimap\main.go:87 > Capability: AUTH=PLAIN-CLIENTTOKEN
+6:10AM INF cmd\lsimap\main.go:87 > Capability: AUTH=XOAUTH
+6:10AM INF cmd\lsimap\main.go:87 > Capability: AUTH=XOAUTH2
+6:10AM INF cmd\lsimap\main.go:87 > Capability: CHILDREN
+6:10AM INF cmd\lsimap\main.go:87 > Capability: ID
+6:10AM INF cmd\lsimap\main.go:87 > Capability: IDLE
+6:10AM INF cmd\lsimap\main.go:87 > Capability: IMAP4rev1
+6:10AM INF cmd\lsimap\main.go:87 > Capability: NAMESPACE
+6:10AM INF cmd\lsimap\main.go:87 > Capability: QUOTA
+6:10AM INF cmd\lsimap\main.go:87 > Capability: SASL-IR
+6:10AM INF cmd\lsimap\main.go:87 > Capability: UNSELECT
+6:10AM INF cmd\lsimap\main.go:87 > Capability: X-GM-EXT-1
+6:10AM INF cmd\lsimap\main.go:87 > Capability: XLIST
+6:10AM INF cmd\lsimap\main.go:87 > Capability: XYZZY
+6:10AM INF cmd\lsimap\main.go:95 > Connection to server closed
 ```
 
 ## License

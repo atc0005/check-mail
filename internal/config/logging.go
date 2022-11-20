@@ -100,13 +100,10 @@ func (c *Config) setupLogging(appType AppType) error {
 
 	var logOutput io.Writer
 
-	var useLogFile bool
 	switch {
 
 	// we want to log to a file only for list-emails
 	case appType.ReporterIMAPMailboxBasicAuth:
-
-		useLogFile = true
 
 		logFilename := fmt.Sprintf(
 			logFilenameTemplate,
@@ -135,13 +132,9 @@ func (c *Config) setupLogging(appType AppType) error {
 		// Currently the design is to close this from main() as a deferred
 		// call.
 		c.LogFileHandle = f
-
 		// TODO: Set c.LogFileHandle to the newly opened file
-	default:
 
-		// Explicitly note that we disable use of a log file for all
-		// other application types.
-		useLogFile = false
+	default:
 
 		// Nagios doesn't look at stderr, only stdout. We have to make sure
 		// that only whatever output is meant for consumption is emitted to
@@ -154,20 +147,29 @@ func (c *Config) setupLogging(appType AppType) error {
 		// If we're not setting up the configuration for the Nagios plugin, we
 		// will attempt to use another output target.
 		logOutput = os.Stderr
-
 	}
 
-	// We set some common fields here so that we don't have to repeat them
-	// explicitly later and then set additional fields while processing each
-	// email account. This approach is intended to help standardize the log
-	// messages to make them easier to search through later when
-	// troubleshooting.
-	c.Log = zerolog.New(logOutput).With().Caller().
-		Str("version", Version()).
-		Bool("use_log_file", useLogFile).
-		Str("network_type", c.NetworkType).
-		Str("min_tls_version", c.MinTLSVersionKeyword()).
-		Logger()
+	switch {
+	case appType.InspectorIMAPCaps:
+
+		// Slimline logger to emit messages in a format more appropriate to
+		// CLI "inspector" tool.
+		consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr}
+		c.Log = zerolog.New(consoleWriter).With().Timestamp().Caller().Logger()
+
+	default:
+
+		// We set some common fields here so that we don't have to repeat them
+		// explicitly later and then set additional fields while processing
+		// each email account. This approach is intended to help standardize
+		// the log messages to make them easier to search through later when
+		// troubleshooting.
+		c.Log = zerolog.New(logOutput).With().Caller().
+			Str("version", Version()).
+			Str("network_type", c.NetworkType).
+			Str("min_tls_version", c.MinTLSVersionKeyword()).
+			Logger()
+	}
 
 	if err := setLoggingLevel(c.LoggingLevel); err != nil {
 		return err

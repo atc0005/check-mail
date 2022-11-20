@@ -24,14 +24,20 @@ func (c *Config) handleFlagsConfig(appType AppType) {
 	flag.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
 	flag.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
 
-	// currently only applies to list-emails app, don't expose to Nagios plugin
+	// Only applies to Reporter app
 	if appType.ReporterIMAPMailboxBasicAuth {
 		flag.StringVar(&c.ConfigFile, "config-file", defaultINIConfigFileName, iniConfigFileFlagHelp)
 		flag.StringVar(&c.ReportFileOutputDir, "report-file-dir", defaultReportFileOutputDir, reportFileOutputDirFlagHelp)
 		flag.StringVar(&c.LogFileOutputDir, "log-file-dir", defaultLogFileOutputDir, logFileOutputDirFlagHelp)
 	}
 
-	// currently only applies to Nagios plugin
+	// Inspector app
+	if appType.InspectorIMAPCaps {
+		flag.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
+		flag.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
+	}
+
+	// Basic Auth Plugin
 	if appType.PluginIMAPMailboxBasicAuth {
 		flag.Var(&account.Folders, "folders", foldersFlagHelp)
 		flag.StringVar(&account.Username, "username", defaultUsername, usernameFlagHelp)

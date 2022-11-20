@@ -73,6 +73,15 @@ type AppType struct {
 	//
 	// Basic Authentication is used to login.
 	ReporterIMAPMailboxBasicAuth bool
+
+	// InspectorIMAPCaps represents an application used for one-off or
+	// isolated checks of an IMAP server's advertised capabilities.
+	//
+	// Unlike a monitoring plugin which is focused on specific attributes
+	// resulting in a severity-based outcome, an Inspector application is
+	// intended for examining a small set of targets for
+	// informational/troubleshooting purposes.
+	InspectorIMAPCaps bool
 }
 
 // MailAccount represents an email account listed within a configuration file.

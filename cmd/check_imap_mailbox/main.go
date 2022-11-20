@@ -81,6 +81,7 @@ func main() {
 
 			return
 		}
+		logger.Debug().Msg("Connection established to server")
 
 		if loginErr := mbxs.Login(c, account.Username, account.Password, logger); loginErr != nil {
 			logger.Error().Err(loginErr).Msg("Login error occurred")
