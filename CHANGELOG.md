@@ -26,6 +26,21 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.4.22] - 2022-11-20
+
+### Overview
+
+- Bug fixes
+- built using Go 1.19.3
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Fixed
+
+- (GH-327) Tweak Makefile building and go-gen status output
+- (GH-328) Fix failure to save account details
+
 ## [v0.4.21] - 2022-11-19
 
 ### Overview
@@ -995,7 +1010,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.21...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.22...HEAD
+[v0.4.22]: https://github.com/atc0005/check-mail/releases/tag/v0.4.22
 [v0.4.21]: https://github.com/atc0005/check-mail/releases/tag/v0.4.21
 [v0.4.20]: https://github.com/atc0005/check-mail/releases/tag/v0.4.20
 [v0.4.19]: https://github.com/atc0005/check-mail/releases/tag/v0.4.19
