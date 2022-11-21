@@ -25,20 +25,6 @@ var version = "x.y.z"
 const myAppName string = "check-mail"
 const myAppURL string = "https://github.com/atc0005/check-mail"
 
-// Usage is a custom override for the default Help text provided by the flag
-// package. Here we prepend some additional metadata to the existing output.
-var Usage = func() {
-
-	// Override default of stderr as destination for help output. This allows
-	// Nagios XI and similar monitoring systems to call plugins with the
-	// `--help` flag and have it display within the Admin web UI.
-	flag.CommandLine.SetOutput(os.Stdout)
-
-	fmt.Fprintln(flag.CommandLine.Output(), "\n"+Version()+"\n")
-	fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
-	flag.PrintDefaults()
-}
-
 var (
 	// ErrVersionRequested indicates that the user requested application
 	// version information
@@ -204,6 +190,20 @@ func Branding(msg string) func() string {
 	return func() string {
 		return strings.Join([]string{msg, Version()}, "")
 	}
+}
+
+// Usage is a custom override for the default Help text provided by the flag
+// package. Here we prepend some additional metadata to the existing output.
+func Usage() {
+
+	// Override default of stderr as destination for help output. This allows
+	// Nagios XI and similar monitoring systems to call plugins with the
+	// `--help` flag and have it display within the Admin web UI.
+	flag.CommandLine.SetOutput(os.Stdout)
+
+	fmt.Fprintln(flag.CommandLine.Output(), "\n"+Version()+"\n")
+	fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
+	flag.PrintDefaults()
 }
 
 // New is a factory function that produces a new Config object based on user
