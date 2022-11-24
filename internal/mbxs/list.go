@@ -109,8 +109,8 @@ func ValidateMailboxesList(c *client.Client, userMBXList []string, logger zerolo
 }
 
 // CheckMail generates a listing of emails within the provided (and validated)
-// mailbox list for the associated username.
-func CheckMail(c *client.Client, username string, validatedMBXList []string, logger zerolog.Logger) (MailboxCheckResults, error) {
+// mailbox list for the associated account name.
+func CheckMail(c *client.Client, accountName string, validatedMBXList []string, logger zerolog.Logger) (MailboxCheckResults, error) {
 
 	// Process validated mailboxes list to determine number of emails within
 	// each of them. Based on our existing check and manual processing
@@ -132,7 +132,7 @@ func CheckMail(c *client.Client, username string, validatedMBXList []string, log
 
 			return nil, fmt.Errorf(
 				"%s: error occurred selecting mailbox: %w",
-				username,
+				accountName,
 				selectErr,
 			)
 		}
@@ -144,7 +144,7 @@ func CheckMail(c *client.Client, username string, validatedMBXList []string, log
 		)
 
 		logger.Info().Msgf("%d mail items found in %q for %s",
-			mailbox.Messages, folder, username)
+			mailbox.Messages, folder, accountName)
 
 		// List all email messages, if there are any
 		if mailbox.Messages == 0 {
@@ -223,7 +223,7 @@ func CheckMail(c *client.Client, username string, validatedMBXList []string, log
 
 			return nil, fmt.Errorf(
 				"%s: error occurred listing emails in mailbox %s",
-				username,
+				accountName,
 				folder,
 			)
 

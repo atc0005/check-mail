@@ -9,7 +9,6 @@ package config
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"time"
@@ -98,12 +97,10 @@ func setLoggingLevel(logLevel string) error {
 // application
 func (c *Config) setupLogging(appType AppType) error {
 
-	var logOutput io.Writer
-
 	switch {
 
 	// we want to log to a file only for list-emails
-	case appType.ReporterIMAPMailboxBasicAuth:
+	case appType.ReporterIMAPMailbox:
 
 		logFilename := fmt.Sprintf(
 			logFilenameTemplate,
@@ -126,30 +123,21 @@ func (c *Config) setupLogging(appType AppType) error {
 			return fmt.Errorf("failed to open report file: %w", fileOpenErr)
 		}
 
-		logOutput = f
-
 		// TODO: What is a better way to ensure this is closed properly?
-		// Currently the design is to close this from main() as a deferred
-		// call.
+		// Currently this is closed from main() as a deferred call.
 		c.LogFileHandle = f
-		// TODO: Set c.LogFileHandle to the newly opened file
 
-	default:
+		// *Nearly* everything for this app type is sent to the log file for
+		// later review. We use the "console writer" in an effort to make the
+		// log file easier to visually review.
+		logOutput := zerolog.ConsoleWriter{Out: f, NoColor: true}
 
-		// Nagios doesn't look at stderr, only stdout. We have to make sure
-		// that only whatever output is meant for consumption is emitted to
-		// stdout and whatever is meant for troubleshooting is sent to stderr.
-		// To help keep these two goals separate (and because Nagios doesn't
-		// really do anything special with JSON output from plugins), we use
-		// stdlib fmt package output functions for Nagios via stdout and
-		// logging package for troubleshooting via stderr.
-		//
-		// If we're not setting up the configuration for the Nagios plugin, we
-		// will attempt to use another output target.
-		logOutput = os.Stderr
-	}
+		c.Log = zerolog.New(logOutput).With().Timestamp().Caller().
+			Str("version", Version()).
+			Str("network_type", c.NetworkType).
+			Str("min_tls_version", c.MinTLSVersionKeyword()).
+			Logger()
 
-	switch {
 	case appType.InspectorIMAPCaps:
 
 		// Slimline logger to emit messages in a format more appropriate to
@@ -157,18 +145,46 @@ func (c *Config) setupLogging(appType AppType) error {
 		consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr}
 		c.Log = zerolog.New(consoleWriter).With().Timestamp().Caller().Logger()
 
-	default:
+	case appType.PluginIMAPMailboxBasicAuth:
 
-		// We set some common fields here so that we don't have to repeat them
-		// explicitly later and then set additional fields while processing
-		// each email account. This approach is intended to help standardize
-		// the log messages to make them easier to search through later when
-		// troubleshooting.
-		c.Log = zerolog.New(logOutput).With().Caller().
+		// Whatever output meant for consumption is emitted to stdout and
+		// whatever is meant for troubleshooting is sent to stderr. To help
+		// keep these two goals separate (and because Nagios doesn't really do
+		// anything special with JSON output from plugins), we use stdlib fmt
+		// package output functions for Nagios via stdout and logging package
+		// for troubleshooting via stderr.
+		//
+		// If we're not setting up the configuration for the Nagios plugin, we
+		// will attempt to use another output target.
+		logOutput := os.Stderr
+
+		consoleWriter := zerolog.ConsoleWriter{Out: logOutput, NoColor: true}
+		c.Log = zerolog.New(consoleWriter).With().Timestamp().Caller().
 			Str("version", Version()).
 			Str("network_type", c.NetworkType).
 			Str("min_tls_version", c.MinTLSVersionKeyword()).
 			Logger()
+
+	case appType.PluginIMAPMailboxOAuth2:
+
+		// Whatever output meant for consumption is emitted to stdout and
+		// whatever is meant for troubleshooting is sent to stderr. To help
+		// keep these two goals separate (and because Nagios doesn't really do
+		// anything special with JSON output from plugins), we use stdlib fmt
+		// package output functions for Nagios via stdout and logging package
+		// for troubleshooting via stderr.
+		//
+		// If we're not setting up the configuration for the Nagios plugin, we
+		// will attempt to use another output target.
+		logOutput := os.Stderr
+
+		consoleWriter := zerolog.ConsoleWriter{Out: logOutput, NoColor: true}
+		c.Log = zerolog.New(consoleWriter).With().Timestamp().Caller().
+			Str("version", Version()).
+			Str("network_type", c.NetworkType).
+			Str("min_tls_version", c.MinTLSVersionKeyword()).
+			Logger()
+
 	}
 
 	if err := setLoggingLevel(c.LoggingLevel); err != nil {

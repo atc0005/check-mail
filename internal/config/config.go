@@ -33,6 +33,10 @@ var (
 	// ErrAppTypeNotSpecified indicates that a tool in this project failed to
 	// specify a valid application type.
 	ErrAppTypeNotSpecified = errors.New("valid app type not specified")
+
+	// ErrInvalidAuthType indicates that an invalid or unsupported
+	// authentication type was specified.
+	ErrInvalidAuthType = errors.New("invalid auth type")
 )
 
 // AppType represents the type of application that is being
@@ -48,17 +52,21 @@ type AppType struct {
 	// Basic Authentication is used to login.
 	PluginIMAPMailboxBasicAuth bool
 
-	// ReporterIMAPMailboxBasicAuth represents an application used for
-	// generating reports for specified IMAP mailboxes.
+	// PluginIMAPMailboxOAuth2 represents an application used as a monitoring
+	// plugin for evaluating IMAP mailboxes.
+	//
+	// An OAuth2 flow is used to login.
+	PluginIMAPMailboxOAuth2 bool
+
+	// ReporterIMAPMailbox represents an application used for generating
+	// reports for specified IMAP mailboxes.
 	//
 	// Unlike an Inspector application which is focused on testing or
 	// gathering specific details for troubleshooting purposes or a monitoring
 	// plugin which is intended for providing a severity-based outcome, a
 	// Reporter application is intended for gathering information as an
 	// overview.
-	//
-	// Basic Authentication is used to login.
-	ReporterIMAPMailboxBasicAuth bool
+	ReporterIMAPMailbox bool
 
 	// InspectorIMAPCaps represents an application used for one-off or
 	// isolated checks of an IMAP server's advertised capabilities.
@@ -70,16 +78,101 @@ type AppType struct {
 	InspectorIMAPCaps bool
 }
 
-// MailAccount represents an email account listed within a configuration file.
+// OAuth2MailAccountSettings is a collection of OAuth2 settings for a mail
+// account that applications in this project interact with.
+type OAuth2MailAccountSettings struct {
+	// ClientID is the client ID used by the application that asks for
+	// authorization. It must be unique across all clients that the
+	// authorization server handles. This ID represents the registration
+	// information provided by the client.
+	//
+	// The client identifier is not a secret; it is exposed to the resource
+	// owner and MUST NOT be used alone for client authentication. The client
+	// identifier is unique to the authorization server.
+	// https://datatracker.ietf.org/doc/html/rfc6749#section-2.2
+	ClientID string `json:"client_id"`
+
+	// ClientSecret is a secret known only to the application and the
+	// authorization server. It can be considered the application's own
+	// password. This value is provided upon application authorization.
+	ClientSecret string `json:"client_secret"`
+
+	// Scopes is the collection of permissions or "scopes" requested by an
+	// application from the authorization server.
+	//
+	// Scopes let you specify exactly what type of access the application
+	// needs. Scopes limit access for OAuth tokens. They do not grant any
+	// additional permission beyond that which the user already has.
+	//
+	// https://www.oauth.com/oauth2-servers/scope/
+	// https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
+	Scopes multiValueFlag `json:"scope,omitempty"`
+
+	// TenantID is the tenant or customer identifier associated with the
+	// OAuth2-enabled service. For example, with Microsoft Office 365 (O365)
+	// this value is used to represent the organization subscribed to O365
+	// services.
+	// TenantID string `json:"-"`
+
+	// SharedMailbox is the email account that is to be accessed by the
+	// application using the given client ID, client secret values. This is
+	// usually a shared mailbox among a team.
+	SharedMailbox string `json:"-"`
+
+	// Token is a valid XOAUTH2 encoded token to use in place of requesting a
+	// new token from the authorization server. If specified, Token obviates
+	// the need for most other values: ClientID, ClientSecret, TenantID,
+	// Mailbox, Username and Password.
+	//
+	// NOTE: This value is supported by the Plugin application type only.
+	//
+	// TODO: Does this provide sufficient value? Tradeoff of token reuse (and
+	// everything required to save/load it) vs fetching a new token ...
+	//
+	// Token string `json:"-"`
+
+	// TokenURL is the authority endpoint for token retrieval.
+	TokenURL string
+}
+
+// MailAccount represents an email account. The values are provided via
+// command-line flags or are specified within a configuration file.
 type MailAccount struct {
-	Server   string
-	Port     int
+	// Server is the FQDN associated with the IMAP server.
+	//
+	// Use of IP Addresses is discouraged; TLS is needed for secure
+	// communication with IMAP servers and IP Addresses are rarely listed in
+	// Subject Alternate Names (SANs) lists for certificates.
+	Server string
+
+	// Port is the TCP port associated with the IMAP server. This is usually
+	// 993 but may differ for some installations.
+	Port int
+
+	// AuthType is either "basic" for Basic Authentication or "oauth2" for the
+	// Client Credentials OAuth2 flow. This value acts as a logic switch for
+	// the Reporter application.
+	AuthType string
+
+	// Folders is a collection of paths associated with an account. This
+	// includes paths such as "Inbox", "Junk EMail" or "Trash".
+	Folders multiValueFlag
+
+	// Username is usually the full email address associated with an account.
 	Username string
+
+	// Password is the plaintext password for the email account.
 	Password string
-	Folders  multiValueFlag
+
+	// OAuth2Settings is a collection of settings specific to OAuth2
+	// authentication with the service hosting the email account.
+	OAuth2Settings OAuth2MailAccountSettings
 
 	// Name is often the bare username for the email account, but may not be.
 	// This is used as the section header within the configuration file.
+	//
+	// NOTE: As of the v0.4.x releases this field is used exclusively by the
+	// reporter tool.
 	Name string
 }
 
@@ -232,7 +325,7 @@ func New(appType AppType) (*Config, error) {
 		)
 	}
 
-	if appType.ReporterIMAPMailboxBasicAuth {
+	if appType.ReporterIMAPMailbox {
 		if err := config.load(); err != nil {
 
 			// We log this message in an effort to populate the log file with

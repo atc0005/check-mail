@@ -7,21 +7,44 @@
 
 package config
 
-import "os"
+import (
+	"os"
+	"time"
+)
 
-// help text for our CLI flags, maintained in one common block
+// Shared flag help text
 const (
-	foldersFlagHelp             string = "Folders or IMAP \"mailboxes\" to check for mail. This value is provided as a comma-separated list."
-	usernameFlagHelp            string = "The account used to login to the remote mail server. This is often in the form of an email address."
-	passwordFlagHelp            string = "The remote mail server account password."
-	serverFlagHelp              string = "The fully-qualified domain name of the remote mail server."
-	portFlagHelp                string = "TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections."
-	networkTypeFlagHelp         string = "Limits network connections to remote mail servers to one of tcp4 (IPv4-only), tcp6 (IPv6-only) or auto (either)."
-	minTLSVersionFlagHelp       string = "Limits version of TLS used for connections to remote mail servers to one of tls10 (TLS v1.0), tls11, tls12 or tls13 (TLS v1.3)."
-	loggingLevelFlagHelp        string = "Sets log level to one of disabled, panic, fatal, error, warn, info, debug or trace."
-	emitBrandingFlagHelp        string = "Toggles emission of branding details with plugin status details. This output is disabled by default."
-	versionFlagHelp             string = "Whether to display application version and then immediately exit application."
-	iniConfigFileFlagHelp       string = "Full path to the INI-formatted configuration file used by this application. See contrib/list-emails/accounts.example.ini for a starter template. Rename to accounts.ini, update with applicable information and place in a directory of your choice. If this file is found in your current working directory you need not use this flag."
+	foldersFlagHelp       string = "Folders or IMAP \"mailboxes\" to check for mail. This value is provided as a comma-separated list."
+	serverFlagHelp        string = "The fully-qualified domain name of the remote mail server."
+	portFlagHelp          string = "TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections."
+	networkTypeFlagHelp   string = "Limits network connections to remote mail servers to one of tcp4 (IPv4-only), tcp6 (IPv6-only) or auto (either)."
+	minTLSVersionFlagHelp string = "Limits version of TLS used for connections to remote mail servers to one of tls10 (TLS v1.0), tls11, tls12 or tls13 (TLS v1.3)."
+	loggingLevelFlagHelp  string = "Sets log level to one of disabled, panic, fatal, error, warn, info, debug or trace."
+	emitBrandingFlagHelp  string = "Toggles emission of branding details with plugin status details. This output is disabled by default."
+	versionFlagHelp       string = "Whether to display application version and then immediately exit application."
+)
+
+// PluginIMAPMailboxBasicAuth flag help text
+const (
+	usernameFlagHelp string = "The account used to login to the remote mail server using Basic Auth. This is often in the form of an email address."
+	passwordFlagHelp string = "The remote mail server account password. Used for Basic Auth."
+)
+
+// PluginIMAPMailboxOauth2 flag help text
+const (
+	clientIDFlagHelp      string = "Application (client) ID created during app registration."
+	clientSecretFlagHelp  string = "Client secret (aka, \"app\" password)."
+	scopesFlagHelp        string = "One or more scopes requested from the authorization server. E.g., \"https://outlook.office365.com/.default\" for O365."
+	sharedMailboxFlagHelp string = "Email account that is to be accessed using client ID & secret values. Usually a shared mailbox among a team."
+
+	// False-positive gosec linter warning
+	//nolint
+	tokenURLFlagHelp string = "The OAuth2 provider's token endpoint URL. E.g., \"https://accounts.google.com/o/oauth2/token\" for Google. See example INI file for O365 example."
+)
+
+// Reporter flag help text
+const (
+	iniConfigFileFlagHelp       string = "Full path to the INI-formatted configuration file used by this application. See the accounts.example.ini files under contrib/list-emails directory for a starter template. Copy to accounts.ini, update with applicable information and place in a directory of your choice. If this file is found in your current working directory you need not use this flag."
 	reportFileOutputDirFlagHelp string = "Full path to the directory where email summary report files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist."
 	logFileOutputDirFlagHelp    string = "Full path to the directory where log files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist."
 )
@@ -34,6 +57,10 @@ const (
 	defaultServer                string = ""
 	defaultPassword              string = ""
 	defaultUsername              string = ""
+	defaultClientID              string = ""
+	defaultClientSecret          string = ""
+	defaultSharedMailbox         string = ""
+	defaultTokenURL              string = ""
 	defaultNetworkType           string = netTypeTCPAuto
 	defaultMinTLSVersion         string = minTLSVersion12
 	defaultDisplayVersionAndExit bool   = false
@@ -65,6 +92,8 @@ const (
 	// This will likely require reworking the configuration struct and other
 	// config load behavior.
 	// defaultTOMLConfigFileName string = "config.toml"
+
+	defaultAccountProcessDelay time.Duration = time.Second * 5
 )
 
 const (
@@ -88,17 +117,41 @@ const (
 	minTLSVersion13 string = "tls13"
 )
 
-// these keys are found in the `DEFAULT` section of the INI file.
+// These keys are found in the `DEFAULT` section of the INI file. The design
+// is that these values are server-specific while the other keys are
+// account/mailbox specific.
+//
+// The INI config file layout is one server (potentially with one
+// client/application ID) and one or more associated accounts/mailboxes.
 const (
-	iniDefaultServerNameKeyName string = "server_name"
-	iniDefaultServerPortKeyName string = "server_port"
+	iniDefaultAuthTypeKeyName         string = "auth_type"
+	iniDefaultServerNameKeyName       string = "server_name"
+	iniDefaultServerPortKeyName       string = "server_port"
+	iniDefaultClientIDKeyName         string = "client_id"
+	iniDefaultClientSecretKeyName     string = "client_secret"
+	iniDefaultScopesKeyName           string = "scopes"
+	iniDefaultEndpointTokenURLKeyName string = "endpoint_token_url"
 )
 
-// these keys are found in the other (unique) sections in the INI file.
+// These keys are found in the other (unique) sections in the INI file. If
+// account is specified then username will not be.
 const (
-	iniUsernameKeyName string = "username"
-	iniPasswordKeyName string = "password"
-	iniFoldersKeyName  string = "folders"
+	iniUsernameKeyName      string = "username"
+	iniSharedMailboxKeyName string = "shared_mailbox"
+	iniPasswordKeyName      string = "password"
+	iniFoldersKeyName       string = "folders"
+)
+
+// Supported authentication types used by applications in this project.
+//
+// These are also the only valid values for the auth_type INI config file key.
+const (
+
+	// AuthTypeBasic indicates Basic Authentication (username/password).
+	AuthTypeBasic string = "basic"
+
+	// AuthTypeOAuth2ClientCreds indicates OAuth2 Client Credentials flow.
+	AuthTypeOAuth2ClientCreds string = "oauth2"
 )
 
 // default permissions granting owner full access, deny access to all others

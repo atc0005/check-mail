@@ -10,6 +10,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -19,8 +20,6 @@ import (
 	zlog "github.com/rs/zerolog/log"
 
 	"github.com/atc0005/check-mail/internal/config"
-	"github.com/atc0005/check-mail/internal/files"
-	"github.com/atc0005/check-mail/internal/mbxs"
 )
 
 type exitStatus struct {
@@ -29,6 +28,8 @@ type exitStatus struct {
 }
 
 func main() {
+
+	ctx := context.Background()
 
 	var appExitStatus exitStatus
 
@@ -40,7 +41,7 @@ func main() {
 	}(&appExitStatus)
 
 	// Setup configuration by parsing user-provided flags
-	cfg, cfgErr := config.New(config.AppType{ReporterIMAPMailboxBasicAuth: true})
+	cfg, cfgErr := config.New(config.AppType{ReporterIMAPMailbox: true})
 	switch {
 	case errors.Is(cfgErr, config.ErrVersionRequested):
 		fmt.Println(config.Version())
@@ -80,152 +81,36 @@ func main() {
 	}(cfg.LogFileHandle.Name())
 
 	// loop over accounts
-	for _, account := range cfg.Accounts {
+	for i, account := range cfg.Accounts {
 
 		fmt.Println("Checking account:", account.Name)
 
 		logger := cfg.Log.With().
-			Str("username", account.Username).
+			Str("auth_type", account.AuthType).
 			Str("server", account.Server).
 			Int("port", account.Port).
 			Str("folders_to_check", account.Folders.String()).
 			Logger()
 
-		c, connectErr := mbxs.Connect(account.Server, account.Port, cfg.NetworkType, cfg.MinTLSVersion(), logger)
-		if connectErr != nil {
-			logger.Error().Err(connectErr).Msg("failed to connect to server")
-
-			appExitStatus.Err = connectErr
+		if err := processAccount(ctx, account, cfg, logger); err != nil {
+			appExitStatus.Err = err
 			appExitStatus.Code = 1
-
-			return
-		}
-		logger.Info().Msg("Connection established to server")
-
-		if loginErr := mbxs.Login(c, account.Username, account.Password, logger); loginErr != nil {
-			logger.Error().Err(loginErr).Msg("failed to login to server")
-
-			appExitStatus.Err = loginErr
-			appExitStatus.Code = 1
-
 			return
 		}
 
-		logger.Debug().Msg("Defer logout")
-		// At this point we are connected to the remote server and are also
-		// logged in with a valid account. We defer a Logout call here with a
-		// reasonable expectation that it will both run AND that we'll have an
-		// opportunity to report those logout issues as this application
-		// exits. We do not set appExitErr as we do not want to chance
-		// overwriting an existing error message returned from a step prior to
-		// the final deferred logout attempt.
-		defer func(accountName string) {
-			logger.Info().Msgf("%s: Logging out", accountName)
-			if err := c.Logout(); err != nil {
-				logger.Error().Err(err).Msgf("%s: Failed to log out", accountName)
-				appExitStatus.Code = 1
-
-				return
-			}
-			logger.Info().Msgf("%s: Logged out", accountName)
-		}(account.Username)
-
-		// Confirm that requested folders are present on server
-		validatedMBXList, validateErr := mbxs.ValidateMailboxesList(
-			c, account.Folders, logger)
-		if validateErr != nil {
-			logger.Error().Err(validateErr).Msg("failed to validate mailboxes list")
-
-			appExitStatus.Err = validateErr
-			appExitStatus.Code = 1
-
-			return
-
+		if i+1 < len(cfg.Accounts) {
+			// Delay processing the next account (unless we've processed them
+			// all) in an attempt to prevent encountering the "User is
+			// authenticated but not connected" error that is believed to
+			// occur when remote connections limit is exceeded.
+			time.Sleep(cfg.AccountProcessDelay())
 		}
 
-		results, chkMailErr := mbxs.CheckMail(c, account.Name, validatedMBXList, logger)
-		if chkMailErr != nil {
-			logger.Error().Err(chkMailErr).Msg("failed to check mail in mailboxes")
-
-			appExitStatus.Err = chkMailErr
-			appExitStatus.Code = 1
-
-			return
-		}
-
-		summaryMsg := fmt.Sprintf("%d messages found: %s",
-			results.TotalMessagesFound(),
-			results.MessagesFoundSummary(),
-		)
-		logger.Info().Msg(summaryMsg)
-
-		// Generate report for this account
-		reportData := files.ReportData{
-			AccountName:           account.Name,
-			MailboxCheckResults:   results,
-			MessagesFoundSummary:  results.MessagesFoundSummary(),
-			ReportTime:            time.Now(),
-			UnicodeCharSubstitute: mbxs.DefaultReplacementString,
-		}
-
-		reportGenErr := files.GenerateReport(reportData, cfg.ReportFileOutputDir, logger)
-		if reportGenErr != nil {
-
-			logger.Error().Err(reportGenErr).Msg("failed to generate report")
-
-			appExitStatus.Err = fmt.Errorf(
-				"failed to generate report: %w",
-				reportGenErr,
-			)
-			appExitStatus.Code = 1
-
-			return
-		}
-
-		if cfg.LoggingLevel == config.LogLevelDebug {
-			for _, mailbox := range results {
-				fmt.Printf(
-					"\n\nEmail messages in mailbox %q: \n\n",
-					mailbox.MailboxName,
-				)
-
-				if len(mailbox.Messages) == 0 {
-					fmt.Println("* No messages")
-					continue
-				}
-
-				for _, msg := range mailbox.Messages {
-					fmt.Printf(
-						// "{\n\tMessageID: %s\n\tEnvelopeDate: %v\n\tEnvelopeLocalDate: %v\n\tReceivedDate: %v\n\tReceivedLocalDate: %v\n\tOriginalSubject: %s\n\tModifiedSubject: %s\n}\n",
-						"{\n\tMessageID: %s\n\t"+
-							"EnvelopeDate: %v\n\t"+
-							"EnvelopeLocalDate: %v\n\t"+
-							"OriginalSubject: %s\n\t"+
-							"ModifiedSubject: %s\n}\n",
-						msg.MessageID,
-						msg.EnvelopeDate,
-						msg.EnvelopeDate.Local(),
-						// msg.ReceivedDate,
-						// msg.ReceivedDate.Local(),
-						msg.OriginalSubject,
-						msg.ModifiedSubject,
-					)
-				}
-
-			}
-
-		}
-
-	}
-
-	accountsList := make([]string, 0, len(cfg.Accounts))
-	for _, account := range cfg.Accounts {
-		accountsList = append(accountsList, account.Username)
 	}
 
 	fmt.Printf(
 		"OK: Successfully generated reports for accounts: %s\n",
-		strings.Join(accountsList, ", "),
+		strings.Join(cfg.AccountNames(), ", "),
 	)
 
 	// implied return here :)

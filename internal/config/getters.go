@@ -10,6 +10,7 @@ package config
 import (
 	"crypto/tls"
 	"strings"
+	"time"
 )
 
 // MinTLSVersion returns the applicable `tls.VersionTLS*` numeric constant
@@ -44,4 +45,68 @@ func (c Config) MinTLSVersionKeyword() string {
 
 	return c.minTLSVersion
 
+}
+
+// SupportedAuthTypes returns the complete list of supported authentication
+// types used by applications in this project.
+func (c Config) SupportedAuthTypes() []string {
+	return []string{
+		AuthTypeBasic,
+		AuthTypeOAuth2ClientCreds,
+	}
+}
+
+// Server returns the IMAP server value from the first account entry in the
+// collection. This value should be the same for all account entries in the
+// collection. For the Plugin app type this is a collection of one entry, for
+// the Reporter app type the same server value is recorded for each account
+// (convenience).
+func (c Config) Server() string {
+	return c.Accounts[0].Server
+}
+
+// Port returns the IMAP server port value from the first account entry in the
+// collection. This value should be the same for all account entries in the
+// collection. For the Plugin app type this is a collection of one entry, for
+// the Reporter app type the same server value is recorded for each account
+// (convenience).
+func (c Config) Port() int {
+	return c.Accounts[0].Port
+}
+
+// AuthType returns the authentication type from the first account entry in
+// the collection. This value should be the same for all account entries in
+// the collection. For the Plugin app type this is a collection of one entry,
+// for the Reporter app type the same server value is recorded for each
+// account (convenience).
+func (c Config) AuthType() string {
+	return c.Accounts[0].AuthType
+}
+
+// AccountProcessDelay returns the configured delay between processing
+// accounts in a collection.
+func (c Config) AccountProcessDelay() time.Duration {
+
+	// TODO: Provide a flag / config file setting for this.
+	return defaultAccountProcessDelay
+}
+
+// AccountNames returns the collection of names associated with accounts. If
+// basic auth is used this will be usernames, if oauth2 is used this will be
+// mailbox names. If an account or mailbox is specified as "user@example.com"
+// only the "user" portion of that value is returned.
+func (c Config) AccountNames() []string {
+	accountsList := make([]string, 0, len(c.Accounts))
+	for _, account := range c.Accounts {
+		switch account.AuthType {
+		case AuthTypeBasic:
+			name := strings.Split(account.Username, "@")[0]
+			accountsList = append(accountsList, name)
+		case AuthTypeOAuth2ClientCreds:
+			name := strings.Split(account.OAuth2Settings.SharedMailbox, "@")[0]
+			accountsList = append(accountsList, name)
+		}
+	}
+
+	return accountsList
 }

@@ -12,10 +12,6 @@ import (
 	"time"
 )
 
-// A baseline starting point for allocating slices to match "about" how many
-// mailboxes will need to be checked on a remote mail server.
-const mailboxCountGuesstimate int = 5
-
 // Message is a subset of attributes for an email message found within a
 // specified mailbox.
 type Message struct {
@@ -50,7 +46,7 @@ type Message struct {
 	// ReceivedDate time.Time
 
 	// OriginalSubject is the unmodified, original subject line of an email
-	// message found within a specificed mailbox.
+	// message found within a specified mailbox.
 	OriginalSubject string
 
 	// ModifiedSubject is the subject line of the original email message that

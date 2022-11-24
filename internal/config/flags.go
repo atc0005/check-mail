@@ -25,7 +25,7 @@ func (c *Config) handleFlagsConfig(appType AppType) {
 	flag.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
 
 	// Only applies to Reporter app
-	if appType.ReporterIMAPMailboxBasicAuth {
+	if appType.ReporterIMAPMailbox {
 		flag.StringVar(&c.ConfigFile, "config-file", defaultINIConfigFileName, iniConfigFileFlagHelp)
 		flag.StringVar(&c.ReportFileOutputDir, "report-file-dir", defaultReportFileOutputDir, reportFileOutputDirFlagHelp)
 		flag.StringVar(&c.LogFileOutputDir, "log-file-dir", defaultLogFileOutputDir, logFileOutputDirFlagHelp)
@@ -39,12 +39,39 @@ func (c *Config) handleFlagsConfig(appType AppType) {
 
 	// Basic Auth Plugin
 	if appType.PluginIMAPMailboxBasicAuth {
+
+		// Indicate what validation logic should be applied for this set of
+		// flags.
+		account.AuthType = AuthTypeBasic
+
 		flag.Var(&account.Folders, "folders", foldersFlagHelp)
 		flag.StringVar(&account.Username, "username", defaultUsername, usernameFlagHelp)
 		flag.StringVar(&account.Password, "password", defaultPassword, passwordFlagHelp)
 		flag.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
 		flag.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
 		flag.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
+	}
+
+	// OAuth2 Client Credentials flow plugin
+	if appType.PluginIMAPMailboxOAuth2 {
+
+		// Indicate what validation logic should be applied for this set of
+		// flags.
+		account.AuthType = AuthTypeOAuth2ClientCreds
+
+		// Common plugin flags
+		flag.Var(&account.Folders, "folders", foldersFlagHelp)
+		flag.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
+		flag.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
+		flag.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
+
+		// OAuth2 flags
+		flag.Var(&account.OAuth2Settings.Scopes, "scopes", scopesFlagHelp)
+		flag.StringVar(&account.OAuth2Settings.ClientID, "client-id", defaultClientID, clientIDFlagHelp)
+		flag.StringVar(&account.OAuth2Settings.ClientSecret, "client-secret", defaultClientSecret, clientSecretFlagHelp)
+		flag.StringVar(&account.OAuth2Settings.SharedMailbox, "shared-mailbox", defaultSharedMailbox, sharedMailboxFlagHelp)
+		flag.StringVar(&account.OAuth2Settings.TokenURL, "token-url", defaultTokenURL, tokenURLFlagHelp)
+
 	}
 
 	// Allow our function to override the default Help output
@@ -56,7 +83,7 @@ func (c *Config) handleFlagsConfig(appType AppType) {
 	// For all app types other than the Reporter app we need to save any
 	// configured account details provided via CLI; the Reporter app receives
 	// all account details via configuration file.
-	if !appType.ReporterIMAPMailboxBasicAuth {
+	if !appType.ReporterIMAPMailbox {
 		c.Accounts = append(c.Accounts, account)
 	}
 
