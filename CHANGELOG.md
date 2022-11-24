@@ -26,6 +26,56 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.5.0] - 2022-11-24
+
+### Overview
+
+- New plugin
+- New CLI tools
+- Bug fixes
+- Dependency updates
+- built using Go 1.19.3
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Added
+
+- (GH-313, GH-335) Add initial OAuth2 auth support
+  - rename existing monitoring plugin to make explicitly clear that it
+    supports Basic Auth only
+    - `check_imap_mailbox` to `check_imap_mailbox_basic`
+  - new `check_imap_mailbox_oauth2` plugin to support OAuth2 Client
+    Credentials flow
+  - update `list-emails` tool to support either of Basic Auth or Client
+    Credentials OAuth2 flow depending on which config file settings are used
+  - refresh README to provide coverage for new settings/plugin and liberal
+    collection of ref links for context
+  - refresh `list-emails` config file example coverage
+    - update existing file to make clear that it is intended for Basic Auth
+    - add new file to cover settings for Client Credentials OAuth2 flow
+- (GH-330) Add `lsimap` troubleshooting tool
+
+### Changed
+
+- Dependencies
+  - multiple new direct & indirect dependencies
+    - direct
+      - `golang.org/x/oauth2`
+      - `github.com/sqs/go-xoauth2`
+  - `golang.org/x/sys`
+    - `v0.0.0-20210927094055-39ccf1dd6fa6` to `v0.2.0`
+  - `golang.org/x/text`
+    - `v0.3.7` to `v0.4.0`
+- (GH-331) Makefile: Prune empty release asset dirs
+
+### Fixed
+
+- (GH-183) Error: User is authenticated but not connected
+- (GH-332) Convert global `Usage` func to normal/named func
+- (GH-334) `(*client.Client).Logout()` called to log account out instead of to
+  close the connection
+
 ## [v0.4.22] - 2022-11-20
 
 ### Overview
@@ -1010,7 +1060,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.4.22...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.5.0...HEAD
+[v0.5.0]: https://github.com/atc0005/check-mail/releases/tag/v0.5.0
 [v0.4.22]: https://github.com/atc0005/check-mail/releases/tag/v0.4.22
 [v0.4.21]: https://github.com/atc0005/check-mail/releases/tag/v0.4.21
 [v0.4.20]: https://github.com/atc0005/check-mail/releases/tag/v0.4.20
