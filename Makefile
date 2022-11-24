@@ -31,7 +31,11 @@
 SHELL = /bin/bash
 
 # Space-separated list of cmd/BINARY_NAME directories to build
-WHAT 					= check_imap_mailbox list-emails lsimap
+WHAT 					= check_imap_mailbox_basic \
+							check_imap_mailbox_oauth2 \
+							list-emails \
+							lsimap \
+							xoauth2 \
 
 # TODO: This will need to be standardized across all cmd files in order to
 # work as intended.
@@ -196,19 +200,19 @@ windows:
 
 	@for target in $(WHAT); do \
 		mkdir -p $(OUTPUTDIR)/$$target && \
-		echo "Running go generate for $$target 386 binary ..." && \
+		echo "  Running go generate for $$target 386 binary ..." && \
 		cd ./cmd/$$target && \
 		env GOOS=windows GOARCH=386 go generate && \
 		cd $$OLDPWD && \
-		echo "Building $$target 386 binary" && \
+		echo "  Building $$target 386 binary" && \
 		env GOOS=windows GOARCH=386 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-windows-386.exe ./cmd/$$target && \
-		echo "Running go generate for $$target amd64 binary ..." && \
+		echo "  Running go generate for $$target amd64 binary ..." && \
 		cd ./cmd/$$target && \
 		env GOOS=windows GOARCH=amd64 go generate && \
 		cd $$OLDPWD && \
-		echo "Building $$target amd64 binary" && \
+		echo "  Building $$target amd64 binary" && \
 		env GOOS=windows GOARCH=amd64 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-windows-amd64.exe ./cmd/$$target && \
-		echo "Generating $$target checksum files" && \
+		echo "  Generating $$target checksum files" && \
 		cd $(OUTPUTDIR)/$$target && \
 		$(CHECKSUMCMD) $$target-$(VERSION)-windows-386.exe > $$target-$(VERSION)-windows-386.exe.sha256 && \
 		$(CHECKSUMCMD) $$target-$(VERSION)-windows-amd64.exe > $$target-$(VERSION)-windows-amd64.exe.sha256 && \
@@ -225,11 +229,11 @@ linux:
 
 	@for target in $(WHAT); do \
 		mkdir -p $(OUTPUTDIR)/$$target && \
-		echo "Building $$target 386 binary" && \
+		echo "  Building $$target 386 binary" && \
 		env GOOS=linux GOARCH=386 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-linux-386 ./cmd/$$target && \
-		echo "Building $$target amd64 binary" && \
+		echo "  Building $$target amd64 binary" && \
 		env GOOS=linux GOARCH=amd64 $(BUILDCMD) -o $(OUTPUTDIR)/$$target/$$target-$(VERSION)-linux-amd64 ./cmd/$$target && \
-		echo "Generating $$target checksum files" && \
+		echo "  Generating $$target checksum files" && \
 		cd $(OUTPUTDIR)/$$target && \
 		$(CHECKSUMCMD) $$target-$(VERSION)-linux-386 > $$target-$(VERSION)-linux-386.sha256 && \
 		$(CHECKSUMCMD) $$target-$(VERSION)-linux-amd64 > $$target-$(VERSION)-linux-amd64.sha256 && \

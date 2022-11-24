@@ -9,6 +9,10 @@ package mbxs
 
 import "github.com/atc0005/check-mail/internal/textutils"
 
+// A baseline starting point for allocating slices to match "about" how many
+// mailboxes will need to be checked on a remote mail server.
+const mailboxCountGuesstimate int = 5
+
 // DefaultReplacementString is used when replacing Unicode characters
 // incompatible with a target character set. The common use case is
 // substituting Unicode characters incompatible with the utf8mb3 character

@@ -179,13 +179,13 @@ func (c *Config) loadINIConfig(file []byte) error {
 
 	iniFile, loadErr := ini.Load(file)
 	if loadErr != nil {
-		return fmt.Errorf("failed to load INI file: %v", loadErr)
+		return fmt.Errorf("failed to load INI file: %w", loadErr)
 	}
 
 	defaultSection, lookupErr := iniFile.GetSection("DEFAULT")
 	if lookupErr != nil {
 		return fmt.Errorf(
-			"failed to retrieve defaults section: %v",
+			"failed to retrieve defaults section: %w",
 			lookupErr,
 		)
 	}
@@ -196,12 +196,17 @@ func (c *Config) loadINIConfig(file []byte) error {
 		defaultSection.Keys(),
 	)
 
+	//
+	// Common keys which apply to both auth types.
+	//
+
 	serverNameKey, lookupErr := defaultSection.GetKey(iniDefaultServerNameKeyName)
 	if lookupErr != nil {
 		return fmt.Errorf(
-			"failed to retrieve value from key %s in section %s",
+			"failed to retrieve value from key %s in section %s: %w",
 			iniDefaultServerNameKeyName,
 			defaultSection.Name(),
+			lookupErr,
 		)
 	}
 	serverName := serverNameKey.Value()
@@ -209,7 +214,7 @@ func (c *Config) loadINIConfig(file []byte) error {
 	serverPortKey, lookupErr := defaultSection.GetKey(iniDefaultServerPortKeyName)
 	if lookupErr != nil {
 		return fmt.Errorf(
-			"failed to retrieve value from key %s: %v",
+			"failed to retrieve value from key %s: %w",
 			iniDefaultServerPortKeyName,
 			lookupErr,
 		)
@@ -219,10 +224,79 @@ func (c *Config) loadINIConfig(file []byte) error {
 	serverPort, strConvErr := strconv.Atoi(serverPortKey.Value())
 	if strConvErr != nil {
 		return fmt.Errorf(
-			"failed to convert string %q to int: %v",
+			"failed to convert string %q to int: %w",
 			serverPortKey.Value(),
 			strConvErr,
 		)
+	}
+
+	//
+	// OAuth2 specific keys
+	//
+
+	authTypeKey, lookupErr := defaultSection.GetKey(iniDefaultAuthTypeKeyName)
+	if lookupErr != nil {
+		return fmt.Errorf(
+			"failed to retrieve value from key %s in section %s: %w",
+			iniDefaultServerNameKeyName,
+			defaultSection.Name(),
+			lookupErr,
+		)
+	}
+	authType := authTypeKey.Value()
+
+	var clientID string
+	var clientSecret string
+	var scopes []string
+	var tokenURL string
+	switch authType {
+	case AuthTypeOAuth2ClientCreds:
+		clientIDKey, lookupErr := defaultSection.GetKey(iniDefaultClientIDKeyName)
+		if lookupErr != nil {
+			return fmt.Errorf(
+				"failed to retrieve value from key %s: %w",
+				iniDefaultClientIDKeyName,
+				lookupErr,
+			)
+		}
+		clientID = clientIDKey.Value()
+
+		clientSecretKey, lookupErr := defaultSection.GetKey(iniDefaultClientSecretKeyName)
+		if lookupErr != nil {
+			return fmt.Errorf(
+				"failed to retrieve value from key %s: %w",
+				iniDefaultClientSecretKeyName,
+				lookupErr,
+			)
+		}
+		clientSecret = clientSecretKey.Value()
+
+		tokenURLKey, lookupErr := defaultSection.GetKey(iniDefaultEndpointTokenURLKeyName)
+		if lookupErr != nil {
+			return fmt.Errorf(
+				"failed to retrieve value from key %s: %w",
+				iniDefaultEndpointTokenURLKeyName,
+				lookupErr,
+			)
+		}
+		tokenURL = tokenURLKey.Value()
+
+		scopesKey, lookupErr := defaultSection.GetKey(iniDefaultScopesKeyName)
+		if lookupErr != nil {
+			return fmt.Errorf(
+				"failed to retrieve value from key %s: %w",
+				iniDefaultScopesKeyName,
+				lookupErr,
+			)
+		}
+
+		// split and trim folders list provided as single string in INI file.
+		scopes = strings.Split(scopesKey.Value(), ",")
+		for i, scope := range scopes {
+			scopes[i] = strings.Trim(scope, `" `)
+		}
+
+	default:
 	}
 
 	// at this point we already have serverName, serverPort values. We
@@ -238,30 +312,10 @@ func (c *Config) loadINIConfig(file []byte) error {
 		// generate the replacement TOML config file later.
 		accountName := section.Name()
 
-		usernameKey, lookupErr := section.GetKey(iniUsernameKeyName)
-		if lookupErr != nil {
-			return fmt.Errorf(
-				"failed to retrieve value from key %s: %v",
-				usernameKey,
-				lookupErr,
-			)
-		}
-		username := usernameKey.Value()
-
-		passwordKey, lookupErr := section.GetKey(iniPasswordKeyName)
-		if lookupErr != nil {
-			return fmt.Errorf(
-				"failed to retrieve value from key %s: %v",
-				iniPasswordKeyName,
-				lookupErr,
-			)
-		}
-		password := passwordKey.Value()
-
 		foldersKey, lookupErr := section.GetKey(iniFoldersKeyName)
 		if lookupErr != nil {
 			return fmt.Errorf(
-				"failed to retrieve value from key %s: %v",
+				"failed to retrieve value from key %s: %w",
 				iniFoldersKeyName,
 				lookupErr,
 			)
@@ -273,14 +327,71 @@ func (c *Config) loadINIConfig(file []byte) error {
 			folders[i] = strings.Trim(folder, `" `)
 		}
 
+		var username string
+		var password string
+		var sharedMailbox string
+
+		switch authType {
+
+		case AuthTypeBasic:
+			usernameKey, lookupErr := section.GetKey(iniUsernameKeyName)
+			if lookupErr != nil {
+				return fmt.Errorf(
+					"failed to retrieve value from key %s: %w",
+					iniUsernameKeyName,
+					lookupErr,
+				)
+			}
+			username = usernameKey.Value()
+
+			passwordKey, lookupErr := section.GetKey(iniPasswordKeyName)
+			if lookupErr != nil {
+				return fmt.Errorf(
+					"failed to retrieve value from key %s: %w",
+					iniPasswordKeyName,
+					lookupErr,
+				)
+			}
+			password = passwordKey.Value()
+
+		case AuthTypeOAuth2ClientCreds:
+
+			mailboxKey, lookupErr := section.GetKey(iniSharedMailboxKeyName)
+			if lookupErr != nil {
+				return fmt.Errorf(
+					"failed to retrieve value from key %s: %w",
+					iniDefaultClientSecretKeyName,
+					lookupErr,
+				)
+			}
+			sharedMailbox = mailboxKey.Value()
+
+		default:
+			return fmt.Errorf(
+				"unexpected authentication type %q: %w",
+				authType,
+				ErrInvalidAuthType,
+			)
+
+		}
+
 		account := MailAccount{
+			AuthType: authType,
 			Server:   serverName,
-			Port:     serverPort,
-			Name:     accountName,
 			Username: username,
 			Password: password,
-			Folders:  folders,
+			OAuth2Settings: OAuth2MailAccountSettings{
+				ClientID:      clientID,
+				ClientSecret:  clientSecret,
+				Scopes:        scopes,
+				SharedMailbox: sharedMailbox,
+				TokenURL:      tokenURL,
+			},
+			Port:    serverPort,
+			Name:    accountName,
+			Folders: folders,
 		}
+
 		c.Accounts = append(c.Accounts, account)
 
 	}
