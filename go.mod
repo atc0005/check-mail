@@ -6,6 +6,7 @@ require (
 	github.com/atc0005/go-nagios v0.10.2
 	github.com/emersion/go-imap v1.2.1
 	github.com/emersion/go-sasl v0.0.0-20211008083017-0b9dcfb154ac
+	github.com/google/go-cmp v0.5.9
 	github.com/rs/zerolog v1.28.0
 	github.com/sqs/go-xoauth2 v0.0.0-20120917012134-0911dad68e56
 	golang.org/x/oauth2 v0.2.0
