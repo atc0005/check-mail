@@ -30,6 +30,11 @@ func main() {
 
 		return
 
+	case errors.Is(cfgErr, config.ErrHelpRequested):
+		fmt.Println(cfg.Help())
+
+		return
+
 	case cfgErr != nil:
 
 		// We make some assumptions when setting up our logger as we do not

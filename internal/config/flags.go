@@ -7,34 +7,47 @@
 
 package config
 
-import "flag"
+import (
+	"fmt"
+	"os"
+)
 
 // handleFlagsConfig handles toggling the exposure of specific configuration
 // flags to the user. This behavior is controlled via the specified
 // application type as set by each cmd. Based on the application's specified
 // type, a smaller subset of flags specific to each type are exposed along
 // with a set common to all application types.
-func (c *Config) handleFlagsConfig(appType AppType) {
+func (c *Config) handleFlagsConfig(appType AppType) error {
+
+	if c == nil {
+		return fmt.Errorf(
+			"nil configuration, cannot process flags: %w",
+			ErrConfigNotInitialized,
+		)
+	}
 
 	var account MailAccount
 
 	// shared flags
-	flag.BoolVar(&c.ShowVersion, "version", defaultDisplayVersionAndExit, versionFlagHelp)
-	flag.StringVar(&c.LoggingLevel, "log-level", defaultLoggingLevel, loggingLevelFlagHelp)
-	flag.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
-	flag.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
+	c.flagSet.BoolVar(&c.ShowHelp, HelpFlagShort, defaultHelp, helpFlagHelp+" (shorthand)")
+	c.flagSet.BoolVar(&c.ShowHelp, HelpFlagLong, defaultHelp, helpFlagHelp)
+
+	c.flagSet.BoolVar(&c.ShowVersion, "version", defaultDisplayVersionAndExit, versionFlagHelp)
+	c.flagSet.StringVar(&c.LoggingLevel, "log-level", defaultLoggingLevel, loggingLevelFlagHelp)
+	c.flagSet.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
+	c.flagSet.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
 
 	// Only applies to Reporter app
 	if appType.ReporterIMAPMailbox {
-		flag.StringVar(&c.ConfigFile, "config-file", defaultINIConfigFileName, iniConfigFileFlagHelp)
-		flag.StringVar(&c.ReportFileOutputDir, "report-file-dir", defaultReportFileOutputDir, reportFileOutputDirFlagHelp)
-		flag.StringVar(&c.LogFileOutputDir, "log-file-dir", defaultLogFileOutputDir, logFileOutputDirFlagHelp)
+		c.flagSet.StringVar(&c.ConfigFile, "config-file", defaultINIConfigFileName, iniConfigFileFlagHelp)
+		c.flagSet.StringVar(&c.ReportFileOutputDir, "report-file-dir", defaultReportFileOutputDir, reportFileOutputDirFlagHelp)
+		c.flagSet.StringVar(&c.LogFileOutputDir, "log-file-dir", defaultLogFileOutputDir, logFileOutputDirFlagHelp)
 	}
 
 	// Inspector app
 	if appType.InspectorIMAPCaps {
-		flag.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
-		flag.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
+		c.flagSet.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
+		c.flagSet.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
 	}
 
 	// Basic Auth Plugin
@@ -44,12 +57,12 @@ func (c *Config) handleFlagsConfig(appType AppType) {
 		// flags.
 		account.AuthType = AuthTypeBasic
 
-		flag.Var(&account.Folders, "folders", foldersFlagHelp)
-		flag.StringVar(&account.Username, "username", defaultUsername, usernameFlagHelp)
-		flag.StringVar(&account.Password, "password", defaultPassword, passwordFlagHelp)
-		flag.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
-		flag.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
-		flag.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
+		c.flagSet.Var(&account.Folders, "folders", foldersFlagHelp)
+		c.flagSet.StringVar(&account.Username, "username", defaultUsername, usernameFlagHelp)
+		c.flagSet.StringVar(&account.Password, "password", defaultPassword, passwordFlagHelp)
+		c.flagSet.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
+		c.flagSet.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
+		c.flagSet.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
 	}
 
 	// OAuth2 Client Credentials flow plugin
@@ -60,25 +73,31 @@ func (c *Config) handleFlagsConfig(appType AppType) {
 		account.AuthType = AuthTypeOAuth2ClientCreds
 
 		// Common plugin flags
-		flag.Var(&account.Folders, "folders", foldersFlagHelp)
-		flag.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
-		flag.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
-		flag.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
+		c.flagSet.Var(&account.Folders, "folders", foldersFlagHelp)
+		c.flagSet.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
+		c.flagSet.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
+		c.flagSet.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
 
 		// OAuth2 flags
-		flag.Var(&account.OAuth2Settings.Scopes, "scopes", scopesFlagHelp)
-		flag.StringVar(&account.OAuth2Settings.ClientID, "client-id", defaultClientID, clientIDFlagHelp)
-		flag.StringVar(&account.OAuth2Settings.ClientSecret, "client-secret", defaultClientSecret, clientSecretFlagHelp)
-		flag.StringVar(&account.OAuth2Settings.SharedMailbox, "shared-mailbox", defaultSharedMailbox, sharedMailboxFlagHelp)
-		flag.StringVar(&account.OAuth2Settings.TokenURL, "token-url", defaultTokenURL, tokenURLFlagHelp)
+		c.flagSet.Var(&account.OAuth2Settings.Scopes, "scopes", scopesFlagHelp)
+		c.flagSet.StringVar(&account.OAuth2Settings.ClientID, "client-id", defaultClientID, clientIDFlagHelp)
+		c.flagSet.StringVar(&account.OAuth2Settings.ClientSecret, "client-secret", defaultClientSecret, clientSecretFlagHelp)
+		c.flagSet.StringVar(&account.OAuth2Settings.SharedMailbox, "shared-mailbox", defaultSharedMailbox, sharedMailboxFlagHelp)
+		c.flagSet.StringVar(&account.OAuth2Settings.TokenURL, "token-url", defaultTokenURL, tokenURLFlagHelp)
 
 	}
 
-	// Allow our function to override the default Help output
-	flag.Usage = Usage
+	// Allow our function to override the default Help output.
+	//
+	// Override default of stderr as destination for help output. This allows
+	// Nagios XI and similar monitoring systems to call plugins with the
+	// `--help` flag and have it display within the Admin web UI.
+	c.flagSet.Usage = Usage(c.flagSet, os.Stdout)
 
 	// parse flag definitions from the argument list
-	flag.Parse()
+	if err := c.flagSet.Parse(os.Args[1:]); err != nil {
+		return err
+	}
 
 	// For all app types other than the Reporter app we need to save any
 	// configured account details provided via CLI; the Reporter app receives
@@ -86,5 +105,7 @@ func (c *Config) handleFlagsConfig(appType AppType) {
 	if !appType.ReporterIMAPMailbox {
 		c.Accounts = append(c.Accounts, account)
 	}
+
+	return nil
 
 }

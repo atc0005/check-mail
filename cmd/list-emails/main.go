@@ -49,6 +49,12 @@ func main() {
 
 		return
 
+	case errors.Is(cfgErr, config.ErrHelpRequested):
+		fmt.Println(cfg.Help())
+		appExitStatus.Code = 0
+
+		return
+
 	case cfgErr != nil:
 		// We're using the standalone Err function from rs/zerolog/log as we
 		// do not have a working configuration with a preconfigured logger

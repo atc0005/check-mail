@@ -12,6 +12,12 @@ import (
 	"time"
 )
 
+// Flag names. Exported so that they can be referenced from tests.
+const (
+	HelpFlagLong  string = "help"
+	HelpFlagShort string = "h"
+)
+
 // Shared flag help text
 const (
 	foldersFlagHelp       string = "Folders or IMAP \"mailboxes\" to check for mail. This value is provided as a comma-separated list."
@@ -21,6 +27,7 @@ const (
 	minTLSVersionFlagHelp string = "Limits version of TLS used for connections to remote mail servers to one of tls10 (TLS v1.0), tls11, tls12 or tls13 (TLS v1.3)."
 	loggingLevelFlagHelp  string = "Sets log level to one of disabled, panic, fatal, error, warn, info, debug or trace."
 	emitBrandingFlagHelp  string = "Toggles emission of branding details with plugin status details. This output is disabled by default."
+	helpFlagHelp          string = "Emit this help text"
 	versionFlagHelp       string = "Whether to display application version and then immediately exit application."
 )
 
@@ -51,6 +58,7 @@ const (
 
 // Default flag settings if not overridden by user input
 const (
+	defaultHelp                  bool   = false
 	defaultLoggingLevel          string = "info"
 	defaultEmitBranding          bool   = false
 	defaultPort                  int    = 993
