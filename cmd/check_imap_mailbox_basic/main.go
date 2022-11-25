@@ -42,6 +42,11 @@ func main() {
 
 		return
 
+	case errors.Is(cfgErr, config.ErrHelpRequested):
+		fmt.Println(cfg.Help())
+
+		return
+
 	case cfgErr != nil:
 		// We're using the standalone Err function from rs/zerolog/log as we
 		// do not have a working configuration.
