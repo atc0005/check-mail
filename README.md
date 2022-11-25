@@ -52,11 +52,22 @@ Various tools used to monitor mail services
     - [No options](#no-options)
     - [Alternate locations for config file, log and report directories](#alternate-locations-for-config-file-log-and-report-directories)
   - [`lsimap`](#lsimap-2)
+- [OAuth 2 Notes](#oauth-2-notes)
+  - [Retrieving a token via curl](#retrieving-a-token-via-curl)
+  - [SASL XOAUTH2 Token encoding](#sasl-xoauth2-token-encoding)
+  - [Troubleshooting](#troubleshooting)
 - [License](#license)
 - [References](#references)
   - [Related projects](#related-projects)
   - [Dependencies](#dependencies)
   - [OAuth2 Research](#oauth2-research)
+    - [General](#general)
+    - [Redmine](#redmine)
+    - [OAuth 2 Client Credentials grant flow](#oauth-2-client-credentials-grant-flow)
+    - [OAuth 2.0 Resource Owner Password Credentials (ROPC) grant](#oauth-20-resource-owner-password-credentials-ropc-grant)
+    - [Go-specific references](#go-specific-references)
+    - [RFCs](#rfcs)
+    - [Other projects](#other-projects)
 
 ## Project home
 
@@ -220,6 +231,8 @@ Lastly, an Office 365 tenant administrator needs to:
 See the [`check_imap_mailbox_oauth2`](#check_imap_mailbox_oauth2-1) example or
 the official O365 [o365-cred-flow-test-script] test script to confirm that
 required settings are in place.
+
+Worth noting: Support for the Client Credentials flow was added 2022-06-30.
 
 ## Installation
 
@@ -605,6 +618,194 @@ $ ./lsimap --server imap.gmail.com
 6:10AM INF cmd\lsimap\main.go:95 > Connection to server closed
 ```
 
+## OAuth 2 Notes
+
+Misc bits of info that don't fit well anywhere else. Potentially slated for
+inclusion in a project wiki at some point.
+
+### Retrieving a token via curl
+
+For reference, here is a curl command used to fetch a token:
+
+> `curl https://login.microsoftonline.com/TENAT_ID_HERE/oauth2/v2.0/token -X
+> POST -H "Content-type: application/x-www-form-urlencoded" -d
+> "client_id=CLIENT_ID_HERE&scope=https%3A%2F%2Foutlook.office365.com%2F.default&grant_type=client_credentials&username=me@example.com&client_secret=CLIENT_SECRET_HERE"`
+
+and the "pretty printed" JSON response:
+
+```json
+{
+    "token_type": "Bearer",
+    "expires_in": 3599,
+    "ext_expires_in": 3599,
+    "access_token": "TOKEN_HERE"
+}
+```
+
+A refresh token is not provided for a Client Credentials grant flow.
+
+Per RFC6749, Section 4.4.3:
+
+> If the access token request is valid and authorized, the authorization
+> server issues an access token as described in Section 5.1.  A refresh token
+> SHOULD NOT be included.
+
+### SASL XOAUTH2 Token encoding
+
+The SASL XOAUTH2 token format is described as:
+
+```javascript
+base64("user=" + userName + "^Aauth=Bearer " + accessToken + "^A^A")
+```
+
+What gave me a lot of grief was applying this encoding *literally* and then
+passing the result to other libraries for further processing.
+
+Borrowing from [Google's dev docs][google-dev-sasl-xoauth2], this is the
+result before base64 encoding:
+
+```text
+user=someuser@example.com^Aauth=Bearer ya29.vF9dft4qmTc2Nvb3RlckBhdHRhdmlzdGEuY29tCg^A^A
+```
+
+I was then base64-encoding that value which produced something like this:
+
+> `dXNlcj1zb21ldXNlckBleGFtcGxlLmNvbQFhdXRoPUJlYXJlciB5YTI5LnZGOWRmdDRxbVRjMk52YjNSbGNrQmhkSFJoZG1semRHRXVZMjl0Q2cBAQ==`
+
+I'd then pass it down to underlying libraries to use as part of the
+authentication process as described in this O365 [IMAP Protocol
+Exchange][o365-sasl-xoauth2] doc:
+
+```imap
+AUTHENTICATE XOAUTH2 <base64 string in XOAUTH2 format>
+```
+
+which was supposed to end up looking something like this:
+
+```imap
+AUTHENTICATE XOAUTH2 dXNlcj1zb21ldXNlckBleGFtcGxlLmNvbQFhdXRoPUJlYXJlciB5YTI5LnZGOWRmdDRxbVRjMk52YjNSbGNrQmhkSFJoZG1semRHRXVZMjl0Q2cBAQ==
+```
+
+but it didn't and I spent a long while puzzling this out. What I didn't
+understand is that base64-encoding is applied by the underlying IMAP
+libraries.
+
+For example, the Ruby IMAP `NET::IMAP::authenticate` method handles base64
+encoding the "data" before it is used with the `AUTHENTICATE` command.
+
+From `/usr/lib/ruby/2.7.0/net/imap.rb` (Ubuntu 20.04):
+
+```ruby
+    # Sends an AUTHENTICATE command to authenticate the client.
+    # The +auth_type+ parameter is a string that represents
+    # the authentication mechanism to be used. Currently Net::IMAP
+    # supports the authentication mechanisms:
+    #
+    #   LOGIN:: login using cleartext user and password.
+    #   CRAM-MD5:: login with cleartext user and encrypted password
+    #              (see [RFC-2195] for a full description).  This
+    #              mechanism requires that the server have the user's
+    #              password stored in clear-text password.
+    #
+    # For both of these mechanisms, there should be two +args+: username
+    # and (cleartext) password.  A server may not support one or the other
+    # of these mechanisms; check #capability() for a capability of
+    # the form "AUTH=LOGIN" or "AUTH=CRAM-MD5".
+    #
+    # Authentication is done using the appropriate authenticator object:
+    # see @@authenticators for more information on plugging in your own
+    # authenticator.
+    #
+    # For example:
+    #
+    #    imap.authenticate('LOGIN', user, password)
+    #
+    # A Net::IMAP::NoResponseError is raised if authentication fails.
+    def authenticate(auth_type, *args)
+      auth_type = auth_type.upcase
+      unless @@authenticators.has_key?(auth_type)
+        raise ArgumentError,
+          format('unknown auth type - "%s"', auth_type)
+      end
+      authenticator = @@authenticators[auth_type].new(*args)
+      send_command("AUTHENTICATE", auth_type) do |resp|
+        if resp.instance_of?(ContinuationRequest)
+          data = authenticator.process(resp.data.text.unpack("m")[0])
+          s = [data].pack("m0")
+          send_string_data(s)
+          put_string(CRLF)
+        end
+      end
+    end
+```
+
+This is where base64-encoding is performed:
+
+> ```ruby
+> s = [data].pack("m0")
+> ```
+
+and
+[this](https://github.com/emersion/go-imap/blob/b814befb514bc2f515aeb1f5402ea7f31bc99074/commands/authenticate.go#L29-L47)
+is where the base64 encoding is performed in the `emersion/go-imap` library
+that this project uses:
+
+```go
+func (cmd *Authenticate) Command() *imap.Command {
+  args := []interface{}{imap.RawString(cmd.Mechanism)}
+  if cmd.InitialResponse != nil {
+    var encodedResponse string
+    if len(cmd.InitialResponse) == 0 {
+      // Empty initial response should be encoded as "=", not empty
+      // string.
+      encodedResponse = "="
+    } else {
+      encodedResponse = base64.StdEncoding.EncodeToString(cmd.InitialResponse)
+    }
+
+    args = append(args, imap.RawString(encodedResponse))
+  }
+  return &imap.Command{
+    Name:      "AUTHENTICATE",
+    Arguments: args,
+  }
+}
+```
+
+Takeaway: Don't *literally* base64 encode the username and access token as
+illustrated in the documentation, just make sure that by the time all
+processing of those values is complete that the final result is
+base64-encoded. In the case of the Ruby and Go code shown above this takes
+place before the final AUTHENTICATE IMAP command is issued. We just need to
+make sure we perform the initial OAuth2 XOAUTH2 encoding, *skip* base64
+encoding the result and let the underlying library handle the rest.
+
+In the case of Ruby this initial encoding can be performed by the
+`Mailbutler/mail_xoauth2` gem and in the case of Go this can be performed by
+the `sqs/go-xoauth2` package (if performing just the encoding) or a local copy
+of the `emersion/go-sasl` `xoauth2Client` type (since the upstream project has
+removed official support for it).
+
+### Troubleshooting
+
+The [`Get-IMAPAccessToken.ps1`][ps-imap-access-token-script] PowerShell script
+can be used to test OAuth2 Client Credentials flow authentication. From the
+script's description help text:
+
+> The function helps admins to test their IMAP OAuth Azure Application, with
+> Interactive user login und providing or the lately released client
+> credential flow using the right formatting for the XOAuth2 login string.
+> After successful logon, a simple IMAP folder listing is done, in  addition
+> it also allows to test shared mailbox access for users if full access has
+> been provided.
+>
+> Using Windows Powershell allows MSAL to cache the access+refresh token on
+> disk for further executions for interactive login scenario. It´s a simple
+> proof of concept with no further error management.
+
+This script was incredibly useful, providing a known working tool to contrast
+development/troubleshooting efforts against.
+
 ## License
 
 From the [LICENSE](LICENSE) file:
@@ -654,25 +855,23 @@ SOFTWARE.
 
 ### OAuth2 Research
 
-General:
+#### General
 
 - <https://github.com/atc0005/check-mail/issues/313>
   - my notes while researching/testing OAuth2 Client Credentials flow support
 - <https://alexbilbie.com/guide-to-oauth-2-grants/>
 - <https://aaronparecki.com/oauth-2-simplified/#authorization>
 - <https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/deprecation-of-basic-authentication-exchange-online>
-- <https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth>
 - <https://learn.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-protocols>
 - <https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app>
-- <https://learn.microsoft.com/en-us/azure/active-directory/develop/scenario-daemon-app-registration>
-- <https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow>
 - <https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/>
-- <https://blog.rebex.net/office365-ews-oauth-unattended>
-- <https://www.youtube.com/watch?v=bMYA-146dmM>
-- <https://stackoverflow.com/questions/73463357/cannot-authenticate-to-imap-on-office365-using-javamail>
 - <https://learn.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals>
+- <https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/>
+- SASL XOAUTH2 mechanism
+  - <https://developers.google.com/gmail/imap/xoauth2-protocol#the_sasl_xoauth2_mechanism>
+  - <https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth#sasl-xoauth2>
 
-Redmine:
+#### Redmine
 
 - <https://www.redmine.org/issues/37688>
 - <https://ruby-doc.org/stdlib-2.7.0/libdoc/net/imap/rdoc/Net/IMAP.html>
@@ -680,7 +879,20 @@ Redmine:
   - <https://github.com/Mailbutler/mail_xoauth2/blob/master/lib/mail_xoauth2/oauth2_string.rb>
   - <https://github.com/Mailbutler/mail_xoauth2/blob/master/lib/mail_xoauth2/imap_xoauth2_authenticator.rb>
 
-OAuth 2.0 Resource Owner Password Credentials (ROPC) grant:
+#### OAuth 2 Client Credentials grant flow
+
+- <https://github.com/atc0005/check-mail/issues/313>
+  - my notes while researching/testing OAuth2 Client Credentials flow support
+- <https://learn.microsoft.com/en-us/azure/active-directory/develop/scenario-daemon-app-registration>
+- <https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow>
+- <https://blog.rebex.net/office365-ews-oauth-unattended>
+- [YouTube | How to connect to Office 365 with IMAP, Oauth2 and Client Credential Grant Flow](https://www.youtube.com/watch?v=bMYA-146dmM)
+- <https://stackoverflow.com/questions/73463357/cannot-authenticate-to-imap-on-office365-using-javamail>
+- <https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth>
+- <https://community.auth0.com/t/how-to-get-refresh-token-with-client-credentials/7028>
+- <https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-client-credentials-flow-support-for-pop-and/ba-p/3562963>
+
+#### OAuth 2.0 Resource Owner Password Credentials (ROPC) grant
 
 - <https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth-ropc>
   - not recommended
@@ -689,7 +901,7 @@ OAuth 2.0 Resource Owner Password Credentials (ROPC) grant:
 - <https://oauth.net/2/grant-types/password/>
 - <https://www.oauth.com/oauth2-servers/access-tokens/password-grant/>
 
-Some Go-specific references:
+#### Go-specific references
 
 - <https://pkg.go.dev/golang.org/x/oauth2>
 - <https://pkg.go.dev/golang.org/x/oauth2/microsoft>
@@ -704,13 +916,13 @@ Some Go-specific references:
   - <https://github.com/emersion/go-sasl/issues/18>
   - XOAUTH2 support previously supplied by this project, now bundled locally
 
-RFCS:
+#### RFCs
 
 - <https://datatracker.ietf.org/doc/html/rfc6749#section-4.3>
 - <https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.3>
 - <https://datatracker.ietf.org/doc/html/rfc9051#section-2.2>
 
-Other projects:
+#### Other projects
 
 - <https://github.com/tgulacsi/imapclient>
 - <https://github.com/DanijelkMSFT/ThisandThat/blob/main/Get-IMAPAccessToken.ps1>
@@ -739,5 +951,11 @@ Other projects:
     "Register service principals in Exchange"
 
 [o365-cred-flow-test-script]: <https://github.com/DanijelkMSFT/ThisandThat/blob/main/Get-IMAPAccessToken.ps1> "O365 Client Credentials flow test script"
+
+[google-dev-sasl-xoauth2]: <https://developers.google.com/gmail/imap/xoauth2-protocol#the_sasl_xoauth2_mechanism> "The SASL XOAUTH2 Mechanism"
+
+[o365-sasl-xoauth2]: <https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth#sasl-xoauth2> "SASL XOAUTH2"
+
+[ps-imap-access-token-script]: <https://github.com/DanijelkMSFT/ThisandThat/blob/main/Get-IMAPAccessToken.ps1> "Get-IMAPAccessToken.ps1 script"
 
 <!-- []: PLACEHOLDER "DESCRIPTION_HERE" -->
