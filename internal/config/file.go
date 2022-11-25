@@ -110,11 +110,11 @@ func (c *Config) loadConfigFile(configFile ...string) error {
 		)
 	}
 
-	loadErr := c.loadINIConfig(data)
+	loadErr := c.parseConfigFile(data)
 	if loadErr != nil {
 		c.ConfigFileUsed = ""
 		return fmt.Errorf(
-			"failed to load configuration from INI file %q: %w",
+			"failed to parse configuration from file %q: %w",
 			c.ConfigFileUsed,
 			loadErr,
 		)
@@ -172,10 +172,10 @@ func (c Config) userConfigFile(appName string, filename string) (string, error) 
 	return userConfigFileFullPath, nil
 }
 
-// loadINIConfig loads or imports the contents of an INI configuration file
-// and populates the list of accounts used by applications in this project.
-// Any error encountered during the import process is returned.
-func (c *Config) loadINIConfig(file []byte) error {
+// parseConfigFile parses a previously read INI configuration file and
+// populates the list of accounts used by applications in this project. Any
+// error encountered during the import process is returned.
+func (c *Config) parseConfigFile(file []byte) error {
 
 	iniFile, loadErr := ini.Load(file)
 	if loadErr != nil {
