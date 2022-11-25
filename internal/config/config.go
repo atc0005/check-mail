@@ -312,6 +312,7 @@ func New(appType AppType) (*Config, error) {
 		return nil, ErrVersionRequested
 	}
 
+	// Initial validation pass using flag values only.
 	if err := config.validate(appType); err != nil {
 		return nil, fmt.Errorf("configuration validation failed: %w", err)
 	}
@@ -336,6 +337,14 @@ func New(appType AppType) (*Config, error) {
 			config.Log.Error().Err(err).Msgf(errMsg)
 
 			return nil, fmt.Errorf("%s: %w", errMsg, err)
+		}
+
+		// Final validation pass using flag AND config file values.
+		if err := config.validate(appType); err != nil {
+			return nil, fmt.Errorf(
+				"configuration validation after loading config file failed: %w",
+				err,
+			)
 		}
 	}
 
