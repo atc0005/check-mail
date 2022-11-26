@@ -28,7 +28,9 @@ func TestValidateBasicAuthExampleConfigFile(t *testing.T) {
 	// Note to self: Don't add/escape double-quotes here. The shell strips
 	// them away and the application never sees them.
 	os.Args = []string{
-		"/usr/local/bin/list-emails", "--config-file", normalizedFullyQualifiedFilename,
+		"/usr/local/bin/list-emails",
+		"--config-file", normalizedFullyQualifiedFilename,
+		"--log-file-dir", t.TempDir(),
 	}
 
 	// Setup configuration by parsing user-provided flags
@@ -46,6 +48,18 @@ func TestValidateBasicAuthExampleConfigFile(t *testing.T) {
 		t.Fatalf("Error initializing application: %v", err)
 	}
 	t.Log("Config initialization complete")
+
+	t.Cleanup(func() {
+		if err := cfg.LogFileHandle.Close(); err != nil {
+			// Ignore "file already closed" errors
+			if !errors.Is(err, os.ErrClosed) {
+				t.Fatalf("Failed to close log file: %v", err)
+			}
+		}
+
+		// Log directory is removed by the testing harness due to our use
+		// of the (testing.T).TempDir method.
+	})
 
 	// Assert that the config file has two accounts listed.
 	if want, got := 2, len(cfg.Accounts); want != got {
@@ -134,7 +148,9 @@ func TestValidateOAuth2ExampleConfigFile(t *testing.T) {
 	// Note to self: Don't add/escape double-quotes here. The shell strips
 	// them away and the application never sees them.
 	os.Args = []string{
-		"/usr/local/bin/list-emails", "--config-file", normalizedFullyQualifiedFilename,
+		"/usr/local/bin/list-emails",
+		"--config-file", normalizedFullyQualifiedFilename,
+		"--log-file-dir", t.TempDir(),
 	}
 
 	// Setup configuration by parsing user-provided flags
@@ -152,6 +168,18 @@ func TestValidateOAuth2ExampleConfigFile(t *testing.T) {
 		t.Fatalf("Error initializing application: %v", err)
 	}
 	t.Log("Config initialization complete")
+
+	t.Cleanup(func() {
+		if err := cfg.LogFileHandle.Close(); err != nil {
+			// Ignore "file already closed" errors
+			if !errors.Is(err, os.ErrClosed) {
+				t.Fatalf("Failed to close log file: %v", err)
+			}
+		}
+
+		// Log directory is removed by the testing harness due to our use
+		// of the (testing.T).TempDir method.
+	})
 
 	// Assert that the config file has two accounts listed.
 	if want, got := 2, len(cfg.Accounts); want != got {
@@ -267,7 +295,9 @@ func TestParseExampleConfigFiles(t *testing.T) {
 			// Note to self: Don't add/escape double-quotes here. The shell strips
 			// them away and the application never sees them.
 			os.Args = []string{
-				"/usr/local/bin/list-emails", "--config-file", testCase.filePath,
+				"/usr/local/bin/list-emails",
+				"--config-file", testCase.filePath,
+				"--log-file-dir", t.TempDir(),
 			}
 
 			// Setup configuration by parsing user-provided flags
@@ -285,6 +315,18 @@ func TestParseExampleConfigFiles(t *testing.T) {
 				t.Fatalf("Error initializing application: %v", err)
 			}
 			t.Log("Config initialization complete")
+
+			t.Cleanup(func() {
+				if err := cfg.LogFileHandle.Close(); err != nil {
+					// Ignore "file already closed" errors
+					if !errors.Is(err, os.ErrClosed) {
+						t.Fatalf("Failed to close log file: %v", err)
+					}
+				}
+
+				// Log directory is removed by the testing harness due to our use
+				// of the (testing.T).TempDir method.
+			})
 
 			t.Logf("Config struct: +%v", cfg)
 
