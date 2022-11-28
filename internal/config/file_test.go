@@ -202,7 +202,7 @@ func TestValidateOAuth2ExampleConfigFile(t *testing.T) {
 				"Trash",
 				"INBOX/Current Reporting",
 			},
-			OAuth2Settings: OAuth2MailAccountSettings{
+			OAuth2Settings: OAuth2ClientCredentialsFlow{
 				SharedMailbox: "email1@example.com",
 				ClientID:      "ZYDPLLBWSK3MVQJSIYHB1OR2JXCY0X2C5UJ2QAR2MAAIT5Q",
 				ClientSecret:  "_djgA8heFo0WSIMom7U39WmGTQFHWkcD8x-A1o-4sro",
@@ -219,7 +219,7 @@ func TestValidateOAuth2ExampleConfigFile(t *testing.T) {
 				"Inbox",
 				"Junk EMail",
 			},
-			OAuth2Settings: OAuth2MailAccountSettings{
+			OAuth2Settings: OAuth2ClientCredentialsFlow{
 				SharedMailbox: "email2@example.com",
 				ClientID:      "ZYDPLLBWSK3MVQJSIYHB1OR2JXCY0X2C5UJ2QAR2MAAIT5Q",
 				ClientSecret:  "_djgA8heFo0WSIMom7U39WmGTQFHWkcD8x-A1o-4sro",

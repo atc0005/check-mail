@@ -56,6 +56,16 @@ const (
 	logFileOutputDirFlagHelp    string = "Full path to the directory where log files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist."
 )
 
+// Fetcher flag help text
+const (
+	emitTokenAsJSONFlagHelp string = "Emit retrieved token in JSON format. Defaults to emitting the access token field from retrieved payload."
+	tokenFilenameFlagHelp   string = "Save retrieved token to specified file. Emitted to standard out (stdout) if not specified."
+
+	// False-positive gosec linter warning
+	//nolint
+	tokenRetrievalAttemptsFlagHelp string = "Max token retrieval attempts."
+)
+
 // Default flag settings if not overridden by user input
 const (
 	defaultHelp                  bool   = false
@@ -72,6 +82,8 @@ const (
 	defaultNetworkType           string = netTypeTCPAuto
 	defaultMinTLSVersion         string = minTLSVersion12
 	defaultDisplayVersionAndExit bool   = false
+	defaultEmitTokenAsJSON       bool   = false
+	defaultTokenFilename         string = ""
 
 	// By default these directories are created/used in the user's current
 	// working directory. The workflow for the older, Python-based list-emails
@@ -102,6 +114,8 @@ const (
 	// defaultTOMLConfigFileName string = "config.toml"
 
 	defaultAccountProcessDelay time.Duration = time.Second * 5
+
+	defaultTokenRetrievalAttempts int = 3
 )
 
 const (

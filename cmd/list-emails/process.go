@@ -93,6 +93,11 @@ func processAccount(
 			account.OAuth2Settings.ClientSecret,
 			account.OAuth2Settings.Scopes,
 			account.OAuth2Settings.TokenURL,
+
+			// We're going to use the default/fallback value instead of
+			// exposing a max retrieval attempts flag or attempting to pull
+			// the value from a config file.
+			cfg.RetrievalAttempts(),
 			logger,
 		)
 		if loginErr != nil {

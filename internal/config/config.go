@@ -67,6 +67,15 @@ type AppType struct {
 	// An OAuth2 flow is used to login.
 	PluginIMAPMailboxOAuth2 bool
 
+	// FetcherOAuth2TokenFromCache represents an application used to obtain an
+	// OAuth2 token via Client Credentials flow from local storage/cache.
+	FetcherOAuth2TokenFromCache bool
+
+	// FetcherOAuth2TokenFromAuthServer represents an application used to
+	// obtain an OAuth2 token via Client Credentials flow from an
+	// authorization server.
+	FetcherOAuth2TokenFromAuthServer bool
+
 	// ReporterIMAPMailbox represents an application used for generating
 	// reports for specified IMAP mailboxes.
 	//
@@ -87,9 +96,9 @@ type AppType struct {
 	InspectorIMAPCaps bool
 }
 
-// OAuth2MailAccountSettings is a collection of OAuth2 settings for a mail
-// account that applications in this project interact with.
-type OAuth2MailAccountSettings struct {
+// OAuth2ClientCredentialsFlow is a collection of OAuth2 settings used to
+// obtain a token via OAuth2 Client Credentials flow.
+type OAuth2ClientCredentialsFlow struct {
 	// ClientID is the client ID used by the application that asks for
 	// authorization. It must be unique across all clients that the
 	// authorization server handles. This ID represents the registration
@@ -99,12 +108,12 @@ type OAuth2MailAccountSettings struct {
 	// owner and MUST NOT be used alone for client authentication. The client
 	// identifier is unique to the authorization server.
 	// https://datatracker.ietf.org/doc/html/rfc6749#section-2.2
-	ClientID string `json:"client_id"`
+	ClientID string
 
 	// ClientSecret is a secret known only to the application and the
 	// authorization server. It can be considered the application's own
 	// password. This value is provided upon application authorization.
-	ClientSecret string `json:"client_secret"`
+	ClientSecret string
 
 	// Scopes is the collection of permissions or "scopes" requested by an
 	// application from the authorization server.
@@ -115,18 +124,12 @@ type OAuth2MailAccountSettings struct {
 	//
 	// https://www.oauth.com/oauth2-servers/scope/
 	// https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
-	Scopes multiValueFlag `json:"scope,omitempty"`
-
-	// TenantID is the tenant or customer identifier associated with the
-	// OAuth2-enabled service. For example, with Microsoft Office 365 (O365)
-	// this value is used to represent the organization subscribed to O365
-	// services.
-	// TenantID string `json:"-"`
+	Scopes multiValueFlag
 
 	// SharedMailbox is the email account that is to be accessed by the
 	// application using the given client ID, client secret values. This is
 	// usually a shared mailbox among a team.
-	SharedMailbox string `json:"-"`
+	SharedMailbox string
 
 	// Token is a valid XOAUTH2 encoded token to use in place of requesting a
 	// new token from the authorization server. If specified, Token obviates
@@ -138,10 +141,27 @@ type OAuth2MailAccountSettings struct {
 	// TODO: Does this provide sufficient value? Tradeoff of token reuse (and
 	// everything required to save/load it) vs fetching a new token ...
 	//
-	// Token string `json:"-"`
+	// Token string
 
 	// TokenURL is the authority endpoint for token retrieval.
 	TokenURL string
+
+	// RetrievalAttempts indicates how many attempts should be made to
+	// retrieve a token.
+	RetrievalAttempts int
+}
+
+// FetcherOAuth2TokenSettings is the collection of OAuth2 token "fetcher"
+// settings.
+type FetcherOAuth2TokenSettings struct {
+	OAuth2ClientCredentialsFlow
+
+	// Filename is the optional filename used to hold a retrieved token.
+	Filename string
+
+	// EmitTokenAsJSON indicates whether the retrieved token is saved in
+	// the original JSON payload format or as just the access token itself.
+	EmitTokenAsJSON bool
 }
 
 // MailAccount represents an email account. The values are provided via
@@ -175,7 +195,7 @@ type MailAccount struct {
 
 	// OAuth2Settings is a collection of settings specific to OAuth2
 	// authentication with the service hosting the email account.
-	OAuth2Settings OAuth2MailAccountSettings
+	OAuth2Settings OAuth2ClientCredentialsFlow
 
 	// Name is often the bare username for the email account, but may not be.
 	// This is used as the section header within the configuration file.
@@ -284,6 +304,10 @@ type Config struct {
 	// Accounts is the collection of IMAP mail accounts checked by
 	// applications provided by this project.
 	Accounts []MailAccount
+
+	// FetcherOAuth2TokenSettings is the collection of OAuth2 token "fetcher"
+	// settings.
+	FetcherOAuth2TokenSettings FetcherOAuth2TokenSettings
 
 	// Log is an embedded zerolog Logger initialized via config.New().
 	Log zerolog.Logger
