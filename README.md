@@ -19,6 +19,9 @@ Various tools used to monitor mail services
   - [`check_imap_mailbox_*`](#check_imap_mailbox_)
   - [`list-emails`](#list-emails)
   - [`lsimap`](#lsimap)
+  - [`xoauth2`](#xoauth2)
+  - [`fetch-token`](#fetch-token)
+  - [`read-token`](#read-token)
 - [Requirements](#requirements)
   - [Building source code](#building-source-code)
   - [Running](#running)
@@ -41,8 +44,12 @@ Various tools used to monitor mail services
       - [Usage](#usage)
   - [`lsimap`](#lsimap-1)
     - [Command-line arguments](#command-line-arguments-3)
-  - [`xoauth2`](#xoauth2)
+  - [`xoauth2`](#xoauth2-1)
     - [Command-line arguments](#command-line-arguments-4)
+  - [`fetch-token`](#fetch-token-1)
+    - [Command-line arguments](#command-line-arguments-5)
+  - [`read-token`](#read-token-1)
+    - [Command-line arguments](#command-line-arguments-6)
 - [Examples](#examples)
   - [`check_imap_mailbox_basic`](#check_imap_mailbox_basic-1)
     - [As a Nagios plugin](#as-a-nagios-plugin)
@@ -52,6 +59,9 @@ Various tools used to monitor mail services
     - [No options](#no-options)
     - [Alternate locations for config file, log and report directories](#alternate-locations-for-config-file-log-and-report-directories)
   - [`lsimap`](#lsimap-2)
+  - [`xoauth2`](#xoauth2-2)
+  - [`fetch-token`](#fetch-token-2)
+  - [`read-token`](#read-token-2)
 - [OAuth 2 Notes](#oauth-2-notes)
   - [Retrieving a token via curl](#retrieving-a-token-via-curl)
   - [SASL XOAUTH2 Token encoding](#sasl-xoauth2-token-encoding)
@@ -78,13 +88,15 @@ submit improvements for review and potential inclusion into the project.
 
 This repo contains various tools used to monitor mail services.
 
-| Tool Name                   | Overall Status | Description                                                                                                      |
-| --------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `check_imap_mailbox_basic`  | Stable         | Nagios plugin used to monitor mailboxes for items (via Basic Auth)                                               |
-| `check_imap_mailbox_oauth2` | Alpha          | Nagios plugin used to monitor mailboxes for items (via OAuth2)                                                   |
-| `list-emails`               | Stable         | Small CLI app used to generate listing of mailbox contents                                                       |
-| `lsimap`                    | Alpha          | Small CLI tool to list advertised capabilities for specified IMAP server                                         |
-| `xoauth2`                   | Alpha          | Small CLI tool to convert given username and token to XOAuth2 formatted (optionally SASL XOAUTH2 encoded) string |
+| Tool Name                   | Overall Status | Tool Type     | Purpose                                                                                |
+| --------------------------- | -------------- | ------------- | -------------------------------------------------------------------------------------- |
+| `check_imap_mailbox_basic`  | Stable         | Nagios plugin | Monitor mailboxes for items (via Basic Auth)                                           |
+| `check_imap_mailbox_oauth2` | Alpha          | Nagios plugin | Monitor mailboxes for items (via OAuth2)                                               |
+| `list-emails`               | Stable         | CLI app       | Generate listing of mailbox contents                                                   |
+| `lsimap`                    | Alpha          | CLI tool      | List advertised capabilities for specified IMAP server                                 |
+| `xoauth2`                   | Alpha          | CLI tool      | Convert given username and token to XOAuth2 formatted (or SASL XOAUTH2 encoded) string |
+| `fetch-token`               | Alpha          | CLI tool      | Fetch OAuth2 Client Credentials token from specified token URL, emit to stdout or file |
+| `read-token`                | Alpha          | CLI tool      | Read OAuth2 Client Credentials token from specified file                               |
 
 ## Features
 
@@ -159,6 +171,40 @@ Shared functionality:
   - network type defaults to either of IPv4 and IPv6, but optionally limited
     to IPv4-only or IPv6-only
   - user-specified minimum TLS version
+
+### `xoauth2`
+
+Standalone CLI app to convert given username and token to XOAuth2 formatted
+(or SASL XOAUTH2 encoded) string.
+
+### `fetch-token`
+
+- Fetch OAuth2 Client Credentials token from specified token URL
+- Automatic retry functionality
+  - user configurable "max attempts" limit
+- Emit retrieved token to stdout (default) or file
+- Configurable token output format
+  - plaintext/raw access token
+  - JSON
+- Leveled logging
+  - `console writer`: human-friendly, but (for this app) non-colorized output
+  - choice of `disabled`, `panic`, `fatal`, `error`, `warn`, `info` (the
+    default), `debug` or `trace`
+  - by default this tool produces no log output
+  - log messages written to `stderr`
+
+### `read-token`
+
+- Read OAuth2 Client Credentials token from specified file
+- Automatic detection of support token format
+  - plaintext/raw access token
+  - JSON
+- Leveled logging
+  - `console writer`: human-friendly, but (for this app) non-colorized output
+  - choice of `disabled`, `panic`, `fatal`, `error`, `warn`, `info` (the
+    default), `debug` or `trace`
+  - by default this tool produces no log output
+  - log messages written to `stderr`
 
 ## Requirements
 
@@ -257,6 +303,8 @@ Worth noting: Support for the Client Credentials flow was added 2022-06-30.
      - `go build -mod=vendor ./cmd/list-emails/`
      - `go build -mod=vendor ./cmd/lsimap/`
      - `go build -mod=vendor ./cmd/xoauth2/`
+     - `go build -mod=vendor ./cmd/fetch-token/`
+     - `go build -mod=vendor ./cmd/read-token/`
    - for all supported platforms (where `make` is installed)
       - `make all`
    - for Windows
@@ -270,6 +318,8 @@ Worth noting: Support for the Client Credentials flow was added 2022-06-30.
      - look in `/tmp/check-mail/release_assets/list-emails/`
      - look in `/tmp/check-mail/release_assets/lsimap/`
      - look in `/tmp/check-mail/release_assets/xoauth2/`
+     - look in `/tmp/check-mail/release_assets/fetch-token/`
+     - look in `/tmp/check-mail/release_assets/read-token/`
    - if using `go build`
      - look in `/tmp/check-mail/`
 1. Copy the applicable binaries to whatever systems needs to run them
@@ -277,6 +327,8 @@ Worth noting: Support for the Client Credentials flow was added 2022-06-30.
    - Place `list-emails` in a location of your choice
    - Place `lsimap` in a location of your choice
    - Place `xoauth2` in a location of your choice
+   - Place `fetch-token` in a location of your choice
+   - Place `read-token` in a location of your choice
    - Place `check_imap_mailbox_basic` in the same location where your distro's
      package manage has place other Nagios plugins
      - as `/usr/lib/nagios/plugins/check_imap_mailbox_basic` on Debian-based systems
@@ -298,6 +350,8 @@ Worth noting: Support for the Client Credentials flow was added 2022-06-30.
    - Place `list-emails` in a location of your choice
    - Place `lsimap` in a location of your choice
    - Place `xoauth2` in a location of your choice
+   - Place `fetch-token` in a location of your choice
+   - Place `read-token` in a location of your choice
    - Place `check_imap_mailbox_basic` in the same location where your distro's
      package manager places other Nagios plugins
      - as `/usr/lib/nagios/plugins/check_imap_mailbox_basic` on Debian-based systems
@@ -354,20 +408,21 @@ for details specific to using this plugin with O365 mailboxes.
 - Flags *not* marked as required are for settings where a useful default is
   already defined.
 
-| Option           | Required | Default        | Repeat | Possible                                                                | Description                                                                                                                                                                                     |
-| ---------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `h`, `help`      | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them.                                                                                              |
-| `folders`        | Yes      | *empty string* | No     | *comma-separated list of folders*                                       | Folders or IMAP "mailboxes" to check for mail. This value is provided as a comma-separated list.                                                                                                |
-| `scopes`         | Yes      | *empty string* | No     | *comma-separated list of scopes*                                        | Permissions needed by the application. If using the scopes defined by the application registration you must use the `RESOURCE/.default` format (e.g., `https://outlook.office365.com/.default`. |
-| `client-id`      | Yes      | *empty string* | No     | *valid application ID associated with registered app*                   | Application (client) ID created during app registration.                                                                                                                                        |
-| `client-secret`  | Yes      | *empty string* | No     | *valid application secret associated with registered app*               | Client secret (aka, "app" password).                                                                                                                                                            |
-| `shared-mailbox` | Yes      | *empty string* | No     | *valid shared mailbox name, often in email address format*              | Email account that is to be accessed using client ID & secret values. Usually a shared mailbox among a team.                                                                                    |
-| `port`           | No       | `993`          | No     | *valid IMAP TCP port*                                                   | TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections.                                                                      |
-| `net-type`       | No       | `auto`         | No     | `auto`, `tcp4`, `tcp6`                                                  | Limits network connections to remote mail servers to one of the specified types.                                                                                                                |
-| `min-tls`        | No       | `tls12`        | No     | `tls10`, `tls11`, `tls12`, `tls13`                                      | Limits version of TLS used for connections to remote mail servers.                                                                                                                              |
-| `logging-level`  | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                                 |
-| `branding`       | No       | `false`        | No     | `true`, `false`                                                         | Toggles emission of branding details with plugin status details. Because this output may not mix well with branding information emitted by other tools, this output is disabled by default.     |
-| `version`        | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                    |
+| Option           | Required | Default        | Repeat | Possible                                                                | Description                                                                                                                                                                                                                       |
+| ---------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `h`, `help`      | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them.                                                                                                                                |
+| `folders`        | Yes      | *empty string* | No     | *comma-separated list of folders*                                       | Folders or IMAP "mailboxes" to check for mail. This value is provided as a comma-separated list.                                                                                                                                  |
+| `scopes`         | Yes      | *empty string* | No     | *comma-separated list of scopes*                                        | Permissions needed by the application. If using the scopes defined by the application registration you must use the `RESOURCE/.default` format (e.g., `https://outlook.office365.com/.default`.                                   |
+| `client-id`      | Yes      | *empty string* | No     | *valid application ID associated with registered app*                   | Application (client) ID created during app registration.                                                                                                                                                                          |
+| `client-secret`  | Yes      | *empty string* | No     | *valid application secret associated with registered app*               | Client secret (aka, "app" password).                                                                                                                                                                                              |
+| `shared-mailbox` | Yes      | *empty string* | No     | *valid shared mailbox name, often in email address format*              | Email account that is to be accessed using client ID & secret values. Usually a shared mailbox among a team.                                                                                                                      |
+| `token-url`      | Yes      | *empty string* | No     | *valid token URL*                                                       | The OAuth2 provider's token endpoint URL. E.g., `https://accounts.google.com/o/oauth2/token` for Google. See [contrib/list-emails/oauth2/accounts.example.ini](contrib/list-emails/oauth2/accounts.example.ini) for O365 example. |
+| `port`           | No       | `993`          | No     | *valid IMAP TCP port*                                                   | TCP port used to connect to the remote mail server. This is usually the same port used for TLS encrypted IMAP connections.                                                                                                        |
+| `net-type`       | No       | `auto`         | No     | `auto`, `tcp4`, `tcp6`                                                  | Limits network connections to remote mail servers to one of the specified types.                                                                                                                                                  |
+| `min-tls`        | No       | `tls12`        | No     | `tls10`, `tls11`, `tls12`, `tls13`                                      | Limits version of TLS used for connections to remote mail servers.                                                                                                                                                                |
+| `logging-level`  | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                                                                   |
+| `branding`       | No       | `false`        | No     | `true`, `false`                                                         | Toggles emission of branding details with plugin status details. Because this output may not mix well with branding information emitted by other tools, this output is disabled by default.                                       |
+| `version`        | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                                                      |
 
 ### `list-emails`
 
@@ -378,16 +433,16 @@ for details specific to using this plugin with O365 mailboxes.
 - It is not currently possible to specify all required settings by
   command-line
 
-| Option            | Required | Default        | Repeat | Possible                                                                | Description                                                                                                                                                                                                                                                                                                                              |
-| ----------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `h`, `help`       | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them.                                                                                                                                                                                                                                       |
-| `config-file`     | No       | `accounts.ini` | No     | *valid path to INI configuration file for this application*             | Full path to the INI-formatted configuration file used by this application. See contrib/list-emails/accounts.example.ini for a starter template. Rename to accounts.ini, update with applicable information and place in a directory of your choice. If this file is found in your current working directory you need not use this flag. |
-| `log-file-dir`    | No       | `log`          | No     | *valid, writable path to a directory*                                   | Full path to the directory where log files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist.                                                                 |
-| `report-file-dir` | No       | `output`       | No     | *valid, writable path to a directory*                                   | Full path to the directory where email summary report files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist.                                                |
-| `net-type`        | No       | `auto`         | No     | `auto`, `tcp4`, `tcp6`                                                  | Limits network connections to remote mail servers to one of the specified types.                                                                                                                                                                                                                                                         |
-| `min-tls`         | No       | `tls12`        | No     | `tls10`, `tls11`, `tls12`, `tls13`                                      | Limits version of TLS used for connections to remote mail servers.                                                                                                                                                                                                                                                                       |
-| `logging-level`   | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                                                                                                                                                                          |
-| `version`         | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                                                                                                                                                             |
+| Option            | Required | Default        | Repeat | Possible                                                                | Description                                                                                                                                                                                                                                                                                                                                 |
+| ----------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `h`, `help`       | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them.                                                                                                                                                                                                                                          |
+| `config-file`     | No       | `accounts.ini` | No     | *valid path to INI configuration file for this application*             | Full path to the INI-formatted configuration file used by this application. See [contrib/list-emails/](contrib/list-emails/) for starter templates. Rename to accounts.ini, update with applicable information and place in a directory of your choice. If this file is found in your current working directory you need not use this flag. |
+| `log-file-dir`    | No       | `log`          | No     | *valid, writable path to a directory*                                   | Full path to the directory where log files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist.                                                                    |
+| `report-file-dir` | No       | `output`       | No     | *valid, writable path to a directory*                                   | Full path to the directory where email summary report files will be created. The user account running this application requires write permission to this directory. If not specified, a default directory will be created in your current working directory if it does not already exist.                                                   |
+| `net-type`        | No       | `auto`         | No     | `auto`, `tcp4`, `tcp6`                                                  | Limits network connections to remote mail servers to one of the specified types.                                                                                                                                                                                                                                                            |
+| `min-tls`         | No       | `tls12`        | No     | `tls10`, `tls11`, `tls12`, `tls13`                                      | Limits version of TLS used for connections to remote mail servers.                                                                                                                                                                                                                                                                          |
+| `logging-level`   | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                                                                                                                                                                             |
+| `version`         | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                                                                                                                                                                |
 
 #### Configuration file
 
@@ -492,6 +547,42 @@ You may also place the file wherever you like and refer to it using the
 | `account`   | Yes      | *empty string* | No     | *valid account name* | Username or mailbox in email format.                                                               |
 | `token`     | Yes      | *empty string* | No     | *valid token*        | Access token.                                                                                      |
 | `encode`    | No       | `false`        | No     | `true`, `false`      | Whether to encode XOAuth2 string for use in SASL XOAUTH2.                                          |
+
+### `fetch-token`
+
+#### Command-line arguments
+
+- Flags marked as **`required`** must be set via CLI flag.
+- Flags *not* marked as required are for settings where a useful default is
+  already defined.
+
+| Option          | Required | Default        | Repeat | Possible                                                                | Description                                                                                                                                                                                                                       |
+| --------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `h`, `help`     | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them.                                                                                                                                |
+| `scopes`        | Yes      | *empty string* | No     | *comma-separated list of scopes*                                        | Permissions needed by the application. If using the scopes defined by the application registration you must use the `RESOURCE/.default` format (e.g., `https://outlook.office365.com/.default`.                                   |
+| `client-id`     | Yes      | *empty string* | No     | *valid application ID associated with registered app*                   | Application (client) ID created during app registration.                                                                                                                                                                          |
+| `client-secret` | Yes      | *empty string* | No     | *valid application secret associated with registered app*               | Client secret (aka, "app" password).                                                                                                                                                                                              |
+| `token-url`     | Yes      | *empty string* | No     | *valid token URL*                                                       | The OAuth2 provider's token endpoint URL. E.g., `https://accounts.google.com/o/oauth2/token` for Google. See [contrib/list-emails/oauth2/accounts.example.ini](contrib/list-emails/oauth2/accounts.example.ini) for O365 example. |
+| `filename`      | No       | *empty string* | No     | *valid path to file*                                                    | Optional file used to record a retrieved token. If specified the file will be overwritten.                                                                                                                                        |
+| `json-output`   | No       | `false`        | No     | `true`, `false`                                                         | Emit retrieved token in JSON format. Defaults to emitting the access token field from retrieved payload.                                                                                                                          |
+| `max-attempts`  | No       | `3`            | No     | *positive whole number*                                                 | Max token retrieval attempts.                                                                                                                                                                                                     |
+| `logging-level` | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                                                                                                                                                   |
+| `version`       | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                                                                                                                                                      |
+
+### `read-token`
+
+#### Command-line arguments
+
+- Flags marked as **`required`** must be set via CLI flag.
+- Flags *not* marked as required are for settings where a useful default is
+  already defined.
+
+| Option          | Required | Default        | Repeat | Possible                                                                | Description                                                                                        |
+| --------------- | -------- | -------------- | ------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `h`, `help`     | No       |                | No     | `-h`, `--help`                                                          | Generate listing of all valid command-line options and applicable (short) guidance for using them. |
+| `filename`      | Yes      | *empty string* | No     | *valid path to file*                                                    | File o used to record a retrieved token. If specified the file will be overwritten.                |
+| `logging-level` | No       | `info`         | No     | `disabled`, `panic`, `fatal`, `error`, `warn`, `info`, `debug`, `trace` | Sets log level.                                                                                    |
+| `version`       | No       | `false`        | No     | `true`, `false`                                                         | Whether to display application version and then immediately exit application                       |
 
 ## Examples
 
@@ -617,6 +708,60 @@ $ ./lsimap --server imap.gmail.com
 6:10AM INF cmd\lsimap\main.go:87 > Capability: XYZZY
 6:10AM INF cmd\lsimap\main.go:95 > Connection to server closed
 ```
+
+### `xoauth2`
+
+```console
+export user="me@there.com"
+export token="adfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfa"
+$ ./xoauth2 --token "$token" --username "$user" > go-output.txt
+$ cat go-output.txt
+dXNlcj1tZUB0aGVyZS5jb20BYXV0aD1CZWFyZXIgYWRmYXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYQEB
+```
+
+### `fetch-token`
+
+```console
+$ ./fetch-token \
+  --client-id 'ZYDPLLBWSK3MVQJSIYHB1OR2JXCY0X2C5UJ2QAR2MAAIT5Q' \
+  --client-secret '_djgA8heFo0WSIMom7U39WmGTQFHWkcD8x-A1o-4sro' \
+  --scopes 'https://outlook.office365.com/.default' \
+  --token-url 'https://login.microsoftonline.com/6029c1d9-aa2f-4227-8f7c-0c23224a0fa9/oauth2/v2.0/token' \
+  --log-level debug \
+  --filename "token.txt"
+1:15PM DBG cmd\fetch-token\main.go:62 > Application configuration initialized filename=token.txt
+1:15PM DBG cmd\fetch-token\main.go:64 > Fetching Client Credentials token filename=token.txt
+1:15PM DBG cmd\fetch-token\main.go:77 > Token retrieved filename=token.txt
+1:15PM DBG cmd\fetch-token\main.go:114 > Successfully wrote data to file filename=token.txt
+```
+
+This resulted in a plaintext token being written to `token.txt` for later
+retrieval by the `read-token` utility, or even `cat` or similar shell
+scripting approach.
+
+If saving the token in JSON format via the `--json-output` flag (e.g., if you
+want to also retain the token metadata), the `read-token` utility is provided
+to read back just the access token portion of the saved value.
+
+### `read-token`
+
+```console
+$ ./read-token --filename "token.txt" --log-level debug
+1:15PM DBG cmd\read-token\main.go:54 > Application configuration initialized filename=token.txt
+1:15PM DBG cmd\read-token\main.go:56 > Fetching Client Credentials token from file filename=token.txt
+1:15PM DBG cmd\read-token\main.go:62 > Successfully read contents of file filename=token.txt
+1:15PM DBG cmd\read-token\main.go:90 > File contents do not appear to be JSON filename=token.txt
+1:15PM DBG cmd\read-token\main.go:91 > Attempting to parse file contents as plaintext access token filename=token.txt
+PLACEHOLDER1:15PM DBG cmd\read-token\main.go:102 > Emitted retrieved token bytes_written=1508 filename=token.txt
+```
+
+The `PLACEHOLDER` value above indicates the access token emitted on `stdout`.
+It is interleaved with the log message emitted on stderr which immediately
+follows the token.
+
+If redirecting `stderr` to a file, disabling log messages entirely (or if no
+errors are encountered), log messages will not intermix with the emitted token
+on `stdout`.
 
 ## OAuth 2 Notes
 

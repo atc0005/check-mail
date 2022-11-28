@@ -380,7 +380,7 @@ func (c *Config) parseConfigFile(file []byte) error {
 			Server:   serverName,
 			Username: username,
 			Password: password,
-			OAuth2Settings: OAuth2MailAccountSettings{
+			OAuth2Settings: OAuth2ClientCredentialsFlow{
 				ClientID:      clientID,
 				ClientSecret:  clientSecret,
 				Scopes:        scopes,

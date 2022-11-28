@@ -36,6 +36,8 @@ WHAT 					= check_imap_mailbox_basic \
 							list-emails \
 							lsimap \
 							xoauth2 \
+							fetch-token \
+							read-token \
 
 # TODO: This will need to be standardized across all cmd files in order to
 # work as intended.

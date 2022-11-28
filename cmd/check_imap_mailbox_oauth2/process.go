@@ -65,6 +65,7 @@ func processAccount(
 		account.OAuth2Settings.ClientSecret,
 		account.OAuth2Settings.Scopes,
 		account.OAuth2Settings.TokenURL,
+		cfg.RetrievalAttempts(),
 		logger,
 	)
 	if loginErr != nil {

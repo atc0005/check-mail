@@ -13,10 +13,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/atc0005/check-mail/internal/oauth2"
 	"github.com/atc0005/check-mail/internal/sasl"
 	"github.com/emersion/go-imap/client"
 	"github.com/rs/zerolog"
-	"golang.org/x/oauth2/clientcredentials"
 )
 
 var (
@@ -110,6 +110,7 @@ func OAuth2ClientCredsAuth(
 	clientSecret string,
 	scopes []string,
 	tokenEndpointURL string,
+	maxAttempts int,
 	logger zerolog.Logger,
 ) error {
 
@@ -131,15 +132,15 @@ func OAuth2ClientCredsAuth(
 		logger.Warn().Msg("WARNING: Connection to server is insecure (TLS is not enabled)")
 	}
 
-	oauth2Config := clientcredentials.Config{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
-		TokenURL:     tokenEndpointURL,
-		Scopes:       scopes,
-	}
-
 	logger.Debug().Msg("Acquiring fresh token")
-	token, err := oauth2Config.Token(ctx)
+	token, err := oauth2.GetClientCredentialsToken(
+		ctx,
+		clientID,
+		clientSecret,
+		scopes,
+		tokenEndpointURL,
+		maxAttempts,
+	)
 	if err != nil {
 		logger.Debug().Err(err).Msg("Failed to retrieve token")
 		return fmt.Errorf(

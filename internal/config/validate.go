@@ -123,6 +123,68 @@ func validateAccountOAuth2ClientCredsAuthFields(account MailAccount, appType App
 	return nil
 }
 
+// validateAccountOAuth2ClientCredsAuthFields is responsible for validating
+// MailAccount fields specific to the OAuth2 Client Credentials Flow
+// authentication type. The caller is responsible for calling this function
+// for the appropriate application type.
+func validateFetcherOAuth2TokenFields(tokenSettings FetcherOAuth2TokenSettings, appType AppType) error {
+
+	switch {
+	case appType.FetcherOAuth2TokenFromAuthServer:
+		if tokenSettings.ClientID == "" {
+			return fmt.Errorf("client ID not provided")
+		}
+
+		if tokenSettings.ClientSecret == "" {
+			return fmt.Errorf("client secret not provided")
+		}
+
+		// Scopes is non-optional. If we want to support just *one* IMAP provider
+		// (e.g., O365) we can fallback to using a default scope, but if the goal
+		// is (it is) to support multiple providers we need to require at least
+		// one scope value.
+		if len(tokenSettings.Scopes) == 0 {
+			return fmt.Errorf("scopes not provided")
+		}
+
+		// Unlikely to have empty slice strings, but worth ruling out?
+		for _, scope := range tokenSettings.Scopes {
+			if strings.TrimSpace(scope) == "" {
+				return fmt.Errorf("empty scope provided")
+			}
+		}
+
+		if tokenSettings.TokenURL == "" {
+			return fmt.Errorf("token URL not provided")
+		}
+
+		if tokenSettings.RetrievalAttempts <= 0 {
+			return fmt.Errorf(
+				"invalid token retrieval retry attempts value: %d",
+				tokenSettings.RetrievalAttempts,
+			)
+		}
+
+	case appType.FetcherOAuth2TokenFromCache:
+
+		// The filename to read a token from is only required for this specific
+		// application type. The other Fetcher app type reads the token from the
+		// authority and *optionally* writes it to a file.
+		if tokenSettings.Filename == "" {
+			return fmt.Errorf("filename not provided")
+
+		}
+
+	default:
+		return fmt.Errorf(
+			"unable to validate configuration: %w",
+			ErrAppTypeNotSpecified,
+		)
+	}
+
+	return nil
+}
+
 // validateAccounts is responsible for validating MailAccount fields.
 func validateAccounts(c Config, appType AppType) error {
 	for _, account := range c.Accounts {
@@ -308,6 +370,32 @@ func (c Config) validate(appType AppType) error {
 		}
 
 		if err := validateLoggingLevels(c); err != nil {
+			return err
+		}
+
+	case appType.FetcherOAuth2TokenFromAuthServer:
+
+		if err := validateLoggingLevels(c); err != nil {
+			return err
+		}
+
+		if err := validateFetcherOAuth2TokenFields(
+			c.FetcherOAuth2TokenSettings,
+			appType,
+		); err != nil {
+			return err
+		}
+
+	case appType.FetcherOAuth2TokenFromCache:
+
+		if err := validateLoggingLevels(c); err != nil {
+			return err
+		}
+
+		if err := validateFetcherOAuth2TokenFields(
+			c.FetcherOAuth2TokenSettings,
+			appType,
+		); err != nil {
 			return err
 		}
 

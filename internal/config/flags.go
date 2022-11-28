@@ -34,23 +34,36 @@ func (c *Config) handleFlagsConfig(appType AppType) error {
 
 	c.flagSet.BoolVar(&c.ShowVersion, "version", defaultDisplayVersionAndExit, versionFlagHelp)
 	c.flagSet.StringVar(&c.LoggingLevel, "log-level", defaultLoggingLevel, loggingLevelFlagHelp)
-	c.flagSet.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
-	c.flagSet.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
 
-	// Only applies to Reporter app
 	if appType.ReporterIMAPMailbox {
+		c.flagSet.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
+		c.flagSet.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
 		c.flagSet.StringVar(&c.ConfigFile, "config-file", defaultINIConfigFileName, iniConfigFileFlagHelp)
 		c.flagSet.StringVar(&c.ReportFileOutputDir, "report-file-dir", defaultReportFileOutputDir, reportFileOutputDirFlagHelp)
 		c.flagSet.StringVar(&c.LogFileOutputDir, "log-file-dir", defaultLogFileOutputDir, logFileOutputDirFlagHelp)
 	}
 
-	// Inspector app
 	if appType.InspectorIMAPCaps {
 		c.flagSet.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
 		c.flagSet.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
+		c.flagSet.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
+		c.flagSet.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
 	}
 
-	// Basic Auth Plugin
+	if appType.FetcherOAuth2TokenFromAuthServer {
+		c.flagSet.Var(&c.FetcherOAuth2TokenSettings.Scopes, "scopes", scopesFlagHelp)
+		c.flagSet.StringVar(&c.FetcherOAuth2TokenSettings.ClientID, "client-id", defaultClientID, clientIDFlagHelp)
+		c.flagSet.StringVar(&c.FetcherOAuth2TokenSettings.ClientSecret, "client-secret", defaultClientSecret, clientSecretFlagHelp)
+		c.flagSet.StringVar(&c.FetcherOAuth2TokenSettings.TokenURL, "token-url", defaultTokenURL, tokenURLFlagHelp)
+		c.flagSet.BoolVar(&c.FetcherOAuth2TokenSettings.EmitTokenAsJSON, "json-output", defaultEmitTokenAsJSON, emitTokenAsJSONFlagHelp)
+		c.flagSet.StringVar(&c.FetcherOAuth2TokenSettings.Filename, "filename", defaultTokenFilename, tokenFilenameFlagHelp)
+		c.flagSet.IntVar(&c.FetcherOAuth2TokenSettings.RetrievalAttempts, "max-attempts", defaultTokenRetrievalAttempts, tokenRetrievalAttemptsFlagHelp)
+	}
+
+	if appType.FetcherOAuth2TokenFromCache {
+		c.flagSet.StringVar(&c.FetcherOAuth2TokenSettings.Filename, "filename", defaultTokenFilename, tokenFilenameFlagHelp)
+	}
+
 	if appType.PluginIMAPMailboxBasicAuth {
 
 		// Indicate what validation logic should be applied for this set of
@@ -63,9 +76,10 @@ func (c *Config) handleFlagsConfig(appType AppType) error {
 		c.flagSet.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
 		c.flagSet.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
 		c.flagSet.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
+		c.flagSet.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
+		c.flagSet.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
 	}
 
-	// OAuth2 Client Credentials flow plugin
 	if appType.PluginIMAPMailboxOAuth2 {
 
 		// Indicate what validation logic should be applied for this set of
@@ -77,6 +91,8 @@ func (c *Config) handleFlagsConfig(appType AppType) error {
 		c.flagSet.StringVar(&account.Server, "server", defaultServer, serverFlagHelp)
 		c.flagSet.IntVar(&account.Port, "port", defaultPort, portFlagHelp)
 		c.flagSet.BoolVar(&c.EmitBranding, "branding", defaultEmitBranding, emitBrandingFlagHelp)
+		c.flagSet.StringVar(&c.minTLSVersion, "min-tls", defaultMinTLSVersion, minTLSVersionFlagHelp)
+		c.flagSet.StringVar(&c.NetworkType, "net-type", defaultNetworkType, networkTypeFlagHelp)
 
 		// OAuth2 flags
 		c.flagSet.Var(&account.OAuth2Settings.Scopes, "scopes", scopesFlagHelp)

@@ -145,6 +145,20 @@ func (c *Config) setupLogging(appType AppType) error {
 		consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr}
 		c.Log = zerolog.New(consoleWriter).With().Timestamp().Caller().Logger()
 
+	case appType.FetcherOAuth2TokenFromAuthServer:
+
+		// Slimline logger; omit color/formatting as this isn't handled well
+		// when logged to text files.
+		consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr, NoColor: true}
+		c.Log = zerolog.New(consoleWriter).With().Timestamp().Caller().Logger()
+
+	case appType.FetcherOAuth2TokenFromCache:
+
+		// Slimline logger; omit color/formatting as this isn't handled well
+		// when logged to text files.
+		consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr, NoColor: true}
+		c.Log = zerolog.New(consoleWriter).With().Timestamp().Caller().Logger()
+
 	case appType.PluginIMAPMailboxBasicAuth:
 
 		// Whatever output meant for consumption is emitted to stdout and

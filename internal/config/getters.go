@@ -110,3 +110,12 @@ func (c Config) AccountNames() []string {
 
 	return accountsList
 }
+
+// RetrievalAttempts returns the configured retrieval attempts or the default
+// value if not specified.
+func (c Config) RetrievalAttempts() int {
+	if c.FetcherOAuth2TokenSettings.RetrievalAttempts <= 0 {
+		return defaultTokenRetrievalAttempts
+	}
+	return c.FetcherOAuth2TokenSettings.RetrievalAttempts
+}
