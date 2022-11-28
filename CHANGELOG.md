@@ -26,6 +26,34 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.6.0] - 2022-11-28
+
+### Overview
+
+- New CLI tools
+- Bug fixes
+- Dependency updates
+- built using Go 1.19.3
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Added
+
+- (GH-318) Add utility to read OAuth 2 token from file
+- (GH-319) Add utility to obtain OAuth 2 token via Client Credentials flow
+
+### Changed
+
+- (GH-333) Add tests for INI config file parsing
+- (GH-339) Implement custom flagset in order to better handle flag issues
+- (GH-340) Implement custom Usage/Help logic to allow redirecting help output
+
+### Fixed
+
+- (GH-341) Add follow-up validation step after loading config file for
+  `list-emails` app
+
 ## [v0.5.0] - 2022-11-24
 
 ### Overview
@@ -1060,7 +1088,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.6.0...HEAD
+[v0.6.0]: https://github.com/atc0005/check-mail/releases/tag/v0.6.0
 [v0.5.0]: https://github.com/atc0005/check-mail/releases/tag/v0.5.0
 [v0.4.22]: https://github.com/atc0005/check-mail/releases/tag/v0.4.22
 [v0.4.21]: https://github.com/atc0005/check-mail/releases/tag/v0.4.21
