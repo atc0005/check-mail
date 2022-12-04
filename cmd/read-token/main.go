@@ -41,7 +41,7 @@ func main() {
 
 		// We make some assumptions when setting up our logger as we do not
 		// have a working configuration based on sysadmin-specified choices.
-		consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr}
+		consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr, NoColor: true}
 		logger := zerolog.New(consoleWriter).With().Timestamp().Caller().Logger()
 
 		logger.Err(cfgErr).Msg("Error initializing application")

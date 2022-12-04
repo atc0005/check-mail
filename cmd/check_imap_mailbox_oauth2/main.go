@@ -13,13 +13,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
-	zlog "github.com/rs/zerolog/log"
-
 	"github.com/atc0005/check-mail/internal/config"
 	"github.com/atc0005/go-nagios"
+	"github.com/rs/zerolog"
 )
 
 func main() {
@@ -49,9 +49,13 @@ func main() {
 		return
 
 	case cfgErr != nil:
-		// We're using the standalone Err function from rs/zerolog/log as we
-		// do not have a working configuration.
-		zlog.Err(cfgErr).Msg("Error initializing application")
+		// We make some assumptions when setting up our logger as we do not
+		// have a working configuration based on sysadmin-specified choices.
+		consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr, NoColor: true}
+		logger := zerolog.New(consoleWriter).With().Timestamp().Caller().Logger()
+
+		logger.Err(cfgErr).Msg("Error initializing application")
+
 		nagiosExitState.ServiceOutput = fmt.Sprintf(
 			"%s: Error initializing application",
 			nagios.StateCRITICALLabel,
