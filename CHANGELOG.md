@@ -26,6 +26,36 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.6.1] - 2022-12-08
+
+### Overview
+
+- Dependency updates
+- built using Go 1.19.4
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.19.3` to `1.19.3`
+  - `golang.org/x/oauth2`
+    - `v0.2.0` to `v0.3.0`
+  - `github.com/emersion/go-sasl`
+    - `v0.0.0-20211008083017-0b9dcfb154ac` to
+       `v0.0.0-20220912192320-0145f2c60ead`
+  - `github.com/mattn/go-colorable`
+    - `v0.1.12` to `v0.1.13`
+  - `github.com/mattn/go-isatty`
+    - `v0.0.14` to `v0.0.16`
+  - `golang.org/x/net`
+    - `v0.3.0` to `v0.4.0`
+  - `google.golang.org/protobuf`
+    - `v1.28.0` to `v1.28.1`
+- (GH-349) Modify fallback logger for plugins, script tools
+
 ## [v0.6.0] - 2022-11-28
 
 ### Overview
@@ -1088,7 +1118,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.6.1...HEAD
+[v0.6.1]: https://github.com/atc0005/check-mail/releases/tag/v0.6.1
 [v0.6.0]: https://github.com/atc0005/check-mail/releases/tag/v0.6.0
 [v0.5.0]: https://github.com/atc0005/check-mail/releases/tag/v0.5.0
 [v0.4.22]: https://github.com/atc0005/check-mail/releases/tag/v0.4.22
