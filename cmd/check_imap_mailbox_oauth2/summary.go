@@ -16,7 +16,7 @@ import (
 
 // setSummary customizes nagios.ExitState's ServiceOutput and
 // LongServiceOutput based on number of user-specified accounts.
-func setSummary(accounts []config.MailAccount, nes *nagios.ExitState) {
+func setSummary(accounts []config.MailAccount, nes *nagios.Plugin) {
 
 	if len(accounts) == 1 {
 		nes.ServiceOutput = fmt.Sprintf(

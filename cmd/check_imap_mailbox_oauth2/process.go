@@ -21,7 +21,7 @@ func processAccount(
 	ctx context.Context,
 	account config.MailAccount,
 	cfg *config.Config,
-	state *nagios.ExitState,
+	state *nagios.Plugin,
 	logger zerolog.Logger,
 ) (mbxs.MailboxCheckResults, error) {
 
