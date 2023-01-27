@@ -3,7 +3,7 @@ module github.com/atc0005/check-mail
 go 1.19
 
 require (
-	github.com/atc0005/go-nagios v0.12.1
+	github.com/atc0005/go-nagios v0.13.0
 	github.com/emersion/go-imap v1.2.1
 	github.com/emersion/go-sasl v0.0.0-20220912192320-0145f2c60ead
 	github.com/google/go-cmp v0.5.9
@@ -17,7 +17,6 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
-	github.com/stretchr/testify v1.8.1 // indirect
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
