@@ -36,7 +36,7 @@ github.com/rs/zerolog/log
 # github.com/sqs/go-xoauth2 v0.0.0-20120917012134-0911dad68e56
 ## explicit
 github.com/sqs/go-xoauth2
-# golang.org/x/net v0.5.0
+# golang.org/x/net v0.6.0
 ## explicit; go 1.17
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
