@@ -21,8 +21,4 @@ jobs:
 
   lint_and_build_using_makefile:
     name: Makefile
-    with:
-      # Indicate to imported workflow that the gogeninstall Makefile recipe is
-      # needed.
-      gogeninstall: true
     uses: atc0005/shared-project-resources/.github/workflows/lint-and-build-using-make.yml@master
