@@ -127,17 +127,17 @@ lintinstall:
 
 	@echo "Finished updating linting tools"
 
-.PHONY: gogeninstall
-## gogeninstall: install tools used by go generate
-gogeninstall:
-	@echo "Installing go generate dependencies"
+.PHONY: depsinstall
+## depsinstall: install or update common build dependencies
+depsinstall:
+	@echo "Installing current version of build dependencies"
 
 	@export PATH="${PATH}:$(go env GOPATH)/bin"
 
-	@echo "Installing go-winres ..."
-	@go install github.com/tc-hib/go-winres@latest
+	@echo "Installing latest go-winres version ..."
+	go install github.com/tc-hib/go-winres@latest
 
-	@echo "Finished installing go generate dependencies"
+	@echo "Finished installing or updating build dependencies"
 
 .PHONY: linting
 ## linting: runs common linting checks
