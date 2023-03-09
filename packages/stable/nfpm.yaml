@@ -1,0 +1,88 @@
+# Copyright 2023 Adam Chalkley
+#
+# https://github.com/atc0005/check-mail
+#
+# Licensed under the MIT License. See LICENSE file in the project root for
+# full license information.
+
+# nfpm config file used for generating RPM and DEB packages.
+#
+# https://nfpm.goreleaser.com/usage/
+# https://nfpm.goreleaser.com/configuration/
+
+name: "check-mail"
+arch: "amd64"
+platform: "linux"
+
+# The SEMVER environment variable is set via the Makefile. Call `make
+# packages` to generate packages.
+version: ${SEMVER}
+
+section: "default"
+priority: "extra"
+maintainer: "Adam Chalkley <atc0005@users.noreply.github.com>"
+description: Various tools used to monitor mail services.
+vendor: "atc0005"
+homepage: "https://github.com/atc0005/check-mail"
+license: "MIT"
+# changelog: "changelog.yaml"
+contents:
+  - src: ../../release_assets/lsimap/lsimap-linux-amd64
+    dst: /usr/bin/lsimap
+    file_info:
+      mode: 0755
+
+  - src: ../../release_assets/xoauth2/xoauth2-linux-amd64
+    dst: /usr/bin/xoauth2
+    file_info:
+      mode: 0755
+
+  - src: ../../release_assets/fetch-token/fetch-token-linux-amd64
+    dst: /usr/bin/fetch-token
+    file_info:
+      mode: 0755
+
+  - src: ../../release_assets/read-token/read-token-linux-amd64
+    dst: /usr/bin/read-token
+    file_info:
+      mode: 0755
+
+  - src: ../../release_assets/check_imap_mailbox_basic/check_imap_mailbox_basic-linux-amd64
+    dst: /usr/lib64/nagios/plugins/check_imap_mailbox_basic
+    file_info:
+      mode: 0755
+    packager: rpm
+
+  - src: ../../release_assets/check_imap_mailbox_basic/check_imap_mailbox_basic-linux-amd64
+    dst: /usr/lib/nagios/plugins/check_imap_mailbox_basic
+    file_info:
+      mode: 0755
+    packager: deb
+
+  - src: ../../release_assets/check_imap_mailbox_oauth2/check_imap_mailbox_oauth2-linux-amd64
+    dst: /usr/lib64/nagios/plugins/check_imap_mailbox_oauth2
+    file_info:
+      mode: 0755
+    packager: rpm
+
+  - src: ../../release_assets/check_imap_mailbox_oauth2/check_imap_mailbox_oauth2-linux-amd64
+    dst: /usr/lib/nagios/plugins/check_imap_mailbox_oauth2
+    file_info:
+      mode: 0755
+    packager: deb
+
+overrides:
+  rpm:
+    depends:
+      # Provides selinuxenabled tool.
+      # Installed by default even via the "minimal" installation option.
+      - libselinux-utils
+    scripts:
+      # preinstall: ./scripts/rpm/preinstall.sh
+      postinstall: ./scripts/rpm/postinstall.sh
+      # postremove: ./scripts/rpm/postremove.sh
+  deb:
+    scripts:
+      # preinstall: ./scripts/deb/preinstall.sh
+      postinstall: ./scripts/deb/postinstall.sh
+      # preremove: ./scripts/deb/preremove.sh
