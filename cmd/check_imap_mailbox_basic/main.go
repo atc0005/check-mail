@@ -53,10 +53,10 @@ func main() {
 
 		plugin.ServiceOutput = fmt.Sprintf(
 			"%s: Error initializing application",
-			nagios.StateCRITICALLabel,
+			nagios.StateUNKNOWNLabel,
 		)
 		plugin.AddError(cfgErr)
-		plugin.ExitStatusCode = nagios.StateCRITICALExitCode
+		plugin.ExitStatusCode = nagios.StateUNKNOWNExitCode
 
 		return
 	}
