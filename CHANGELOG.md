@@ -26,6 +26,52 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.6.2] - 2023-03-09
+
+### Overview
+
+- Bug fixes
+- Dependency updates
+- GitHub Actions workflows updates
+- built using Go 1.19.7
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.19.4` to `1.19.7`
+  - `golang.org/x/oauth2`
+    - `v0.3.0` to `v0.6.0`
+  - `atc0005/go-nagios`
+    - `v0.10.2` to `v0.14.0`
+  - `rs/zerolog`
+    - `v1.28.0` to `v1.29.0`
+  - `mattn/go-isatty`
+    - `v0.0.16` to `v0.0.17`
+  - `golang.org/x/net`
+    - `v0.4.0` to `v0.8.0`
+  - `golang.org/x/sys`
+    - `v0.3.0` to `v0.6.0`
+  - `golang.org/x/text`
+    - `v0.5.0` to `v0.8.0`
+  - `google.golang.org/protobuf`
+    - `v1.28.1` to `v1.29.0`
+  - `golang/protobuf`
+    - `v1.5.2` to `v1.5.3`
+- (GH-358) Update nagios library usage, add time perfdata
+- (GH-369) Add Go Module Validation, Dependency Updates jobs
+- (GH-381) Drop `Push Validation` workflow
+- (GH-382) Rework workflow scheduling
+- (GH-384) Replace gogeninstall recipe with depsinstall
+- (GH-385) Remove `Push Validation` workflow status badge
+
+### Fixed
+
+- (GH-400) Use UNKNOWN state for invalid command-line args
+
 ## [v0.6.1] - 2022-12-08
 
 ### Overview
@@ -40,7 +86,7 @@ The following types of changes will be recorded in this file:
 
 - Dependencies
   - `Go`
-    - `1.19.3` to `1.19.3`
+    - `1.19.3` to `1.19.4`
   - `golang.org/x/oauth2`
     - `v0.2.0` to `v0.3.0`
   - `github.com/emersion/go-sasl`
@@ -1118,7 +1164,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.6.2...HEAD
+[v0.6.2]: https://github.com/atc0005/check-mail/releases/tag/v0.6.2
 [v0.6.1]: https://github.com/atc0005/check-mail/releases/tag/v0.6.1
 [v0.6.0]: https://github.com/atc0005/check-mail/releases/tag/v0.6.0
 [v0.5.0]: https://github.com/atc0005/check-mail/releases/tag/v0.5.0
