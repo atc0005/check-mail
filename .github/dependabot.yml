@@ -38,37 +38,6 @@ updates:
       # Prefix all commit messages with "go.mod"
       prefix: "go.mod"
 
-  # Enable version updates for Go modules
-  - package-ecosystem: "gomod"
-
-    # Look for a `go.mod` file in the `root` directory
-    directory: "/dependabot/tools"
-
-    # Default is a maximum of five pull requests for version updates
-    open-pull-requests-limit: 10
-
-    target-branch: "master"
-
-    # Daily update checks; default version checks are performed at 05:00 UTC
-    schedule:
-      interval: "daily"
-      time: "02:00"
-      timezone: "America/Chicago"
-
-    # Assign everything to me by default
-    assignees:
-      - "atc0005"
-    labels:
-      - "dependencies"
-
-    allow:
-      # Allow both direct and indirect updates for all packages
-      - dependency-type: "all"
-
-    commit-message:
-      # Prefix all commit messages with "go.mod"
-      prefix: "go.mod"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     open-pull-requests-limit: 10
@@ -112,3 +81,22 @@ updates:
           # Go release and no longer supported Go versions.
           - ">= 1.20"
           - "< 1.19"
+
+  # Monitor image used to build dev & stable project releases
+  - package-ecosystem: docker
+    directory: "/dependabot/docker/builds"
+    open-pull-requests-limit: 10
+    target-branch: "master"
+    schedule:
+      interval: "daily"
+      time: "02:00"
+      timezone: "America/Chicago"
+    assignees:
+      - "atc0005"
+    labels:
+      - "dependencies"
+      - "builds"
+    allow:
+      - dependency-type: "all"
+    commit-message:
+      prefix: "docker"

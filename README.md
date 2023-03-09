@@ -341,10 +341,17 @@ Worth noting: Support for the Client Credentials flow was added 2022-06-30.
 1. Copy the template [configuration file](#configuration-file), modify
    accordingly and place in a [supported location](#configuration-file)
 
+**NOTE**: Depending on which `Makefile` recipe you use the generated binary
+may be compressed and have an `xz` extension. If so, you should decompress the
+binary first before deploying it (e.g., `xz -d
+check_imap_mailbox_oauth2-linux-amd64.xz`).
+
 ### Using release binaries
 
 1. Download the [latest
    release](https://github.com/atc0005/check-mail/releases/latest) binaries
+1. Decompress binaries
+   - e.g., `xz -d check_imap_mailbox_oauth2-linux-amd64.xz`
 1. Deploy
    - Place `list-emails` in a location of your choice
    - Place `lsimap` in a location of your choice
@@ -363,6 +370,11 @@ Worth noting: Support for the Client Credentials flow was added 2022-06-30.
        systems
 1. Copy the template [configuration file](#configuration-file), modify
    accordingly and place in a [supported location](#configuration-file)
+
+**NOTE**:
+
+DEB and RPM packages are provided as an alternative to manually deploying
+binaries.
 
 ## Configuration Options
 
