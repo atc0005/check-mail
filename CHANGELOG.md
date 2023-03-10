@@ -26,6 +26,37 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.7.0] - 2023-03-10
+
+### Overview
+
+- Add support for generating packages
+- Generated binary changes
+  - filename patterns
+  - compression
+  - executable metadata
+- Build improvements
+- built using Go 1.19.7
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Added
+
+- (GH-388) Generate RPM/DEB packages using nFPM
+
+### Changed
+
+- Dependencies
+  - `atc0005/go-ci` build image
+    - `go-ci-oldstable-build-v0.9.0` to `go-ci-oldstable-build-v0.9.1`
+- (GH-387) Switch to semantic versioning (semver) compatible versioning
+  pattern
+- (GH-390) Makefile: Compress binaries and use fixed filenames
+- (GH-391) Makefile: Refresh recipes to add "standard" set, new
+  package-related options
+- (GH-392) Build dev/stable releases using go-ci Docker image
+
 ## [v0.6.2] - 2023-03-09
 
 ### Overview
@@ -1164,7 +1195,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.7.0...HEAD
+[v0.7.0]: https://github.com/atc0005/check-mail/releases/tag/v0.7.0
 [v0.6.2]: https://github.com/atc0005/check-mail/releases/tag/v0.6.2
 [v0.6.1]: https://github.com/atc0005/check-mail/releases/tag/v0.6.1
 [v0.6.0]: https://github.com/atc0005/check-mail/releases/tag/v0.6.0
