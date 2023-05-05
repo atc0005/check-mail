@@ -56,7 +56,7 @@ func validateLoggingLevels(c Config) error {
 // validateAccountBasicAuthFields is responsible for validating MailAccount
 // fields specific to the Basic Authentication type. The caller is responsible
 // for calling this function for the appropriate application type.
-func validateAccountBasicAuthFields(account MailAccount, appType AppType) error {
+func validateAccountBasicAuthFields(account MailAccount, _ AppType) error {
 	if account.Username == "" {
 		return fmt.Errorf("username not provided for account %s",
 			account.Name,
@@ -76,7 +76,7 @@ func validateAccountBasicAuthFields(account MailAccount, appType AppType) error 
 // MailAccount fields specific to the OAuth2 Client Credentials Flow
 // authentication type. The caller is responsible for calling this function
 // for the appropriate application type.
-func validateAccountOAuth2ClientCredsAuthFields(account MailAccount, appType AppType) error {
+func validateAccountOAuth2ClientCredsAuthFields(account MailAccount, _ AppType) error {
 	if account.OAuth2Settings.ClientID == "" {
 		return fmt.Errorf("client ID not provided for account %s",
 			account.Name,

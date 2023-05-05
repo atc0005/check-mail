@@ -18,7 +18,7 @@ import (
 )
 
 func processAccount(
-	ctx context.Context,
+	_ context.Context,
 	account config.MailAccount,
 	cfg *config.Config,
 	state *nagios.Plugin,
