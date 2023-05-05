@@ -144,7 +144,7 @@ func GenerateReport(reportData ReportData, reportDirectory string, logger zerolo
 	logger.Debug().Msg("Syncing file modifications")
 	if syncErr := f.Sync(); syncErr != nil {
 		return fmt.Errorf(
-			"failed to explicitly sync file %q after writing: %s",
+			"failed to explicitly sync file %q after writing: %w",
 			reportFilePath,
 			syncErr,
 		)
