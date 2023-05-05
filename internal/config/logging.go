@@ -201,10 +201,5 @@ func (c *Config) setupLogging(appType AppType) error {
 
 	}
 
-	if err := setLoggingLevel(c.LoggingLevel); err != nil {
-		return err
-	}
-
-	return nil
-
+	return setLoggingLevel(c.LoggingLevel)
 }
