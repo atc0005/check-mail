@@ -26,6 +26,47 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.0] - 2023-05-11
+
+### Overview
+
+- Build improvements
+- Bug fixes
+- Dependency updates
+- built using Go 1.19.9
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Added
+
+- (GH-419) Add rootless container builds via Docker/Podman
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.19.7` to `1.19.9`
+  - `atc0005/go-ci` build image
+    - `go-ci-oldstable-build-v0.10.3` to `go-ci-oldstable-build-v0.10.5`
+  - `golang.org/x/oauth2`
+    - `v0.6.0` to `v0.8.0`
+  - `rs/zerolog`
+    - `v1.29.0` to `v1.29.1`
+  - `golang.org/x/net`
+    - `v0.8.0` to `v0.10.0`
+  - `golang.org/x/sys`
+    - `v0.6.0` to `v0.8.0`
+  - `golang.org/x/text`
+    - `v0.8.0` to `v0.9.0`
+- (GH-420) Add .dockerignore file for use during image builds
+
+### Fixes
+
+- (GH-411) Update vuln analysis GHAW to use on.push hook
+- (GH-430) Fix `if-return`, `unused-parameter` linting errors
+- (GH-431) Fix errwrap linting issue
+
 ## [v0.7.1] - 2023-03-29
 
 ### Overview
@@ -1221,7 +1262,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.0...HEAD
+[v0.8.0]: https://github.com/atc0005/check-mail/releases/tag/v0.8.0
 [v0.7.1]: https://github.com/atc0005/check-mail/releases/tag/v0.7.1
 [v0.7.0]: https://github.com/atc0005/check-mail/releases/tag/v0.7.0
 [v0.6.2]: https://github.com/atc0005/check-mail/releases/tag/v0.6.2
