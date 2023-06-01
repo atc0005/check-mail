@@ -1,5 +1,5 @@
-github.com/atc0005/go-nagios v0.14.0 h1:xtOa/MJDvk4SSicAV5B8VlyiHu/85+Ode/aUGj99euw=
-github.com/atc0005/go-nagios v0.14.0/go.mod h1:U9k9W4hUskZhVCo9vGBILW2+eWRZh1ZaA+SN5g69CbY=
+github.com/atc0005/go-nagios v0.15.0 h1:CxAR6fLXkSvMFZxsYh/HSErp/oad94vl9j65RcZaOjA=
+github.com/atc0005/go-nagios v0.15.0/go.mod h1:TlE2JBMuI64lM01MqobahTA94hgtVefvEzyKtvIHToo=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/emersion/go-imap v1.2.1 h1:+s9ZjMEjOB8NzZMVTM3cCenz2JrQIGGo5j1df19WjTA=
@@ -31,7 +31,7 @@ github.com/rs/zerolog v1.29.1 h1:cO+d60CHkknCbvzEWxP0S9K6KqyTjrCNUy1LdQLCGPc=
 github.com/rs/zerolog v1.29.1/go.mod h1:Le6ESbR7hc+DP6Lt1THiV8CQSdkkNrd3R0XbEgp3ZBU=
 github.com/sqs/go-xoauth2 v0.0.0-20120917012134-0911dad68e56 h1:KCgKdj+ha4CgnVHIiJYGKzgZk3HfCc6XssESfOa6atM=
 github.com/sqs/go-xoauth2 v0.0.0-20120917012134-0911dad68e56/go.mod h1:ghDEBrT4oFcM4rv18bzcZaAWXbHPGpDa4e2hh9oXL8A=
-github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
+github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/net v0.0.0-20190603091049-60506f45cf65/go.mod h1:HSz+uSET+XFnRR8LxR5pz3Of3rY3CfYBVs4xY44aLks=
 golang.org/x/net v0.10.0 h1:X2//UzNDwYmtCLn7To6G58Wr6f5ahEAQgKNzv9Y951M=
