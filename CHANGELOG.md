@@ -26,6 +26,35 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.1] - 2023-06-09
+
+### Overview
+
+- Bug fixes
+- Dependency updates
+- built using Go 1.19.10
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.19.9` to `1.19.10`
+  - `atc0005/go-ci` build image
+    - `go-ci-oldstable-build-v0.10.5` to `go-ci-oldstable-build-v0.10.6`
+  - `atc0005/go-nagios`
+    - `v0.14.0` to `v0.15.0`
+  - `mattn/go-isatty`
+    - `0.0.18` to `0.0.19`
+- (GH-442) Update vuln analysis GHAW to remove on.push hook
+- (GH-443) Log hostname for successful DNS resolution
+
+### Fixes
+
+- (GH-439) Disable depguard linter
+
 ## [v0.8.0] - 2023-05-11
 
 ### Overview
@@ -1262,7 +1291,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.1...HEAD
+[v0.8.1]: https://github.com/atc0005/check-mail/releases/tag/v0.8.1
 [v0.8.0]: https://github.com/atc0005/check-mail/releases/tag/v0.8.0
 [v0.7.1]: https://github.com/atc0005/check-mail/releases/tag/v0.7.1
 [v0.7.0]: https://github.com/atc0005/check-mail/releases/tag/v0.7.0
