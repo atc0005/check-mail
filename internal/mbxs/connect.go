@@ -133,6 +133,7 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 		logger.Debug().
 			Int("count", len(lookupResults)).
 			Str("ips", strings.Join(lookupResults, ", ")).
+			Str("hostname", server).
 			Msg("successfully resolved IP Addresses for hostname")
 
 	}
