@@ -115,8 +115,8 @@ Shared functionality:
   - non-`OK` state returned for any items in specified mailboxes or errors
     encountered
   - `OK` state returned if all specified mailboxes are empty
-- Leveled logging
-  - JSON-format output
+- Optional, leveled logging using `rs/zerolog` package
+  - [`logfmt`][logfmt] format output (to `stderr`)
   - choice of `disabled`, `panic`, `fatal`, `error`, `warn`, `info` (the
     default), `debug` or `trace`
 - TLS IMAP4 connectivity
@@ -131,8 +131,8 @@ Shared functionality:
 ### `list-emails`
 
 - Check one or many mailboxes
-- Leveled logging
-  - JSON-format output
+- Optional, leveled logging using `rs/zerolog` package
+  - [`logfmt`][logfmt] format output (to `stderr`)
   - choice of `disabled`, `panic`, `fatal`, `error`, `warn`, `info` (the
     default), `debug` or `trace`
   - bulk of logging directed to per-invocation log file
@@ -1113,5 +1113,7 @@ SOFTWARE.
 [o365-sasl-xoauth2]: <https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth#sasl-xoauth2> "SASL XOAUTH2"
 
 [ps-imap-access-token-script]: <https://github.com/DanijelkMSFT/ThisandThat/blob/main/Get-IMAPAccessToken.ps1> "Get-IMAPAccessToken.ps1 script"
+
+[logfmt]: <https://brandur.org/logfmt>
 
 <!-- []: PLACEHOLDER "DESCRIPTION_HERE" -->
