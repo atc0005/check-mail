@@ -26,6 +26,42 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.2] - 2023-07-13
+
+### Overview
+
+- RPM package improvements
+- Bug fixes
+- Dependency updates
+- built using Go 1.19.11
+  - Statically linked
+  - Windows (x86, x64)
+  - Linux (x86, x64)
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.19.10` to `1.19.11`
+  - `atc0005/go-nagios`
+    - `v0.15.0` to `v0.16.0`
+  - `atc0005/go-ci`
+    - `go-ci-oldstable-build-v0.11.0` to `go-ci-oldstable-build-v0.11.3`
+  - `golang.org/x/sys`
+    - `v0.9.0` to `v0.10.0`
+  - `golang.org/x/oauth2`
+    - `v0.8.0` to `v0.10.0`
+  - `golang.org/x/text`
+    - `v0.10.0` to `v0.11.0`
+  - `google.golang.org/protobuf`
+    - `v1.30.0` to `v1.31.0`
+- (GH-460) Update RPM postinstall scripts to use restorecon
+
+### Fixed
+
+- (GH-450) Restore local CodeQL workflow
+- (GH-459) Correct logging format listed in README
+
 ## [v0.8.1] - 2023-06-09
 
 ### Overview
@@ -1291,7 +1327,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.1...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.2...HEAD
+[v0.8.2]: https://github.com/atc0005/check-mail/releases/tag/v0.8.2
 [v0.8.1]: https://github.com/atc0005/check-mail/releases/tag/v0.8.1
 [v0.8.0]: https://github.com/atc0005/check-mail/releases/tag/v0.8.0
 [v0.7.1]: https://github.com/atc0005/check-mail/releases/tag/v0.7.1
