@@ -26,6 +26,37 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.3] - 2023-08-17
+
+### Added
+
+- (GH-466) Add initial automated release notes config
+- (GH-468) Add initial automated release build workflow
+
+### Changed
+
+- Dependencies
+  - `Go`
+    - `1.19.11` to `1.20.7`
+  - `atc0005/go-ci`
+    - `go-ci-oldstable-build-v0.11.3` to `go-ci-oldstable-build-v0.13.4`
+  - `rs/zerolog`
+    - `v1.29.1` to `v1.30.0`
+  - `golang.org/x/oauth2`
+    - `v0.10.0` to `v0.11.0`
+  - `golang.org/x/net`
+    - `v0.12.0` to `v0.13.0`
+  - `golang.org/x/sys`
+    - `v0.10.0` to `v0.11.0`
+  - `golang.org/x/text`
+    - `v0.11.0` to `v0.12.0`
+- (GH-471) Update Dependabot config to monitor both branches
+- (GH-499) Update project to Go 1.20 series
+
+### Fixed
+
+- (GH-469) Update CodeQL GHAW timeout
+
 ## [v0.8.2] - 2023-07-13
 
 ### Overview
@@ -1327,7 +1358,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.2...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.3...HEAD
+[v0.8.3]: https://github.com/atc0005/check-mail/releases/tag/v0.8.3
 [v0.8.2]: https://github.com/atc0005/check-mail/releases/tag/v0.8.2
 [v0.8.1]: https://github.com/atc0005/check-mail/releases/tag/v0.8.1
 [v0.8.0]: https://github.com/atc0005/check-mail/releases/tag/v0.8.0
