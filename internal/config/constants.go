@@ -66,6 +66,10 @@ const (
 	tokenRetrievalAttemptsFlagHelp string = "Max token retrieval attempts."
 )
 
+// shorthandFlagSuffix is appended to short flag help text to emphasize that
+// the flag is a shorthand version of a longer flag.
+const shorthandFlagSuffix = " (shorthand)"
+
 // Default flag settings if not overridden by user input
 const (
 	defaultHelp                  bool   = false
