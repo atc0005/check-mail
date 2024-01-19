@@ -26,6 +26,19 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.7] - 2024-01-19
+
+### Changed
+
+#### Dependency Updates
+
+- (GH-592) canary: bump golang from 1.20.12 to 1.20.13 in /dependabot/docker/go
+- (GH-594) docker: bump atc0005/go-ci from go-ci-oldstable-build-v0.14.2 to go-ci-oldstable-build-v0.14.3 in /dependabot/docker/builds
+- (GH-584) ghaw: bump github/codeql-action from 2 to 3
+- (GH-590) go.mod: bump golang.org/x/oauth2 from 0.15.0 to 0.16.0
+- (GH-588) go.mod: bump golang.org/x/sys from 0.15.0 to 0.16.0
+- (GH-587) go.mod: bump google.golang.org/protobuf from 1.31.0 to 1.32.0
+
 ## [v0.8.6] - 2023-12-09
 
 ### Changed
@@ -1410,7 +1423,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.6...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.7...HEAD
+[v0.8.7]: https://github.com/atc0005/check-mail/releases/tag/v0.8.7
 [v0.8.6]: https://github.com/atc0005/check-mail/releases/tag/v0.8.6
 [v0.8.5]: https://github.com/atc0005/check-mail/releases/tag/v0.8.5
 [v0.8.4]: https://github.com/atc0005/check-mail/releases/tag/v0.8.4
