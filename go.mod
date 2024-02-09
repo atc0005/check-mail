@@ -9,7 +9,7 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/rs/zerolog v1.32.0
 	github.com/sqs/go-xoauth2 v0.0.0-20120917012134-0911dad68e56
-	golang.org/x/oauth2 v0.16.0
+	golang.org/x/oauth2 v0.17.0
 	gopkg.in/ini.v1 v1.67.0
 )
 
