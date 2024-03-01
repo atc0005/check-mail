@@ -70,6 +70,13 @@ func main() {
 	// sufficient work is in place to allow bulk processing if there is
 	// sufficient interest.
 	for i, account := range cfg.Accounts {
+		// Building with `go build -gcflags=all=-d=loopvar=2` identified this
+		// loop as compiling differently with Go 1.22 (per-iteration) loop
+		// semantics.
+		//
+		// As a workaround, we create a new variable for each iteration to
+		// work around potential issues with Go versions prior to Go 1.22.
+		account := account
 
 		logger := cfg.Log.With().
 			Str("username", account.Username).
