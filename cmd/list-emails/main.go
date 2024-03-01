@@ -88,6 +88,13 @@ func main() {
 
 	// loop over accounts
 	for i, account := range cfg.Accounts {
+		// Building with `go build -gcflags=all=-d=loopvar=2` identified this
+		// loop as compiling differently with Go 1.22 (per-iteration) loop
+		// semantics.
+		//
+		// As a workaround, we create a new variable for each iteration to
+		// work around potential issues with Go versions prior to Go 1.22.
+		account := account
 
 		fmt.Println("Checking account:", account.Name)
 
