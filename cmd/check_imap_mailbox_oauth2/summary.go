@@ -37,6 +37,14 @@ func setSummary(accounts []config.MailAccount, nes *nagios.Plugin) {
 	)
 
 	for _, account := range accounts {
+		// Building with `go build -gcflags=all=-d=loopvar=2` identified this
+		// loop as compiling differently with Go 1.22 (per-iteration) loop
+		// semantics.
+		//
+		// As a workaround, we create a new variable for each iteration to
+		// work around potential issues with Go versions prior to Go 1.22.
+		account := account
+
 		accountSummary := fmt.Sprintf(
 			"* Account: %s%s** Folders: %s%s%s",
 			account.Username,
