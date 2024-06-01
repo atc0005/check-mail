@@ -32,7 +32,7 @@ func inspectString(s string, w io.Writer) error {
 		}
 
 		// fmt.Printf(
-		fmt.Fprintf(
+		_, _ = fmt.Fprintf(
 			tw,
 			"char %d: %c\t"+
 				"Decimal: %d\t"+
@@ -61,7 +61,7 @@ func inspectString(s string, w io.Writer) error {
 
 	}
 
-	fmt.Fprintln(w)
+	_, _ = fmt.Fprintln(w)
 	if err := tw.Flush(); err != nil {
 		return fmt.Errorf(
 			"error occurred flushing tabwriter: %w",
@@ -81,7 +81,7 @@ func InspectStrings(ss []string, w io.Writer) error {
 
 	for i, s := range ss {
 
-		fmt.Fprintf(w, "\nstring %d: %q\n", i, s)
+		_, _ = fmt.Fprintf(w, "\nstring %d: %q\n", i, s)
 
 		err := inspectString(s, w)
 		if err != nil {
@@ -100,7 +100,7 @@ func InspectStrings(ss []string, w io.Writer) error {
 // interface.
 func InspectString(s string, w io.Writer) error {
 
-	fmt.Fprintf(w, "\nstring: %q\n", s)
+	_, _ = fmt.Fprintf(w, "\nstring: %q\n", s)
 
 	err := inspectString(s, w)
 	if err != nil {

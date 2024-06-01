@@ -341,7 +341,7 @@ func Usage(flagSet *flag.FlagSet, w io.Writer) func() {
 	// Uninitialized flagset, provide stub usage information.
 	case flagSet == nil:
 		return func() {
-			fmt.Fprintln(w, "Failed to initialize configuration; nil FlagSet")
+			_, _ = fmt.Fprintln(w, "Failed to initialize configuration; nil FlagSet")
 		}
 
 	// Non-nil flagSet, proceed
@@ -352,8 +352,8 @@ func Usage(flagSet *flag.FlagSet, w io.Writer) func() {
 		flagSet.SetOutput(w)
 
 		return func() {
-			fmt.Fprintln(flag.CommandLine.Output(), "\n"+Version()+"\n")
-			fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
+			_, _ = fmt.Fprintln(flag.CommandLine.Output(), "\n"+Version()+"\n")
+			_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
 			flagSet.PrintDefaults()
 		}
 	}
@@ -373,7 +373,7 @@ func (c *Config) Help() string {
 	// Handle nil configuration initialization.
 	case c == nil || c.flagSet == nil:
 		// Fallback message noting the issue.
-		fmt.Fprintln(&helpTxt, ErrConfigNotInitialized)
+		_, _ = fmt.Fprintln(&helpTxt, ErrConfigNotInitialized)
 
 	default:
 		// Emit expected help output to builder.
