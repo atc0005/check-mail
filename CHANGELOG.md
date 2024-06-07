@@ -26,6 +26,26 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.12] - 2024-06-07
+
+### Changed
+
+#### Dependency Updates
+
+- (GH-699) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.20.4 to go-ci-oldstable-build-v0.20.5 in /dependabot/docker/builds
+- (GH-702) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.20.5 to go-ci-oldstable-build-v0.20.6 in /dependabot/docker/builds
+- (GH-715) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.20.6 to go-ci-oldstable-build-v0.20.7 in /dependabot/docker/builds
+- (GH-701) Go Dependency: Bump github.com/rs/zerolog from 1.32.0 to 1.33.0
+- (GH-708) Go Dependency: Bump golang.org/x/oauth2 from 0.20.0 to 0.21.0
+- (GH-709) Go Dependency: Bump golang.org/x/sys from 0.20.0 to 0.21.0
+- (GH-710) Go Dependency: Bump golang.org/x/text from 0.15.0 to 0.16.0
+- (GH-711) Go Runtime: Bump golang from 1.21.10 to 1.21.11 in /dependabot/docker/go
+
+### Fixed
+
+- (GH-704) Remove inactive maligned linter
+- (GH-705) Fix errcheck linting errors
+
 ## [v0.8.11] - 2024-05-11
 
 ### Changed
@@ -1493,7 +1513,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.11...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.12...HEAD
+[v0.8.12]: https://github.com/atc0005/check-mail/releases/tag/v0.8.12
 [v0.8.11]: https://github.com/atc0005/check-mail/releases/tag/v0.8.11
 [v0.8.10]: https://github.com/atc0005/check-mail/releases/tag/v0.8.10
 [v0.8.9]: https://github.com/atc0005/check-mail/releases/tag/v0.8.9
