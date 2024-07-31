@@ -812,6 +812,7 @@ docker-release-build: clean helper-builder-setup
 	@echo
 	@echo "Using release builder image to generate project release assets"
 	$(CONTAINER_COMMAND) container run \
+		--env REPO_VERSION=$(REPO_VERSION) \
 		--user builduser:builduser \
 		--rm \
 		-i \
@@ -832,6 +833,7 @@ podman-release-build: clean helper-builder-setup
 	@echo
 	@echo "Using release builder image to generate project release assets"
 	$(CONTAINER_COMMAND) container run \
+		--env REPO_VERSION=$(REPO_VERSION) \
 		--rm \
 		-i \
 		-v $$PWD/$(OUTPUTDIR):/builds/$(OUTPUTDIR):rw \
@@ -851,6 +853,7 @@ docker-dev-build: clean helper-builder-setup
 	@echo
 	@echo "Using release builder image to generate project release assets"
 	$(CONTAINER_COMMAND) container run \
+		--env REPO_VERSION=$(REPO_VERSION) \
 		--user builduser:builduser \
 		--rm \
 		-i \
@@ -871,6 +874,7 @@ podman-dev-build: clean helper-builder-setup
 	@echo
 	@echo "Using release builder image to generate project release assets"
 	$(CONTAINER_COMMAND) container run \
+		--env REPO_VERSION=$(REPO_VERSION) \
 		--rm \
 		-i \
 		-v $$PWD/$(OUTPUTDIR):/builds/$(OUTPUTDIR):rw \
@@ -892,6 +896,7 @@ docker-packages: helper-builder-setup
 
 	@echo "Building with $(CONTAINER_COMMAND)"
 	$(CONTAINER_COMMAND) container run \
+		--env REPO_VERSION=$(REPO_VERSION) \
 		--rm \
 		--user builduser:builduser \
 		-i \
@@ -914,6 +919,7 @@ podman-packages: helper-builder-setup
 
 	@echo "Building with $(CONTAINER_COMMAND)"
 	$(CONTAINER_COMMAND) container run \
+		--env REPO_VERSION=$(REPO_VERSION) \
 		--rm \
 		-i \
 		-v $$PWD/$(OUTPUTDIR):/builds/$(OUTPUTDIR):rw \
