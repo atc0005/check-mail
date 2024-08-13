@@ -26,6 +26,26 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.14] - 2024-08-13
+
+### Changed
+
+#### Dependency Updates
+
+- (GH-738) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.21.4 to go-ci-oldstable-build-v0.21.5 in /dependabot/docker/builds
+- (GH-741) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.21.5 to go-ci-oldstable-build-v0.21.6 in /dependabot/docker/builds
+- (GH-744) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.21.6 to go-ci-oldstable-build-v0.21.7 in /dependabot/docker/builds
+- (GH-755) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.21.7 to go-ci-oldstable-build-v0.21.8 in /dependabot/docker/builds
+- (GH-748) Go Dependency: Bump golang.org/x/oauth2 from 0.21.0 to 0.22.0
+- (GH-749) Go Dependency: Bump golang.org/x/sys from 0.22.0 to 0.23.0
+- (GH-758) Go Dependency: Bump golang.org/x/sys from 0.23.0 to 0.24.0
+- (GH-754) Go Dependency: Bump golang.org/x/text from 0.16.0 to 0.17.0
+- (GH-753) Go Runtime: Bump golang from 1.21.12 to 1.21.13 in /dependabot/docker/go
+
+#### Other
+
+- (GH-746) Push `REPO_VERSION` var into containers for builds
+
 ## [v0.8.13] - 2024-07-10
 
 ### Changed
@@ -1526,7 +1546,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.13...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.14...HEAD
+[v0.8.14]: https://github.com/atc0005/check-mail/releases/tag/v0.8.14
 [v0.8.13]: https://github.com/atc0005/check-mail/releases/tag/v0.8.13
 [v0.8.12]: https://github.com/atc0005/check-mail/releases/tag/v0.8.12
 [v0.8.11]: https://github.com/atc0005/check-mail/releases/tag/v0.8.11
