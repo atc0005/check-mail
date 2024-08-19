@@ -24,11 +24,9 @@ import (
 func openConnection(addrs []string, port int, dialer Dialer, tlsConfig *tls.Config, logger zerolog.Logger) (*client.Client, error) {
 
 	if len(addrs) < 1 {
-		errMsg := "empty list of IP Addresses received"
+		logger.Error().Msg("empty list of IP Addresses received")
 
-		logger.Error().Msg(errMsg)
-
-		return nil, fmt.Errorf(errMsg)
+		return nil, fmt.Errorf("empty list of IP Addresses received")
 	}
 
 	var c *client.Client
@@ -119,15 +117,9 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 
 	switch {
 	case len(lookupResults) < 1:
-		errMsg := fmt.Sprintf(
-			"failed to resolve hostname %s to IP Addresses",
-			server,
-		)
+		logger.Error().Str("server", server).Msg("failed to resolve hostname to IP Addresses")
 
-		logger.Error().
-			Msg(errMsg)
-
-		return nil, fmt.Errorf(errMsg)
+		return nil, fmt.Errorf("failed to resolve hostname to IP Addresses: %v", server)
 
 	default:
 		logger.Debug().
@@ -155,15 +147,19 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 
 	switch {
 	case len(ips) < 1:
-		errMsg := fmt.Sprintf(
+		numLookupResults := len(lookupResults)
+		lookupResultsList := strings.Join(lookupResults, ", ")
+
+		logger.Error().
+			Int("num_lookup_results", numLookupResults).
+			Str("lookup_results", lookupResultsList).
+			Msg("failed to to convert DNS lookup results to net.IP values after receiving DNS lookup results")
+
+		return nil, fmt.Errorf(
 			"failed to to convert DNS lookup results to net.IP values after receiving %d DNS lookup results ([%s])",
-			len(lookupResults),
-			strings.Join(lookupResults, ", "),
+			numLookupResults,
+			lookupResultsList,
 		)
-
-		logger.Error().Msg(errMsg)
-
-		return nil, fmt.Errorf(errMsg)
 
 	default:
 		logger.Debug().Msg("successfully converted DNS lookup results to net.IP values")
@@ -208,15 +204,19 @@ func Connect(server string, port int, netType string, minTLSVer uint16, logger z
 	// requirement.
 	switch {
 	case len(addrs) < 1:
-		errMsg := fmt.Sprintf(
+		numLookupResults := len(lookupResults)
+		lookupResultsList := strings.Join(lookupResults, ", ")
+
+		logger.Error().
+			Int("num_lookup_results", numLookupResults).
+			Str("lookup_results", lookupResultsList).
+			Msg("failed to gather IP Addresses for connection attempts after receiving and parsing DNS lookup results")
+
+		return nil, fmt.Errorf(
 			"failed to gather IP Addresses for connection attempts after receiving and parsing %d DNS lookup results ([%s])",
-			len(lookupResults),
-			strings.Join(lookupResults, ", "),
+			numLookupResults,
+			lookupResultsList,
 		)
-
-		logger.Error().Msg(errMsg)
-
-		return nil, fmt.Errorf(errMsg)
 
 	default:
 		logger.Debug().
