@@ -439,7 +439,7 @@ func New(appType AppType) (*Config, error) {
 			// someone needs to debug later what happened (and the person
 			// running the application didn't catch the error output).
 			errMsg := "failed to load configuration file"
-			config.Log.Error().Err(err).Msgf(errMsg)
+			config.Log.Error().Err(err).Msg(errMsg)
 
 			return nil, fmt.Errorf("%s: %w", errMsg, err)
 		}
