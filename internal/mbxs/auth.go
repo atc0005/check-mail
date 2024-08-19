@@ -31,14 +31,9 @@ var (
 func Login(c *client.Client, username string, password string, logger zerolog.Logger) error {
 
 	if c == nil {
-		errMsg := fmt.Sprintf(
-			"invalid (nil) client received while attempting login for account %s",
-			username,
-		)
+		logger.Error().Str("account", username).Msg("invalid (nil) client received while attempting login")
 
-		logger.Error().Msg(errMsg)
-
-		return fmt.Errorf(errMsg)
+		return fmt.Errorf("invalid (nil) client received while attempting login for account: %v", username)
 	}
 
 	// Due to logic applied during connection establishment this is highly
@@ -115,14 +110,9 @@ func OAuth2ClientCredsAuth(
 ) error {
 
 	if imapClient == nil {
-		errMsg := fmt.Sprintf(
-			"invalid (nil) client received while attempting login for client ID %s",
-			clientID,
-		)
+		logger.Error().Str("client_id", clientID).Msg("invalid (nil) client received while attempting login")
 
-		logger.Error().Msg(errMsg)
-
-		return fmt.Errorf(errMsg)
+		return fmt.Errorf("invalid (nil) client received while attempting login for client ID: %v", clientID)
 	}
 
 	// Due to logic applied during connection establishment this is highly
