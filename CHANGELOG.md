@@ -26,6 +26,20 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.15] - 2024-08-21
+
+### Changed
+
+#### Dependency Updates
+
+- (GH-764) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.21.8 to go-ci-oldstable-build-v0.21.9 in /dependabot/docker/builds
+- (GH-771) Go Runtime: Bump golang from 1.21.13 to 1.22.6 in /dependabot/docker/go
+- (GH-766) Update project to Go 1.22 series
+
+### Fixed
+
+- (GH-767) Fix govet linting errors raised by updated linter
+
 ## [v0.8.14] - 2024-08-13
 
 ### Changed
@@ -1546,7 +1560,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.14...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.15...HEAD
+[v0.8.15]: https://github.com/atc0005/check-mail/releases/tag/v0.8.15
 [v0.8.14]: https://github.com/atc0005/check-mail/releases/tag/v0.8.14
 [v0.8.13]: https://github.com/atc0005/check-mail/releases/tag/v0.8.13
 [v0.8.12]: https://github.com/atc0005/check-mail/releases/tag/v0.8.12
