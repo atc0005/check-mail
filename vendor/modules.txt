@@ -33,7 +33,7 @@ github.com/rs/zerolog/log
 # github.com/sqs/go-xoauth2 v0.0.0-20120917012134-0911dad68e56
 ## explicit
 github.com/sqs/go-xoauth2
-# golang.org/x/oauth2 v0.23.0
+# golang.org/x/oauth2 v0.24.0
 ## explicit; go 1.18
 golang.org/x/oauth2
 golang.org/x/oauth2/clientcredentials
