@@ -134,7 +134,7 @@ func OAuth2ClientCredsAuth(
 	if err != nil {
 		logger.Debug().Err(err).Msg("Failed to retrieve token")
 		return fmt.Errorf(
-			"failed to retrieve token: %w",
+			"failed to authenticate: %w",
 			err,
 		)
 	}
