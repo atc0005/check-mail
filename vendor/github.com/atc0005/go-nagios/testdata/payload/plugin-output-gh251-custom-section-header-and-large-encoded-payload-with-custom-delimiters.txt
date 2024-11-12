@@ -1,0 +1,26 @@
+OK: Datastore HUSVM-DC1-vol6 space usage (0 VMs) is 0.01% of 18.0TB with 18.0TB remaining [WARNING: 90% , CRITICAL: 95%] 
+**THRESHOLDS** 
+ 
+* CRITICAL: 95% datastore usage 
+* WARNING: 90% datastore usage 
+ 
+**DETAILED INFO** 
+ 
+Datastore Space Summary: 
+ 
+* Name: HUSVM-DC1-vol6 
+* Space Used: 2.3GB (0.01%) 
+* Space Remaining: 18.0TB (99.99%) 
+* VMs: 0  
+ 
+ 
+--- 
+ 
+* vSphere environment: https://vc1.example.com:443/sdk 
+* Plugin User Agent: check-vmware/v0.30.6-0-g25fdcdc 
+ 
+ 
+**PAYLOAD FOR LATER API USE** 
+ 
+CUSTOM_ENCODING_DELIMITER_LEFT9Q+r_D'3P3F*2=BA8c:&EZfF;F<G"/ATTIG@rH7+ARfgnFEMUH@:X(kBldcuDJ()'Ch[uD+AQ?^+D,2*D.RU,F_r72Df0W-@ru:(F`JU7F`MPGF"SS'Df0,r+Cf>-F(Jj'ATW'8+EV12CiseACgggfDJ<N1+CfP7F*2OHAn>dmF!,@=DCco@Bk)7-D'3n.E+rm$/g*Q#DIm<#D..O.BlbD5@:OG$+CoV//0JMG+Eh16Bm"J>De*R#+DG7oF_kc5+CT@E+B*E(E+NotBle?,+E27@ASuU(/g*ksARf:h@<3Q&FWbO0F`M2;+ED.6DI[g1+DkP.F($2%BkM<tF)u&4+DkP/FD5eK+B*E(E+NotBle?,+Eh=4+EVOBFDl1BATT&'F_>i.+DkP3Bl/!6+EMI;Ch[BnFEM,.DBNY(+Du+8+CT;#FY4e8ARlp+Ci!Ns@rHC,ATAo6BQ%cuF`S[B@<?U*F"SS1@;R-.ARloqASc(%+E1n.Ch7L+ATMj6AKYQ/+ELt(BlnH2F!,X?G%G]7@3B8p+CSb&D.Rg3F"SS3BOPsnCi"68+EM7=+CT+uF<G4:@<Q?q@3B-!Bl,CDEHPu:+DbIrBl7Wn+Dtn7Cb?i1F<G!7A79Fk@Wc`7DJ=0+/g*l,Eai`*An?""ASuU4D'3>2EcZAE+Dtb1F_)\0DBNn:EccD;FDl1P$497FF(8c(AS5RqFCB55F(K22DJsD8Ch[?iEc3(@F`_YHD'3G%F_>DsF<GX=F<G"/ATT&+FWba6E+rm$/g+2+F*),*F_l2;+E27?F_,T)+D#\0F)>i++Dbt:ASiPu+EV=8@qfIrDKIKR;g!/#ASu$mF)tn8D..6lF*1o%@3B-&F<G!7E,Tc=FD5i8EZeq*AnbahFEMUV+AR&s@j#i2Ci!fqBlnK.Bl5&'Df0`,Ci!g,+ED1;F`S[FF_Pn>D/X6,BlbmL;g!/#ASu$mF)tn8F(Jl)Ci<d$Ecc#:+D,2$BlbmL7<E6PD'4"?Cisi=@<<W&BkM<tF)u&4+CfP7F*2OV+@UBd@;R,tBkM<tF)u&4+CT)#EHP],+CT)#EHPi7/g+/9+D,2-B5(dr+Dbt:ASiQ5ATMs-@WcL0D'3tADIFZ/ASlBtE\&>AF<G19Bl7QtCi!N&DKTc3@3B)p@ruj1/g*u(@<6!rCiseAG%G?$@s)Tr+EM+2+CSb&DJ=0.+EM%(Ch7X$F)c>6/0JM:ATT&,ATDX!DKL#<+Dbb)F_kJ/G%G`:Bju4$F_r`R7<E6PD'4"9FCA`'DJ=0.+EM+2/g*GkDIm6o+CT@7AS5RqFCB55@;^0u/0JqTBlbD*Ch[m3ATT&*F_NH8$;kq[F)c>6+EMI;Ch[BnFEM,.DBNk.Bl>,/F`VYC/0K"JF<G"/ATT&<Bm+'.Ea^)2BleE<+E27>FC?;&BkM<tF)u&4/g*`'+Dtn7Bcpu-@<=%C@s)g5F`S[CARcj*Ci!Ns@rHC,ATAo)B4Z09+Cf>,D/Ws'+Dtb#+Co1pD(Zr0ARlp)BlkJ+D.Rf3A8,OqF_r7>Earf9+Ad)eATMF#F<GX7ASbpuBle9:AKZ&&B5)I0BlbD5@:OG$+Dtb#+EhIBATDg"/g*Q)BlbD>F<G(3DIdHuASuU4D'3tADIG.?:hX9YASc1*F!,F5Ci![#FCfN5F_)\,Eaa&4F(o_=@;TRt+Dbb)F_kJ/FCf<.DfRBO@3B`%EbTZ;+CoV/+Eh=0Bk):%@4iZgASu'fDBNG-DK]H)Ch[r5ASc(&+EV13E,Tb>D..'p@3B`)F*),*F_l2;+D#A#BkCpoA1f!"F_kl&+CT@7@<H4*AKYT*Bl7QtCi!N2+D#A#BkCpoA0>u4Ecc5?+EhI@@:^u4@rH7+AT;j$F<G1,Ch[rC+@L?dF!,"-@ruj1+EV13E-64EF(K22B6%F(Bk1Wp@<H(%DfRHQ6ZmEX@VKq,EZfF3B5)I0BlbD2A0>l7@;R-)Df-\=@:s:rFD5eK+Am8qF)c>6+EhIBATDg"+D#S3F!,X?FCA`'@<H(%DfQt/@q0XuF(&r=+@C0XF!+n5+D#V9+CQC(Ec6"AAn?""ASuU4D'3>,DK]H)Ch[rC+B<M+A79Fk@Wc`7Ch7N-G%l&,AKZ&:F(8p'BlkJ7@;KLrF^\fh/g+)8F)Y].A8-++AKYr1FCf?3BeB`":3CAh@;R-1AS`K"BkM<tF)u&4+Dk\3F`T/X8T#Y_AT_X"@<<W2F_l58DIIQ.F`MA./0JMG+Co1rFEMFCDJ<Qn+EV13E,Tb>Bl5OG<b6>oBju4$F_r70DKKG4BlJ-9D'3e<Bl.R*+DG^9AmoglBju4++E):1Bcq57@ruj7+D#X;F_l/?Bk(^q+E27?F_,T)+CfP'Bl%Kl+CfP7@:_MC9Q+r_D'3P3F*2=BA8c:&EZfF;F<G"/ATTIG@rH7+ARfgnFEMUH@:X(kBldcuDJ()'Ch[uD+B)i^+CQC,@:OFrBlbD>Ec,;:+CSb&Cgh7&AS#s+Ch7*uF`T/X:i]uUF(K62+EV13E,Tb>G%#E*F`S[:GUstY@qBIfEbTT7F_)\:Des6(@qg%-A8,p(A9DT/AmoglBju4++D#[J+A$GnBOu'lEb09*F<GC2@ruj7+Dtb#+EM+2+ED.6DI[g1+E27?F_,T)/g+2+F*),*F_l2;+E2"&Eb0?5@3BW"E+rm$+EM7=+CT+uF<GI4EHPh8FCf<.F`S[A@;g0tATTOI<HK@,AS`K"Des?4+CSb&ATMr9An?*tBjl*+FCf<.DfQt?F_Pn>DJsD8G%GK(F=n\4BOPsnCi"68+DG@/CgggrF!,F?EccD;FDl1N+EDUHEcl4A@<,k#+CT@C+E2@4FD5l7+Co1pD(Zr-ASc0oDKKH2EHPh8Bk/?*BOPpmFE1e4Ch7N9+DG@/B6%F(Bk1WpASu4!/d_q^Ec5Z0+CQC$DKKG4F(8ctATDL+EHPhD+Co2!DJ=05Bl+u/BkMR)@3BW&A1SjFEbTT:BlS9,+CT;#FY4e2@:`q[DIIT/E,Tf?ATD?)@rH6qBl.F!FEMFCF`MA./0JMH+Cf>-F(Jj'ATW'8+Dtn7Bcq82Ch7[0Bk8DuF=n\2F_kl&D'3n2A0?&,Ch[u6@:LF'ASc(&+E27>FC?;%Df'?0A8a(C6uQsS@j#c6BlbD5BkMR)@3BW&A0>c(F(lb,Df'?0A8`T%Ch7<mASu$2+@L-cARcj!DfTE++DbIrF`T)VF)PStCh7Z1Bk/?0AS>dfF_kJ/F(o_=@;TRt/0JA2@s)X0@;[32AS`K2F`MG8F"SS6F`VM5DIdI&F(HJ(Df031ALnsGASc1*F!,X;C`m\;ATVX/D'3q7DI[BkF`):P+D#G)D'3n.E+rm$+DG7oF_kc5+DbV!FEMXU+DG^9An?""ASuU4D'3D2F<G=@F*)=CDIm<#D..L,@4i[!Ec5Z0+E_cKA8c:&EZf4-F`M2;/g+)(A0>>t@;]UiF<GXIF(8p'BlkJ8F`(\?+Du+8+Eh=6AStpuBlbD=DfTr<EZfFAA79:cF!,%:/g+2/G%#61F!,X;BPCt!CgeH*F`MVG+CSb&DKTc3@3B&uDKBB/F^]AC+DG^9CgggfDJ<N%Ch7*uF`S[B@;KLrF^\fh/g+#6Ble9:AKYQ,+D#G)D'3k5F*2OV+AH9U@qBOdF!+q.@;]UiF=\PU@;oplDBO"3A0>u7BleB1EHPh8AS,Og@qg%-E\&>FASc(%+DbV!FEMXIAmoglBju4++E_^B@4WO0F<G.;Ble-0A0>E$Ci=>:ASu4!+E_cK@<,k#/g*o3Ci!Ns+CT)#EHP],+CTD*F_)\0DBNA.@s&o8F`V&,E+sDF+DG@/FE2):FD5`;AKZ/-Ch[u6Bl8$(Eb'<0/g*u2DeX)3F`\aDF_kl&+ELt(BlnH2F"AGFAnGaeBlnK<+DkP0EbTS;F(Jl5+Cno"Bju4++Dbt:ASj%B;g!/#ASu$mF)tn8Ch7N-An>dmF"AGN@;KLrF^\fh+DG@/DfT?%+EM+)/0K+YCiFN=@<?''G%GQ&DIIX$F!,X;Ch[uD$31&+CUSTOM_ENCODING_DELIMITER_RIGHT 
+ | 'time'=874ms;;;; 
