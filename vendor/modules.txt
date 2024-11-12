@@ -8,7 +8,7 @@ github.com/emersion/go-imap/client
 github.com/emersion/go-imap/commands
 github.com/emersion/go-imap/responses
 github.com/emersion/go-imap/utf7
-# github.com/emersion/go-sasl v0.0.0-20231106173351-e73c9f7bad43
+# github.com/emersion/go-sasl v0.0.0-20241020182733-b788ff22d5a6
 ## explicit; go 1.12
 github.com/emersion/go-sasl
 # github.com/google/go-cmp v0.6.0
