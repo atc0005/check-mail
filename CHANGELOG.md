@@ -26,6 +26,34 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.16] - 2024-11-13
+
+### Changed
+
+#### Dependency Updates
+
+- (GH-788) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.21.12 to go-ci-oldstable-build-v0.21.13 in /dependabot/docker/builds
+- (GH-797) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.21.13 to go-ci-oldstable-build-v0.21.14 in /dependabot/docker/builds
+- (GH-812) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.21.14 to go-ci-oldstable-build-v0.21.15 in /dependabot/docker/builds
+- (GH-787) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.21.9 to go-ci-oldstable-build-v0.21.12 in /dependabot/docker/builds
+- (GH-799) Go Dependency: Bump github.com/atc0005/go-nagios from 0.16.1 to 0.16.2
+- (GH-813) Go Dependency: Bump github.com/atc0005/go-nagios from 0.16.2 to 0.17.1
+- (GH-781) Go Dependency: Bump golang.org/x/oauth2 from 0.22.0 to 0.23.0
+- (GH-804) Go Dependency: Bump golang.org/x/oauth2 from 0.23.0 to 0.24.0
+- (GH-779) Go Dependency: Bump golang.org/x/sys from 0.24.0 to 0.25.0
+- (GH-794) Go Dependency: Bump golang.org/x/sys from 0.25.0 to 0.26.0
+- (GH-805) Go Dependency: Bump golang.org/x/sys from 0.26.0 to 0.27.0
+- (GH-780) Go Dependency: Bump golang.org/x/text from 0.17.0 to 0.18.0
+- (GH-795) Go Dependency: Bump golang.org/x/text from 0.18.0 to 0.19.0
+- (GH-806) Go Dependency: Bump golang.org/x/text from 0.19.0 to 0.20.0
+- (GH-785) Go Runtime: Bump golang from 1.22.6 to 1.22.7 in /dependabot/docker/go
+- (GH-802) Go Runtime: Bump golang from 1.22.7 to 1.22.9 in /dependabot/docker/go
+- (GH-816) Update `github.com/emersion/go-sasl` pseudo-version
+
+### Fixed
+
+- (GH-821) Update enclosing error message prefix
+
 ## [v0.8.15] - 2024-08-21
 
 ### Changed
@@ -1560,7 +1588,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.15...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.16...HEAD
+[v0.8.16]: https://github.com/atc0005/check-mail/releases/tag/v0.8.16
 [v0.8.15]: https://github.com/atc0005/check-mail/releases/tag/v0.8.15
 [v0.8.14]: https://github.com/atc0005/check-mail/releases/tag/v0.8.14
 [v0.8.13]: https://github.com/atc0005/check-mail/releases/tag/v0.8.13
