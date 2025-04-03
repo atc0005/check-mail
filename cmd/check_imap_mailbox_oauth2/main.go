@@ -77,7 +77,10 @@ func main() {
 		//
 		// As a workaround, we create a new variable for each iteration to
 		// work around potential issues with Go versions prior to Go 1.22.
-		account := account
+		//
+		// NOTE: Not needed as of Go 1.22.
+		//
+		// account := account
 
 		logger := cfg.Log.With().
 			Str("client_id", account.OAuth2Settings.ClientID).
