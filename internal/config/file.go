@@ -36,7 +36,10 @@ func (c *Config) readConfigFile(configFile ...string) ([]byte, error) {
 		//
 		// As a workaround, we create a new variable for each iteration to
 		// work around potential issues with Go versions prior to Go 1.22.
-		file := file
+		//
+		// NOTE: Not needed as of Go 1.22.
+		//
+		// file := file
 
 		c.Log.Debug().Str("config_file", file).Msg("Attempting to open config file")
 
