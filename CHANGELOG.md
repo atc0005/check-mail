@@ -26,6 +26,32 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.19] - 2025-04-09
+
+### Changed
+
+#### Dependency Updates
+
+- (GH-911) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.22.3 to go-ci-oldstable-build-v0.22.9 in /dependabot/docker/builds
+- (GH-916) Disable Dependabot automatic PR rebasing
+- (GH-881) Go Dependency: Bump github.com/google/go-cmp from 0.6.0 to 0.7.0
+- (GH-904) Go Dependency: Bump github.com/rs/zerolog from 1.33.0 to 1.34.0
+- (GH-893) Go Dependency: Bump golang.org/x/oauth2 from 0.26.0 to 0.28.0
+- (GH-922) Go Dependency: Bump golang.org/x/oauth2 from 0.28.0 to 0.29.0
+- (GH-892) Go Dependency: Bump golang.org/x/sys from 0.30.0 to 0.31.0
+- (GH-923) Go Dependency: Bump golang.org/x/sys from 0.31.0 to 0.32.0
+- (GH-894) Go Dependency: Bump golang.org/x/text from 0.22.0 to 0.23.0
+- (GH-921) Go Dependency: Bump golang.org/x/text from 0.23.0 to 0.24.0
+- (GH-909) Go Runtime: Bump golang from 1.22.12 to 1.23.8 in /dependabot/docker/go
+- (GH-901) go.mod: update minimum Go version to 1.23.0
+- (GH-886) Update project to Go 1.23 series
+
+### Fixed
+
+- (GH-913) Fix `copyloopvar` linting errors
+- (GH-915) Fix `copyloopvar` linting errors (redux)
+- (GH-925) Fix invalid Dependabot go.mod changes
+
 ## [v0.8.18] - 2025-02-20
 
 ### Changed
@@ -1617,7 +1643,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.18...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.19...HEAD
+[v0.8.19]: https://github.com/atc0005/check-mail/releases/tag/v0.8.19
 [v0.8.18]: https://github.com/atc0005/check-mail/releases/tag/v0.8.18
 [v0.8.17]: https://github.com/atc0005/check-mail/releases/tag/v0.8.17
 [v0.8.16]: https://github.com/atc0005/check-mail/releases/tag/v0.8.16
