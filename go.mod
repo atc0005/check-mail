@@ -3,7 +3,7 @@ module github.com/atc0005/check-mail
 go 1.23.0
 
 require (
-	github.com/atc0005/go-nagios v0.19.0
+	github.com/atc0005/go-nagios v0.20.0
 	github.com/emersion/go-imap v1.2.1
 	github.com/emersion/go-sasl v0.0.0-20241020182733-b788ff22d5a6
 	github.com/google/go-cmp v0.7.0
