@@ -26,6 +26,19 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v0.8.20] - 2025-05-16
+
+### Changed
+
+#### Dependency Updates
+
+- (GH-939) Build Image: Bump atc0005/go-ci from go-ci-oldstable-build-v0.22.9 to go-ci-oldstable-build-v0.22.10 in /dependabot/docker/builds
+- (GH-929) Go Dependency: Bump github.com/atc0005/go-nagios from 0.19.0 to 0.20.0
+- (GH-935) Go Dependency: Bump golang.org/x/oauth2 from 0.29.0 to 0.30.0
+- (GH-936) Go Dependency: Bump golang.org/x/sys from 0.32.0 to 0.33.0
+- (GH-934) Go Dependency: Bump golang.org/x/text from 0.24.0 to 0.25.0
+- (GH-937) Go Runtime: Bump golang from 1.23.8 to 1.23.9 in /dependabot/docker/go
+
 ## [v0.8.19] - 2025-04-09
 
 ### Changed
@@ -1643,7 +1656,8 @@ monitor mail-related resources.
 - TLS/SSL IMAP4 connectivity via `emerson/go-imap` package
 - Go modules (vs classic `GOPATH` setup)
 
-[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.19...HEAD
+[Unreleased]: https://github.com/atc0005/check-mail/compare/v0.8.20...HEAD
+[v0.8.20]: https://github.com/atc0005/check-mail/releases/tag/v0.8.20
 [v0.8.19]: https://github.com/atc0005/check-mail/releases/tag/v0.8.19
 [v0.8.18]: https://github.com/atc0005/check-mail/releases/tag/v0.8.18
 [v0.8.17]: https://github.com/atc0005/check-mail/releases/tag/v0.8.17
