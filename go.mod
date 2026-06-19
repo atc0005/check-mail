@@ -1,6 +1,6 @@
 module github.com/atc0005/check-mail
 
-go 1.23.0
+go 1.25.0
 
 require (
 	github.com/atc0005/go-nagios v0.20.0
@@ -9,7 +9,7 @@ require (
 	github.com/google/go-cmp v0.7.0
 	github.com/rs/zerolog v1.34.0
 	github.com/sqs/go-xoauth2 v0.0.0-20120917012134-0911dad68e56
-	golang.org/x/oauth2 v0.30.0
+	golang.org/x/oauth2 v0.36.0
 	gopkg.in/ini.v1 v1.67.0
 )
 
