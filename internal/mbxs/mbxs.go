@@ -9,6 +9,7 @@ package mbxs
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -89,13 +90,14 @@ func (mcr MailboxCheckResults) TotalMessagesFound() int {
 // MessagesFoundSummary returns a one-line summary of the mail items found in
 // checked mailboxes.
 func (mcr MailboxCheckResults) MessagesFoundSummary() string {
-	var summary string
+	var summary strings.Builder
+
 	for index, result := range mcr {
-		summary += fmt.Sprintf("%s(%d)", result.MailboxName, result.ItemsFound)
+		fmt.Fprintf(&summary, "%s(%d)", result.MailboxName, result.ItemsFound)
 		if index < (len(mcr) - 1) {
 			// Append separator chars if not processing the last index item
-			summary += ", "
+			fmt.Fprint(&summary, (", "))
 		}
 	}
-	return summary
+	return summary.String()
 }

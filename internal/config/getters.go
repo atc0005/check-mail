@@ -100,10 +100,10 @@ func (c Config) AccountNames() []string {
 	for _, account := range c.Accounts {
 		switch account.AuthType {
 		case AuthTypeBasic:
-			name := strings.Split(account.Username, "@")[0]
+			name, _, _ := strings.Cut(account.Username, "@")
 			accountsList = append(accountsList, name)
 		case AuthTypeOAuth2ClientCreds:
-			name := strings.Split(account.OAuth2Settings.SharedMailbox, "@")[0]
+			name, _, _ := strings.Cut(account.OAuth2Settings.SharedMailbox, "@")
 			accountsList = append(accountsList, name)
 		}
 	}
